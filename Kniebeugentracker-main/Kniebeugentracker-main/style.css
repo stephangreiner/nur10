@@ -1,0 +1,12 @@
+body {
+    font-family: sans-serif;
+  }
+  .message {
+    margin-bottom: 20px;
+  }
+  #error {
+    color: red;
+  }
+  #canvas {
+    width: 100%;
+  }
