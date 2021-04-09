@@ -1,12 +1,19 @@
-body {
-    font-family: sans-serif;
+
+  #canvas {
+    width: 50%;
   }
-  .message {
-    margin-bottom: 20px;
+
+
+  #sensorx{
+    color: blue;
+  } 
+ 
+
+  #sensory{
+    color: green;
   }
-  #error {
+ #sensorz{
     color: red;
   }
-  #canvas {
-    width: 100%;
-  }
+
+  
