@@ -37,22 +37,27 @@ var ctx = canvas.getContext('2d');
 
 
 var linien = {};
+// umsohöher umso langsamer läuft das Band
+var Probenanzahl = 500;
+var b = document.getElementById("Probenauswahl");
+b.addEventListener("change", function() {
+      if(b.value == "1")
+      {Probenanzahl= 50, console.log(Probenanzahl)}
 
-var SAMPLES_COUNT = 64;
-var COLORS = {
-  x: 'blue',
-  y: 'green',
-  z: 'red'
-};
+      if(b.value == "2")
+      { Probenanzahl = 500,console.log(Probenanzahl)}
+      
+      if(b.value == "3")
+      { Probenanzahl = 5000,console.log(Probenanzahl,);}
+      }
+  )
 
-var scaleX = W/SAMPLES_COUNT;
-var scaleY = 10;
+var scaleX = W/Probenanzahl;
+var scaleY = 5;
 
 var isRefresh = true;
 
-linien.x = getInitArr(SAMPLES_COUNT);
-linien.y = getInitArr(SAMPLES_COUNT);
-linien.z = getInitArr(SAMPLES_COUNT);
+linien.z = getInitArr(Probenanzahl);
 
 if (!window.DeviceMotionEvent){
   document.getElementById('error').innerHTML = 'Device motion API not supported';
@@ -67,8 +72,6 @@ if (!window.DeviceMotionEvent){
 
 
 function doSample(event) {
-  shift(linien.x, event.accelerationIncludingGravity.x);
-  shift(linien.y, event.accelerationIncludingGravity.y);
   shift(linien.z, event.accelerationIncludingGravity.z);
 }
 
@@ -78,43 +81,38 @@ function tick() {
   if (!isRefresh){
     return;
   }
-  ctx.fillStyle = 'pink';
+  ctx.fillStyle = 'black';
   ctx.fillRect(0, 0, W, H);
   
-  hilfslinienmalen(5);
-  drawGraph(linien.x, COLORS.x, scaleX, scaleY);
-  drawGraph(linien.y, COLORS.y, scaleX, scaleY);
-  drawGraph(linien.z, COLORS.z, scaleX, scaleY);
+  zehnGlinie(),zwanzigabweichungslinie();
+  drawGraph(linien.z, scaleX, scaleY);
 }
 
-
-function hilfslinienmalen(grid) {
+//die Zahlen sind entsprechend der oben angegeben Scale = 5 alle x *5
+function zehnGlinie(grid) {
   ctx.lineWidth = 1;
-  ctx.strokeStyle = 'black';
+  ctx.strokeStyle = 'white';
   ctx.beginPath();
-  ctx.moveTo(0, H/2);
-  ctx.lineTo(W, H/2);
+  ctx.moveTo(0, (H/2)+50);
+  ctx.lineTo(W, (H/2)+50);
   ctx.stroke();
-  var count = H/2 / (grid*scaleY);
-  ctx.strokeStyle = 'yellow';
-  for (var i=1; i<count; i++){
-    ctx.beginPath();
-    ctx.moveTo(0, H/2-i*grid*scaleY);
-    ctx.lineTo(W, H/2-i*grid*scaleY);
-    ctx.stroke();  
-    
-    ctx.beginPath();
-    ctx.moveTo(0, H/2+i*grid*scaleY);
-    ctx.lineTo(W, H/2+i*grid*scaleY);
-    ctx.stroke();
-  }
+}
+function zwanzigabweichungslinie(grid) {
+  ctx.strokeStyle = 'blue';
+  ctx.beginPath();
+  ctx.moveTo(0, (H/2)+150);
+  ctx.lineTo(W, (H/2)+150);
+  ctx.moveTo(0, (H/2)-50);
+  ctx.lineTo(W, (H/2)-50);
+  ctx.stroke();
 }
 
-function drawGraph(linien, color, scaleX, scaleY) {  
+
+function drawGraph(linien, scaleX, scaleY) {  
   ctx.save();
   ctx.translate(0, H/2); 
-  
-  ctx.strokeStyle = color;
+  ctx.lineWidth = 4
+  ctx.strokeStyle = "red";
   ctx.beginPath();
   var len = linien.length;
   ctx.moveTo(0, linien[0] * scaleY);
@@ -122,7 +120,6 @@ function drawGraph(linien, color, scaleX, scaleY) {
     ctx.lineTo(i*scaleX, linien[i]*scaleY);
   }
   ctx.stroke();
-  
   ctx.restore();
 }
 
@@ -130,13 +127,6 @@ function drawGraph(linien, color, scaleX, scaleY) {
 //get Float32Array of length initialized to 0
 function getInitArr(length) {
   var arr = new Float32Array(length);
-  for (var i = 0; i < length; i++) {
-    arr[i] = 0;
-    arr[i] = Math.random() * 4 - 2;
-  }
-  arr[length - 2] = 0.5;
-  arr[length - 1] = -0.5;
-
   return arr;
 }
 

@@ -1,19 +1,17 @@
 
   #canvas {
-    width: 50%;
+    width: 100%;
   }
-
-
+  
   #sensorx{
-    color: blue;
+    color:violet;
   } 
  
-
   #sensory{
     color: green;
   }
- #sensorz{
-    color: red;
+ #ZAnzeige{
+    background-color: rgba(255, 0, 0, 0.267);
   }
 
   
