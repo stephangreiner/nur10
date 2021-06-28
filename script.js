@@ -1,5 +1,17 @@
+var z =200
+Probenanzahl = 110
+var b = document.getElementById("Probenauswahl");
+b.addEventListener("change", function() {
+      if(b.value == "1")
+      {Probenanzahl = 10, console.log(Probenanzahl);}
 
-
+      if(b.value == "2")
+      {Probenanzahl = 100,console.log(Probenanzahl)}
+      
+      if(b.value == "3")
+      {Probenanzahl = 5000,console.log(Probenanzahl);}
+      }
+  )
 function handleMotionEvent(event) {
     var x = event.accelerationIncludingGravity.x;
     var y = event.accelerationIncludingGravity.y;
@@ -7,22 +19,33 @@ function handleMotionEvent(event) {
   document.getElementById("sensorx").innerHTML = x   
   document.getElementById("sensory").innerHTML = y
   document.getElementById("sensorz").innerHTML = z
+zum()
+ 
 
-  if (z > 20) {squats()} 
-  if (z < 0)  {jumps()} 
   } 
+function zum(){
+if (z > 20) {squats1()} 
+  if (z == 10.1) {squats2()} 
+  if (z < 0) {squats3()}}
+
+  var Zahlsquats1 = 0;
+  var Zahlsquats2 = 0;
+  var Zahlsquats3 = 0;
+
+  function squats1() {
+ Zahlsquats1 = Zahlsquats1+ 1;
+  document.getElementById("A1").innerHTML = Zahlsquats1;} ; 
   
-  var Zahlsquats = 0;
-  function squats() {
- Zahlsquats = Zahlsquats+ 1;
-  document.getElementById("über20Anzei").innerHTML = Zahlsquats;} 
+  function squats2() {
+    Zahlsquats2 = Zahlsquats2+ 1;
+     document.getElementById("A2").innerHTML = Zahlsquats2;} 
+     
+     function squats3() {
+      Zahlsquats3 = Zahlsquats3+ 1;
+       document.getElementById("A3").innerHTML = Zahlsquats3;}; 
     
-  
-  var Zahljumps = 0;
-  function jumps()  {
-  Zahljumps =Zahljumps + 1;
-  document.getElementById("über20Anzei").innerHTML = Zahljumps;} 
-    
+
+
    
   window.addEventListener("devicemotion", handleMotionEvent, true);
     
@@ -38,19 +61,7 @@ var ctx = canvas.getContext('2d');
 
 var linien = {};
 // umsohöher umso langsamer läuft das Band
-var Probenanzahl = 500;
-var b = document.getElementById("Probenauswahl");
-b.addEventListener("change", function() {
-      if(b.value == "1")
-      {Probenanzahl= 50, console.log(Probenanzahl)}
 
-      if(b.value == "2")
-      { Probenanzahl = 500,console.log(Probenanzahl)}
-      
-      if(b.value == "3")
-      { Probenanzahl = 5000,console.log(Probenanzahl,);}
-      }
-  )
 
 var scaleX = W/Probenanzahl;
 var scaleY = 5;
@@ -98,14 +109,19 @@ function zehnGlinie(grid) {
   ctx.stroke();
 }
 function zwanzigabweichungslinie(grid) {
-  ctx.strokeStyle = 'blue';
+  ctx.strokeStyle = 'white';
   ctx.beginPath();
-  ctx.moveTo(0, (H/2)+150);
-  ctx.lineTo(W, (H/2)+150);
-  ctx.moveTo(0, (H/2)-50);
-  ctx.lineTo(W, (H/2)-50);
+  ctx.moveTo(0, (H/2)+100);
+  ctx.lineTo(W, (H/2)+100);
+  ctx.moveTo(0, (H/2)-0);
+  ctx.lineTo(W, (H/2)-0);
   ctx.stroke();
 }
+
+
+
+
+
 
 
 function drawGraph(linien, scaleX, scaleY) {  
