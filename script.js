@@ -1,15 +1,17 @@
-
- var Zahlsquats1 = 0;
-  var Zahlsquats2 = 0;
-  var Zahlsquats3 = 0;
-  var Probenanzahl = 500;
+var Zahlsquats1 = 0;
+var Zahlsquats2 = 0;
+var Zahlsquats3 = 0;
+//funktioniert nicht Probenanzahl wird nicht aktualisiert
+var Probenanzahl = 500;
 var b = document.getElementById("Probenauswahl");
-//funktioniert nicht Porbenanzahl wird nicht aktualisiert
 b.addEventListener("change", function() {
       if(b.value == "1") {Probenanzahl = 10, console.log(Probenanzahl);}
       if(b.value == "2") {Probenanzahl = 100,console.log(Probenanzahl)} 
       if(b.value == "3") {Probenanzahl = 5000,console.log(Probenanzahl);}
       } )
+
+// startet die handleMotionEvent die ist speziell für den Sensor und damit selten
+window.addEventListener("devicemotion", handleMotionEvent, true);
 function handleMotionEvent(event) {
     var x = event.accelerationIncludingGravity.x;
     var y = event.accelerationIncludingGravity.y;
@@ -17,32 +19,25 @@ function handleMotionEvent(event) {
   document.getElementById("sensorx").innerHTML = x   
   document.getElementById("sensory").innerHTML = y
   document.getElementById("sensorz").innerHTML = z
-
 if (z > 20) {squats1()} 
-if (z == 10.1){squats2()} 
+if (z > 9.8 && z < 10.1){squats2()} 
 if (z < 0) {squats3()}
                                      } 
 
+function squats1() {
+Zahlsquats1 = Zahlsquats1+ 1;
+document.getElementById("A1").innerHTML = Zahlsquats1;} 
 
- function squats1() {
- Zahlsquats1 = Zahlsquats1+ 1;
- document.getElementById("A1").innerHTML = Zahlsquats1;} ; 
-  
-  function squats2() {
-  Zahlsquats2 = Zahlsquats2+ 1;
-  document.getElementById("A2").innerHTML = Zahlsquats2;} 
+function squats2() {
+Zahlsquats2 = Zahlsquats2+ 1;
+document.getElementById("A2").innerHTML = Zahlsquats2;} 
      
-  function squats3() {
-  Zahlsquats3 = Zahlsquats3+ 1;
-  document.getElementById("A3").innerHTML = Zahlsquats3;}; 
+function squats3() {
+Zahlsquats3 = Zahlsquats3+ 1;
+document.getElementById("A3").innerHTML = Zahlsquats3;}; 
     
-
-
-   
-window.addEventListener("devicemotion", handleMotionEvent, true);
-    
-
-
+  
+// canvas uns Linien
 
 var canvas = document.getElementById('canvas');
 var W = canvas.width;
@@ -52,9 +47,9 @@ var linien = {};
 var scaleX = W/Probenanzahl;
 var scaleY = 5;
 var isRefresh = true;
-
 linien.z = getInitArr(Probenanzahl);
 
+// DiviceMotionEvent ist spezialfunktion für den Sensor
 if (!window.DeviceMotionEvent){
   document.getElementById('error').innerHTML = 'Device motion API not supported';
 } else {
@@ -114,7 +109,7 @@ function drawGraph(linien, scaleX, scaleY) {
   ctx.moveTo(0, linien[0] * scaleY);
   for(var i = 0; i < len; i++){
     ctx.lineTo(i*scaleX, linien[i]*scaleY);
-  }
+   }
   ctx.stroke();
   ctx.restore();
 }
@@ -125,7 +120,7 @@ function getInitArr(length) {
   return arr;
 }
 
-//add a sample to the end of the array
+//zieht eine Probe aus doSample und fügt sie zeitlich hinten an den Array an und malt so die Linie
 function shift(arr, datum) {
   var ret = arr[0];
   for (var i = 1; i < arr.length; i++) {
