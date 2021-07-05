@@ -7,16 +7,14 @@
        
 </head>
 <body>
-
-
 <div id="error"> </div>
 <canvas id="canvas" width="640" height="480"></canvas>
+
 <div>
-<select id="Probenauswahl"> 
-  <option value ="1"> 50</option>
-  <option value ="2">500</option>
-  <option value ="3">1000</option>
-</select> 
+<h1><time id="time">00:00:00</time></h1>
+<button onclick="uhrlos()">start</button>
+<button onclick="uhrstop()" >stop</button>
+<button onclick="uhrneu()">reset</button>
 </div>
 
 <div id="ZAnzeige">
@@ -31,12 +29,15 @@ Squats Schwerkraft unter 0g :
 </div>
   <button id ="b">xxxxxx</button>
 <br><br><br><br><br><br>
+
+
+
+
 Kontrolle 
 <div>
 X Achse (links rechts schieben)
 <div id= "sensorx">x2 </div>
 </div>
-
 Y Achse (oben unten schieben)
 <div id= "sensory" >y2 </div>
 

@@ -1,14 +1,9 @@
 var Zahlsquats1 = 0;
 var Zahlsquats2 = 0;
 var Zahlsquats3 = 0;
-//funktioniert nicht Probenanzahl wird nicht aktualisiert
+//Probenanzahl ist geschwindigkeit aber die Ändeurng via dropdown geht nicht. Wird nicht aktialisiert.
 var Probenanzahl = 500;
-var b = document.getElementById("Probenauswahl");
-b.addEventListener("change", function() {
-      if(b.value == "1") {Probenanzahl = 10, console.log(Probenanzahl);}
-      if(b.value == "2") {Probenanzahl = 100,console.log(Probenanzahl)} 
-      if(b.value == "3") {Probenanzahl = 5000,console.log(Probenanzahl);}
-      } )
+
 
 // startet die handleMotionEvent die ist speziell für den Sensor und damit selten
 window.addEventListener("devicemotion", handleMotionEvent, true);
@@ -130,3 +125,40 @@ function shift(arr, datum) {
   return ret;
 }
 
+//stopuhr
+var z = document.getElementById("time")
+var sec = 0;
+var min = 0;
+var hrs = 0;
+var t = 0;
+
+
+function tock(){
+    sec++;
+    if (sec >= 60) {
+        sec = 0;
+        min++;
+        if (min >= 60) {
+            min = 0;
+            hrs++;
+        }
+    }
+}
+function add() {
+    tock();
+    z.textContent = (hrs > 9 ? hrs : "0" + hrs) 
+        	 + ":" + (min > 9 ? min : "0" + min)
+       		 + ":" + (sec > 9 ? sec : "0" + sec);
+    uhrlos();
+}
+function uhrlos() {
+    t = setTimeout(add, 1000);
+}
+
+function uhrstop() {
+    clearTimeout(t);
+}
+function uhrneu() {
+    z.textContent = "00:00:00";
+    seconds = 0; minutes = 0; hours = 0;
+}
