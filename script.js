@@ -10,7 +10,7 @@ document.getElementById("ZAnzeige").style.display="none"
 
 
 // startet die handleMotionEvent die ist speziell für den Sensor handling ungewöhnlich
-window.addEventListener("devicemotion", handleMotionEvent);
+
 function handleMotionEvent(event) {
     var x = event.accelerationIncludingGravity.x;
     var y = event.accelerationIncludingGravity.y;
@@ -56,6 +56,7 @@ document.getElementById("neub").style.display=""
 document.getElementById("KniebA").style.display=""
 document.getElementById("ZAnzeige").style.display=""
 uhrlos()
+addEventListener("devicemotion", handleMotionEvent);
 addEventListener("devicemotion", doSample);
 tick();  
 }
