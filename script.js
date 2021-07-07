@@ -1,20 +1,24 @@
 var Zahlsquats1 = 0;
 var Zahlsquats2 = 0;
 var Zahlsquats3 = 0;
-//Probenanzahl ist geschwindigkeit aber die Ändeurng via dropdown geht nicht. Wird nicht aktialisiert.
 var Probenanzahl = 500;
+document.getElementById("canvas").style.display="none"
+document.getElementById("neub").style.display="none"
+document.getElementById("KniebA").style.display="none"
+document.getElementById("ZAnzeige").style.display="none"
 
 
-// startet die handleMotionEvent die ist speziell für den Sensor und damit selten
 
-window.addEventListener("devicemotion", handleMotionEvent, true);
+// startet die handleMotionEvent die ist speziell für den Sensor handling ungewöhnlich
+window.addEventListener("devicemotion", handleMotionEvent);
 function handleMotionEvent(event) {
     var x = event.accelerationIncludingGravity.x;
     var y = event.accelerationIncludingGravity.y;
     var z = event.accelerationIncludingGravity.z;
-  document.getElementById("sensorx").innerHTML = x   
-  document.getElementById("sensory").innerHTML = y
-  document.getElementById("sensorz").innerHTML = z
+  //für die Darstellung werden die Variablen auf eine Dezimalstelle gerundet
+  document.getElementById("sensorx").innerHTML = Math.round( x * 10 ) / 10;   
+  document.getElementById("sensory").innerHTML = Math.round( y * 10 ) / 10;
+  document.getElementById("sensorz").innerHTML = Math.round( z * 10 ) / 10;
 if (z > 20) {squats1()} 
 if (z > 9.8 && z < 10.1){squats2()} 
 if (z < 0) {squats3()}
@@ -42,14 +46,17 @@ var ctx = canvas.getContext('2d');
 var linien = {};
 var scaleX = W/Probenanzahl;
 var scaleY = 5;
-var isRefresh = true;
 linien.z = getInitArr(Probenanzahl);
 
 // DiviceMotionEvent ist spezialfunktion für den Sensor
 function start() {
-  
+document.getElementById("startb").style.display ="none"
+document.getElementById("canvas").style.display=""
+document.getElementById("neub").style.display=""
+document.getElementById("KniebA").style.display=""
+document.getElementById("ZAnzeige").style.display=""
 uhrlos()
-addEventListener("devicemotion", doSample, false);
+addEventListener("devicemotion", doSample);
 tick();  
 }
 
@@ -59,7 +66,7 @@ function doSample(event) {
 }
 
 function tick() {
-  window.requestAnimationFrame(tick);
+  requestAnimationFrame(tick);
   ctx.fillStyle = 'black';
   ctx.fillRect(0, 0, W, H);
   
@@ -96,8 +103,11 @@ function drawGraph(linien, scaleX, scaleY) {
   ctx.save();
   ctx.translate(0, H/2); 
   ctx.lineWidth = 4
-  ctx.strokeStyle = "red";
-  if (sec > 30){ ctx.strokeStyle = "green";}
+  ctx.strokeStyle = "green";
+  if (min >= 1){ctx.strokeStyle = "red";}
+  if (min >= 2){ ctx.strokeStyle = "violet";}
+  if (min >= 3){ ctx.strokeStyle = "rgb(255, 255, 0)";
+}
   ctx.beginPath();
   var len = linien.length;
   ctx.moveTo(0, linien[0] * scaleY);
@@ -133,13 +143,28 @@ function tock(){
   document.getElementById("sekAn").innerHTML= sec
   document.getElementById("minAn").innerHTML= min
     sec = sec+1;
-    if (sec >= 60) {sec = 0,min = min +1}
+    if (sec >= 60) {sec = 0,min++;}
        }
 
 function uhrlos() {
-   setInterval(tock, 1000);
+   i =setInterval(tock, 1000);
 }
 function neu(){
-  sec = 0, min =""
+  sec = 0;
+  min =0;
+  Zahlsquats1 = 0;
+  Zahlsquats2 = 0;
+  Zahlsquats3 = 0;
+  document.getElementById("A1").innerHTML = Zahlsquats1;
+  document.getElementById("A2").innerHTML = Zahlsquats2;
+  document.getElementById("A3").innerHTML = Zahlsquats3;
+  document.getElementById("startb").style.display =""
+  document.getElementById("neub").style.display="none"
+  removeEventListener("devicemotion", handleMotionEvent)
+  removeEventListener("devicemotion", doSample)
+  clearInterval(i)
+
+  
+
 }
 

@@ -1,17 +1,27 @@
+#startb{
+  padding: 10px;
+ background-color: black;
+ color:white;
 
+} 
+#bdiv{
+ 
+  text-align: center;
+} 
+  
   #canvas {
     width: 100%;
   }
-  
-  #sensorx{
-    color:violet;
+
+  #sensorz{ 
+    display: inline-block;
   } 
- 
+  #sensorx{
+    display: inline-block;
+  } 
   #sensory{
-    color: green;
+    display:inline-block;
   }
- #ZAnzeige{
-    background-color: rgba(255, 0, 0, 0.267);
-  }
+
 
   
