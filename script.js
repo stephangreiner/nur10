@@ -6,6 +6,7 @@ var Probenanzahl = 500;
 
 
 // startet die handleMotionEvent die ist speziell für den Sensor und damit selten
+
 window.addEventListener("devicemotion", handleMotionEvent, true);
 function handleMotionEvent(event) {
     var x = event.accelerationIncludingGravity.x;
@@ -45,15 +46,11 @@ var isRefresh = true;
 linien.z = getInitArr(Probenanzahl);
 
 // DiviceMotionEvent ist spezialfunktion für den Sensor
-if (!window.DeviceMotionEvent){
-  document.getElementById('error').innerHTML = 'Device motion API not supported';
-} else {
-  window.addEventListener("devicemotion", doSample, false);
-  document.getElementsByTagName("body")[0].addEventListener("click", function(ev){
-    isRefresh = !isRefresh;
-    document.getElementById('error').innerHTML = (isRefresh ? '' : 'Error');
-  }, false);
-  tick();  
+function start() {
+  
+uhrlos()
+addEventListener("devicemotion", doSample, false);
+tick();  
 }
 
 
@@ -63,14 +60,10 @@ function doSample(event) {
 
 function tick() {
   window.requestAnimationFrame(tick);
-  
-  if (!isRefresh){
-    return;
-  }
   ctx.fillStyle = 'black';
   ctx.fillRect(0, 0, W, H);
   
-  zehnGlinie(),zehnabweichungslinie();
+  zehnGlinie(),zehnleichtlinie();zehnschwerlinie()
   drawGraph(linien.z, scaleX, scaleY);
 }
 
@@ -83,22 +76,28 @@ function zehnGlinie(grid) {
   ctx.lineTo(W, (H/2)+50);
   ctx.stroke();
 }
-function zehnabweichungslinie(grid) {
-  ctx.strokeStyle = 'white';
+function zehnleichtlinie(grid) {
+  ctx.strokeStyle = 'brown';
   ctx.beginPath();
   ctx.moveTo(0, (H/2)+100);
   ctx.lineTo(W, (H/2)+100);
-  ctx.moveTo(0, (H/2)-0);
-  ctx.lineTo(W, (H/2)-0);
   ctx.stroke();
 }
 
+function zehnschwerlinie(grid) {
+  ctx.strokeStyle = 'blue';
+  ctx.beginPath();
+   ctx.moveTo(0, (H/2)-0);
+   ctx.lineTo(W, (H/2)-0);
+  ctx.stroke();
+}
 
 function drawGraph(linien, scaleX, scaleY) {  
   ctx.save();
   ctx.translate(0, H/2); 
   ctx.lineWidth = 4
   ctx.strokeStyle = "red";
+  if (sec > 30){ ctx.strokeStyle = "green";}
   ctx.beginPath();
   var len = linien.length;
   ctx.moveTo(0, linien[0] * scaleY);
@@ -126,39 +125,21 @@ function shift(arr, datum) {
 }
 
 //stopuhr
-var z = document.getElementById("time")
-var sec = 0;
-var min = 0;
-var hrs = 0;
-var t = 0;
 
+var sec = 0;
+var min = "";
 
 function tock(){
-    sec++;
-    if (sec >= 60) {
-        sec = 0;
-        min++;
-        if (min >= 60) {
-            min = 0;
-            hrs++;
-        }
-    }
-}
-function add() {
-    tock();
-    z.textContent = (hrs > 9 ? hrs : "0" + hrs) 
-        	 + ":" + (min > 9 ? min : "0" + min)
-       		 + ":" + (sec > 9 ? sec : "0" + sec);
-    uhrlos();
-}
+  document.getElementById("sekAn").innerHTML= sec
+  document.getElementById("minAn").innerHTML= min
+    sec = sec+1;
+    if (sec >= 60) {sec = 0,min = min +1}
+       }
+
 function uhrlos() {
-    t = setTimeout(add, 1000);
+   setInterval(tock, 1000);
+}
+function neu(){
+  sec = 0, min =""
 }
 
-function uhrstop() {
-    clearTimeout(t);
-}
-function uhrneu() {
-    z.textContent = "00:00:00";
-    seconds = 0; minutes = 0; hours = 0;
-}

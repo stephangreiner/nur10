@@ -7,31 +7,30 @@
        
 </head>
 <body>
-<div id="error"> </div>
-<canvas id="canvas" width="640" height="480"></canvas>
 
+<canvas id="canvas" width="640" height="480"></canvas>
+<button id="startb" onclick="start()">start</button>
 <div>
-<h1><time id="time">00:00:00</time></h1>
-<button onclick="uhrlos()">start</button>
-<button onclick="uhrstop()" >stop</button>
-<button onclick="uhrneu()">reset</button>
+<div id="sekAn"></div> 
+<div id="minAn"></div>
+
 </div>
 
-<div id="ZAnzeige">
- <div id= "sensorz" >z2 </div> 
-  <div>
-Squats Schwerkraft über 20g :
-<a id="A1">0</a><br>
+Squats Schwerkraft unter 0g :
+<a id="A3">0</a><br>
 Squats Schwerkraft um  10g :
 <a id="A2">0</a><br>
-Squats Schwerkraft unter 0g :
-<a id="A3">0</a></div>
+Squats Schwerkraft über 20g :
+<a id="A1">0</a><br>
+
+<button id="neub" onclick="neu()">reset</button>
 </div>
-  <button id ="b">xxxxxx</button>
-<br><br><br><br><br><br>
+ 
 
-
-
+<div id="ZAnzeige">
+Z Achse hier dargestellt:        
+ <div id= "sensorz" >z2 </div> 
+  <div>
 
 Kontrolle 
 <div>
