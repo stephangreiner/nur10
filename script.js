@@ -19,17 +19,25 @@ function handleMotionEvent(event) {
   document.getElementById("sensorx").innerHTML = Math.round( x * 10 ) / 10;   
   document.getElementById("sensory").innerHTML = Math.round( y * 10 ) / 10;
   document.getElementById("sensorz").innerHTML = Math.round( z * 10 ) / 10;
-if (z > 20) {squats1()} 
-if (z > 9.8 && z < 10.1){squats2()} 
-if (z < 0) {squats3()}
+  // ich glaub es ist besser mit schwer oben / Azsgabeungekehrt
+if (z > 15) {schwer1()} 
+if (z > 9.8 && z < 10.1){normal2()} 
+if (z < 5) {leicht3()}
                                      } 
 
-
-
 var firstExecution = 0; // Store the first execution time
-var interval = 200; // 2 seconds
+var interval = 300; // 2 millisekunden
+var t = document.getElementById("intervalw") 
+t.addEventListener("change", function() {
+    if(t.value == "1"){interval = 100;}
+    if (t.value == "2"){interval = 300;}
+    if (t.value == "3"){interval = 800;}
+    if (t.value == "4"){interval = 1000;}
+    })
 
-function squats1() {
+
+
+function schwer1() {
     // current date
     var date = new Date();
     var milliseconds = date.getTime(); 
@@ -39,11 +47,11 @@ function squats1() {
       Zahlsquats1 = Zahlsquats1+ 1;
       document.getElementById("A1").innerHTML = Zahlsquats1;
     } else {
-      console.log('s1zufrüh');
+      console.log("zufrüh" + interval);
     }
 }
 
-function squats2() {
+function normal2() {
   // current date
   var date = new Date();
   var milliseconds = date.getTime(); 
@@ -53,11 +61,11 @@ function squats2() {
     Zahlsquats2 = Zahlsquats2+ 1;
     document.getElementById("A2").innerHTML = Zahlsquats2;
   } else {
-    console.log('s2zufrüh');
+    console.log("zufrüh" +interval);
   }
 }
 
-function squats3() {
+function leicht3() {
   // current date
   var date = new Date();
   var milliseconds = date.getTime(); 
@@ -67,7 +75,7 @@ function squats3() {
     Zahlsquats3 = Zahlsquats3+ 1;
     document.getElementById("A3").innerHTML = Zahlsquats3;
   } else {
-    console.log('s3zufrüh');
+    console.log("zufrüh" +interval);
   }
 }
 
