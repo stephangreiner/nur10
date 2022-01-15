@@ -24,19 +24,53 @@ if (z > 9.8 && z < 10.1){squats2()}
 if (z < 0) {squats3()}
                                      } 
 
+
+
+var firstExecution = 0; // Store the first execution time
+var interval = 200; // 2 seconds
+
 function squats1() {
-Zahlsquats1 = Zahlsquats1+ 1;
-document.getElementById("A1").innerHTML = Zahlsquats1;} 
+    // current date
+    var date = new Date();
+    var milliseconds = date.getTime(); 
+    if((milliseconds - firstExecution) > interval){
+      firstExecution = milliseconds;
+      console.log('squats1');
+      Zahlsquats1 = Zahlsquats1+ 1;
+      document.getElementById("A1").innerHTML = Zahlsquats1;
+    } else {
+      console.log('s1zufrüh');
+    }
+}
 
 function squats2() {
-Zahlsquats2 = Zahlsquats2+ 1;
-document.getElementById("A2").innerHTML = Zahlsquats2;} 
-     
+  // current date
+  var date = new Date();
+  var milliseconds = date.getTime(); 
+  if((milliseconds - firstExecution) > interval){
+    firstExecution = milliseconds;
+    console.log('squats2');
+    Zahlsquats2 = Zahlsquats2+ 1;
+    document.getElementById("A2").innerHTML = Zahlsquats2;
+  } else {
+    console.log('s2zufrüh');
+  }
+}
+
 function squats3() {
-Zahlsquats3 = Zahlsquats3+ 1;
-document.getElementById("A3").innerHTML = Zahlsquats3;}; 
-    
-  
+  // current date
+  var date = new Date();
+  var milliseconds = date.getTime(); 
+  if((milliseconds - firstExecution) > interval){
+    firstExecution = milliseconds;
+    console.log('squats3');
+    Zahlsquats3 = Zahlsquats3+ 1;
+    document.getElementById("A3").innerHTML = Zahlsquats3;
+  } else {
+    console.log('s3zufrüh');
+  }
+}
+
 // canvas uns Linien
 
 var canvas = document.getElementById('canvas');
@@ -168,4 +202,5 @@ function neu(){
   
 
 }
+
 
