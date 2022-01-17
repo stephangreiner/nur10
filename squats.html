@@ -11,12 +11,6 @@
 <canvas id="canvas" width="640" height="480"></canvas>
 <div id= "bdiv">
 <button id="startb" onclick="start()">start</button>
-<select id="intervalw">
-        <option value="1">100</option>
-        <option value="2">300</option>
-        <option value="3">800</option>
-        <option value="4">1000</option>
-      </select>
 </div>
 
 <div id="sekAn"></div> 
@@ -31,9 +25,29 @@ Squats Schwerkraft über 15g :
 <a id="A1">0</a><br>
 </div>
 <button id="neub" onclick="neu()">neu</button>
+<br>
+<select id="achsenw">
+        <option value="1">normalansicht</option>
+        <option value="2">Details anzeigen </option>
+      </select>
 
- 
+<select id="intervalw">
+        <option value="1">100 ms</option>
+        <option value="2">300 ms</option>
+        <option value="3">800 ms</option>
+        <option value="4">1000 ms</option>
+</select>
+
+<select id="tonw">
+        <option value="1">kein ton</option>
+        <option value="2">ton</option>     
+</select> 
+<button onclick="normal2()">tontest</button>
+
+
+
 <br><br>
+
 <div id="ZAnzeige">
 Z-Achse (hier dargestellt):       
  <div id= "sensorz" > z2 </div> <br>
@@ -41,10 +55,6 @@ X Achse (links rechts schieben):
 <div id= "sensorx">x2 </div><br>
 Y Achse (oben unten schieben):
 <div id= "sensory" >y2 </div>
-
-
-
-
 </div>
 
 <script type="text/JavaScript" src="script.js"></script>

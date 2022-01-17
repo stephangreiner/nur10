@@ -1,3 +1,4 @@
+var ton = 1;
 var Zahlsquats1 = 0;
 var Zahlsquats2 = 0;
 var Zahlsquats3 = 0;
@@ -7,6 +8,23 @@ document.getElementById("neub").style.display="none"
 document.getElementById("KniebA").style.display="none"
 document.getElementById("ZAnzeige").style.display="none"
 
+var t = document.getElementById("intervalw") 
+t.addEventListener("change", function() {
+    if(t.value == "1"){interval = 100;}
+    if (t.value == "2"){interval = 300;}
+    if (t.value == "3"){interval = 800;}
+    if (t.value == "4"){interval = 1000;}
+    })
+var kt = document.getElementById("tonw") 
+  kt.addEventListener("change", function() {
+    if(kt.value == "1"){ton = 1;}
+    if (kt.value == "2"){ton = 2;}
+      })  
+var ach = document.getElementById("achsenw") 
+      ach.addEventListener("change", function() {
+        if(ach.value == "1"){document.getElementById("ZAnzeige").style.display="none"}
+        if (ach.value == "2"){document.getElementById("ZAnzeige").style.display=""}
+          })  
 
 
 // startet die handleMotionEvent die ist speziell für den Sensor handling ungewöhnlich
@@ -27,23 +45,15 @@ if (z < 5) {leicht3()}
 
 var firstExecution = 0; // Store the first execution time
 var interval = 300; // 2 millisekunden
-var t = document.getElementById("intervalw") 
-t.addEventListener("change", function() {
-    if(t.value == "1"){interval = 100;}
-    if (t.value == "2"){interval = 300;}
-    if (t.value == "3"){interval = 800;}
-    if (t.value == "4"){interval = 1000;}
-    })
-
+  
 
 
 function schwer1() {
-    // current date
     var date = new Date();
     var milliseconds = date.getTime(); 
-    if((milliseconds - firstExecution) > interval){
+    if((milliseconds - firstExecution) > interval)
+    {
       firstExecution = milliseconds;
-      console.log('squats1');
       Zahlsquats1 = Zahlsquats1+ 1;
       document.getElementById("A1").innerHTML = Zahlsquats1;
     } else {
@@ -52,32 +62,51 @@ function schwer1() {
 }
 
 function normal2() {
-  // current date
   var date = new Date();
   var milliseconds = date.getTime(); 
-  if((milliseconds - firstExecution) > interval){
+  if((milliseconds - firstExecution) > interval)
+  {
     firstExecution = milliseconds;
-    console.log('squats2');
     Zahlsquats2 = Zahlsquats2+ 1;
     document.getElementById("A2").innerHTML = Zahlsquats2;
+    if (ton == 1){console.log("ton1")}
+    if (ton == 2){tono(), console.log("ton2")};
   } else {
     console.log("zufrüh" +interval);
   }
 }
 
+
 function leicht3() {
-  // current date
   var date = new Date();
   var milliseconds = date.getTime(); 
-  if((milliseconds - firstExecution) > interval){
+  if((milliseconds - firstExecution) > interval)
+  {
     firstExecution = milliseconds;
-    console.log('squats3');
     Zahlsquats3 = Zahlsquats3+ 1;
     document.getElementById("A3").innerHTML = Zahlsquats3;
   } else {
     console.log("zufrüh" +interval);
   }
 }
+
+
+ function tono(){
+  var context = new AudioContext()
+  var o = context.createOscillator()
+  var  g = context.createGain()
+  o.connect(g)
+  g.connect(context.destination)
+  g.gain.exponentialRampToValueAtTime( 0.00001, context.currentTime + 1)
+  o.frequency.value = 100
+  o.start(0)
+  // stop beendet nur offizielweil > als context.currenTime +1
+  o.stop(3)
+}
+
+
+
+
 
 // canvas uns Linien
 
@@ -93,15 +122,19 @@ linien.z = getInitArr(Probenanzahl);
 // DiviceMotionEvent ist spezialfunktion für den Sensor
 function start() {
 document.getElementById("startb").style.display ="none"
+document.getElementById("achsenw").style.display ="none"
+document.getElementById("intervalw").style.display ="none"
 document.getElementById("canvas").style.display=""
 document.getElementById("neub").style.display=""
 document.getElementById("KniebA").style.display=""
-document.getElementById("ZAnzeige").style.display=""
+
 uhrlos()
 addEventListener("devicemotion", handleMotionEvent);
 addEventListener("devicemotion", doSample);
 tick();  
 }
+
+
 
 
 function doSample(event) {
@@ -206,8 +239,6 @@ function neu(){
   removeEventListener("devicemotion", handleMotionEvent)
   removeEventListener("devicemotion", doSample)
   clearInterval(i)
-
-  
 
 }
 
