@@ -1,4 +1,5 @@
 var ton = 1;
+var pull = 1;
 var Zahlsquats1 = 0;
 var Zahlsquats2 = 0;
 var Zahlsquats3 = 0;
@@ -16,14 +17,20 @@ t.addEventListener("change", function() {
     if (t.value == "4"){interval = 1000;}
     })
 var kt = document.getElementById("tonw") 
-  kt.addEventListener("change", function() {
+kt.addEventListener("change", function() {
     if(kt.value == "1"){ton = 1;}
     if (kt.value == "2"){ton = 2;}
       })  
 var ach = document.getElementById("achsenw") 
-      ach.addEventListener("change", function() {
-        if(ach.value == "1"){document.getElementById("ZAnzeige").style.display="none"}
-        if (ach.value == "2"){document.getElementById("ZAnzeige").style.display=""}
+ach.addEventListener("change", function() {
+    if(ach.value == "1"){document.getElementById("ZAnzeige").style.display="none"}
+    if (ach.value == "2"){document.getElementById("ZAnzeige").style.display=""}
+          })  
+
+var p = document.getElementById("pull") 
+p.addEventListener("change", function() {
+    if(p.value == "1"){pull = 1}
+    if (p.value == "2"){pull = 2}
           })  
 
 
@@ -38,16 +45,32 @@ function handleMotionEvent(event) {
   document.getElementById("sensory").innerHTML = Math.round( y * 10 ) / 10;
   document.getElementById("sensorz").innerHTML = Math.round( z * 10 ) / 10;
   // ich glaub es ist besser mit schwer oben / Azsgabeungekehrt
+
+if (pull = 1){zvar()}
+if (pull = 2){yvar()}
+  
+
+function zvar(){
+  console.log("squatmodus")
 if (z > 15) {schwer1()} 
 if (z > 9.8 && z < 10.1){normal2()} 
 if (z < 5) {leicht3()}
-                                     } 
+}       
+function yvar(){
+   console.log("pullmodus")
+  if (y > 15) {schwer1()} 
+  if (y > 9.8 && y < 10.1){normal2()} 
+  if (y < 5) {leicht3()}
+  }   
+
+} 
+
+
+
+
 
 var firstExecution = 0; // Store the first execution time
 var interval = 300; // 2 millisekunden
-  
-
-
 function schwer1() {
     var date = new Date();
     var milliseconds = date.getTime(); 
@@ -108,7 +131,7 @@ function leicht3() {
 
 
 
-// canvas uns Linien
+// canvas gezchnet werden Linien
 
 var canvas = document.getElementById('canvas');
 var W = canvas.width;
@@ -118,12 +141,14 @@ var linien = {};
 var scaleX = W/Probenanzahl;
 var scaleY = 5;
 linien.z = getInitArr(Probenanzahl);
+//es müssten 2 linien 
+
+
+
 
 // DiviceMotionEvent ist spezialfunktion für den Sensor
 function start() {
-document.getElementById("startb").style.display ="none"
-document.getElementById("achsenw").style.display ="none"
-document.getElementById("intervalw").style.display ="none"
+document.getElementById("wdiv").style.display ="none"
 document.getElementById("canvas").style.display=""
 document.getElementById("neub").style.display=""
 document.getElementById("KniebA").style.display=""
@@ -135,10 +160,11 @@ tick();
 }
 
 
-
+// wird y dann auch gezeichnet ?
 
 function doSample(event) {
   shift(linien.z, event.accelerationIncludingGravity.z);
+
 }
 
 function tick() {
@@ -147,7 +173,7 @@ function tick() {
   ctx.fillRect(0, 0, W, H);
   
   zehnGlinie(),zehnleichtlinie();zehnschwerlinie()
-  drawGraph(linien.z, scaleX, scaleY);
+drawGraph(linien.z, scaleX, scaleY);
 }
 
 //die Zahlen sind entsprechend der oben angegeben Scale = 5 alle x *5
@@ -234,7 +260,7 @@ function neu(){
   document.getElementById("A1").innerHTML = Zahlsquats1;
   document.getElementById("A2").innerHTML = Zahlsquats2;
   document.getElementById("A3").innerHTML = Zahlsquats3;
-  document.getElementById("startb").style.display =""
+  document.getElementById("wdiv").style.display =""
   document.getElementById("neub").style.display="none"
   removeEventListener("devicemotion", handleMotionEvent)
   removeEventListener("devicemotion", doSample)

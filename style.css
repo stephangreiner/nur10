@@ -1,13 +1,15 @@
 #startb{
-  padding: 10px;
- background-color: black;
+  padding: 50px;
+  margin: 10px;
+ background-color: rgb(216, 53, 53);
  color:white;
 
 } 
-#bdiv{
- 
+#bdiv,#wdiv,#tond{
+  
   text-align: center;
 } 
+
   
   #canvas {
     width: 100%;

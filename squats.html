@@ -9,10 +9,6 @@
 <body>
 
 <canvas id="canvas" width="640" height="480"></canvas>
-<div id= "bdiv">
-<button id="startb" onclick="start()">start</button>
-</div>
-
 <div id="sekAn"></div> 
 <div id="minAn"></div>
 
@@ -24,8 +20,15 @@ Squats Schwerkraft um  10g :
 Squats Schwerkraft über 15g :
 <a id="A1">0</a><br>
 </div>
+
 <button id="neub" onclick="neu()">neu</button>
 <br>
+
+<div id="wdiv">
+<div id= "bdiv">
+<button id="startb" onclick="start()">start</button>    
+</div>
+
 <select id="achsenw">
         <option value="1">normalansicht</option>
         <option value="2">Details anzeigen </option>
@@ -38,12 +41,20 @@ Squats Schwerkraft über 15g :
         <option value="4">1000 ms</option>
 </select>
 
+<select id="pull">
+        <option value="1">squat</option>
+        <option value="2">pull</option>     
+</select> 
+</div>
+
+<div id ="tond">
 <select id="tonw">
         <option value="1">kein ton</option>
         <option value="2">ton</option>     
 </select> 
-<button onclick="normal2()">tontest</button>
 
+<button onclick="normal2()">tontest</button>
+</div>
 
 
 <br><br>
