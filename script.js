@@ -1,5 +1,5 @@
 var ton = 1;
-var pull = 1;
+var modus = 1;
 var Zahlsquats1 = 0;
 var Zahlsquats2 = 0;
 var Zahlsquats3 = 0;
@@ -9,33 +9,41 @@ document.getElementById("neub").style.display="none"
 document.getElementById("KniebA").style.display="none"
 document.getElementById("ZAnzeige").style.display="none"
 
-var t = document.getElementById("intervalw") 
-t.addEventListener("change", function() {
-    if(t.value == "1"){interval = 100;}
-    if (t.value == "2"){interval = 300;}
-    if (t.value == "3"){interval = 800;}
-    if (t.value == "4"){interval = 1000;}
+var re = document.getElementById("refrakt") 
+re.addEventListener("change", function() {
+    if(re.value == "1"){interval = 100;}
+    if (re.value == "2"){interval = 300;}
+    if (re.value == "3"){interval = 800;}
+    if (re.value == "4"){interval = 1000;}
     })
+
+var pa = document.getElementById("probenanzahl") 
+pa.addEventListener("change", function() {
+        if(pa.value == "1"){interval = 500;}
+        if (pa.value == "2"){interval = 100;}
+        if (pa.value == "3"){interval = 1000;}
+        })
+
+
 var kt = document.getElementById("tonw") 
 kt.addEventListener("change", function() {
     if(kt.value == "1"){ton = 1;}
     if (kt.value == "2"){ton = 2;}
-      })  
-var ach = document.getElementById("achsenw") 
+      }) 
+      
+var ach = document.getElementById("detailw") 
 ach.addEventListener("change", function() {
     if(ach.value == "1"){document.getElementById("ZAnzeige").style.display="none"}
     if (ach.value == "2"){document.getElementById("ZAnzeige").style.display=""}
           })  
 
-var p = document.getElementById("pull") 
-p.addEventListener("change", function() {
-    if(p.value == "1"){pull = 1}
-    if (p.value == "2"){pull = 2}
+var mo = document.getElementById("modus") 
+mo.addEventListener("change", function() {
+    if(mo.value == "1"){modus = 1}
+    if (mo.value == "2"){modus = 2}
           })  
 
-
 // startet die handleMotionEvent die ist speziell für den Sensor handling ungewöhnlich
-
 function handleMotionEvent(event) {
     var x = event.accelerationIncludingGravity.x;
     var y = event.accelerationIncludingGravity.y;
@@ -45,29 +53,24 @@ function handleMotionEvent(event) {
   document.getElementById("sensory").innerHTML = Math.round( y * 10 ) / 10;
   document.getElementById("sensorz").innerHTML = Math.round( z * 10 ) / 10;
   // ich glaub es ist besser mit schwer oben / Azsgabeungekehrt
-
-if (pull == 1){zvar()}
-if (pull == 2){yvar()}
+if (modus == 1){zvar()}
+if (modus == 2){yvar()}
   
-
 function zvar(){
   console.log("squatmodus")
 if (z > 15) {schwer1()} 
 if (z > 9.8 && z < 10.1){normal2()} 
 if (z < 5) {leicht3()}
-}       
+   }  
+
 function yvar(){
-   console.log("pullmodus")
+   console.log("modusmodus")
   if (y > 15) {schwer1()} 
   if (y > 9.8 && y < 10.1){normal2()} 
   if (y < 5) {leicht3()}
   }   
 
 } 
-
-
-
-
 
 var firstExecution = 0; // Store the first execution time
 var interval = 300; // 2 millisekunden
@@ -127,12 +130,7 @@ function leicht3() {
   o.stop(3)
 }
 
-
-
-
-
 // canvas gezchnet werden Linien
-
 var canvas = document.getElementById('canvas');
 var W = canvas.width;
 var H = canvas.height;
@@ -142,12 +140,6 @@ var scaleX = W/Probenanzahl;
 var scaleY = 5;
 linien.z = getInitArr(Probenanzahl);
 linien.y = getInitArr(Probenanzahl);
-
-
-//es müssten 2 linien 
-
-
-
 
 // DiviceMotionEvent ist spezialfunktion für den Sensor
 function start() {
@@ -166,9 +158,9 @@ tick();
 // wird y dann auch gezeichnet ?
 
 function doSample(event) {
-if (pull==1){
+if (modus==1){
   shift(linien.z, event.accelerationIncludingGravity.z);}
-if (pull==2){
+if (modus==2){
     shift(linien.y, event.accelerationIncludingGravity.y);}
 }
 
@@ -178,8 +170,8 @@ function tick() {
   ctx.fillRect(0, 0, W, H);
   
   zehnGlinie(),zehnleichtlinie();zehnschwerlinie()
-  if (pull==1){drawGraph(linien.z, scaleX, scaleY);  }
-    if (pull ==2) {drawGraph(linien.y, scaleX, scaleY);}
+  if (modus==1){drawGraph(linien.z, scaleX, scaleY);  }
+  if (modus ==2) {drawGraph(linien.y, scaleX, scaleY);}
 
 
 }

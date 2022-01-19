@@ -1,29 +1,35 @@
+
 #startb{
   padding: 50px;
   margin: 10px;
  background-color: rgb(216, 53, 53);
  color:white;
+ text-align: center;
+ border-radius: 50%;
 
 } 
-#bdiv,#wdiv,#tond{
+#bdiv,#wdiv{
+text-align: center;
+justify-content: center;
+margin:auto;
   
+} 
+
+#modus,#refrakt,#probenanzahl,#detailw,#tonw{
+width: 20%;
+text-align: center;
+justify-content: center;
+margin:auto;
+}
+
+#Anzeige{
   text-align: center;
-} 
+  justify-content: center;
+  margin:auto;
+}
 
-  
-  #canvas {
-    width: 100%;
-  }
-
-  #sensorz{ 
+#sensorz,#sensorx,#sensory{ 
     display: inline-block;
   } 
-  #sensorx{
-    display: inline-block;
-  } 
-  #sensory{
-    display:inline-block;
-  }
+ 
 
-
-  
