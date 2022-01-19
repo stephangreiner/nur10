@@ -46,8 +46,8 @@ function handleMotionEvent(event) {
   document.getElementById("sensorz").innerHTML = Math.round( z * 10 ) / 10;
   // ich glaub es ist besser mit schwer oben / Azsgabeungekehrt
 
-if (pull = 1){zvar()}
-if (pull = 2){yvar()}
+if (pull == 1){zvar()}
+if (pull == 2){yvar()}
   
 
 function zvar(){
@@ -141,6 +141,9 @@ var linien = {};
 var scaleX = W/Probenanzahl;
 var scaleY = 5;
 linien.z = getInitArr(Probenanzahl);
+linien.y = getInitArr(Probenanzahl);
+
+
 //es müssten 2 linien 
 
 
@@ -163,8 +166,10 @@ tick();
 // wird y dann auch gezeichnet ?
 
 function doSample(event) {
-  shift(linien.z, event.accelerationIncludingGravity.z);
-
+if (pull==1){
+  shift(linien.z, event.accelerationIncludingGravity.z);}
+if (pull==2){
+    shift(linien.y, event.accelerationIncludingGravity.y);}
 }
 
 function tick() {
@@ -173,11 +178,14 @@ function tick() {
   ctx.fillRect(0, 0, W, H);
   
   zehnGlinie(),zehnleichtlinie();zehnschwerlinie()
-drawGraph(linien.z, scaleX, scaleY);
+  if (pull==1){drawGraph(linien.z, scaleX, scaleY);  }
+    if (pull ==2) {drawGraph(linien.y, scaleX, scaleY);}
+
+
 }
 
 //die Zahlen sind entsprechend der oben angegeben Scale = 5 alle x *5
-function zehnGlinie(grid) {
+function zehnGlinie() {
   ctx.lineWidth = 1;
   ctx.strokeStyle = 'white';
   ctx.beginPath();
@@ -185,7 +193,7 @@ function zehnGlinie(grid) {
   ctx.lineTo(W, (H/2)+50);
   ctx.stroke();
 }
-function zehnleichtlinie(grid) {
+function zehnleichtlinie() {
   ctx.strokeStyle = 'brown';
   ctx.beginPath();
   ctx.moveTo(0, (H/2)+100);
@@ -193,7 +201,7 @@ function zehnleichtlinie(grid) {
   ctx.stroke();
 }
 
-function zehnschwerlinie(grid) {
+function zehnschwerlinie() {
   ctx.strokeStyle = 'blue';
   ctx.beginPath();
    ctx.moveTo(0, (H/2)-0);
