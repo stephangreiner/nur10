@@ -172,7 +172,7 @@ if (modus==1){
     shift(linien.z, event.accelerationIncludingGravity.z);}
 if (modus==2){
     shift(linien.y, event.accelerationIncludingGravity.y);}
-if (modus==2){
+if (modus==3){
     shift(linien.x, event.accelerationIncludingGravity.x);}
 }
 
