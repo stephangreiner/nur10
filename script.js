@@ -9,6 +9,13 @@ document.getElementById("neub").style.display="none"
 document.getElementById("KniebA").style.display="none"
 document.getElementById("ZAnzeige").style.display="none"
 
+var mo = document.getElementById("modus") 
+mo.addEventListener("change", function() {
+    if(mo.value == "1"){modus = 1}
+    if (mo.value == "2"){modus = 2}
+    if (mo.value == "3"){modus = 3}
+          })  
+
 var re = document.getElementById("refrakt") 
 re.addEventListener("change", function() {
     if(re.value == "1"){interval = 100;}
@@ -37,24 +44,19 @@ ach.addEventListener("change", function() {
     if (ach.value == "2"){document.getElementById("ZAnzeige").style.display=""}
           })  
 
-var mo = document.getElementById("modus") 
-mo.addEventListener("change", function() {
-    if(mo.value == "1"){modus = 1}
-    if (mo.value == "2"){modus = 2}
-          })  
+
 
 // startet die handleMotionEvent die ist speziell für den Sensor handling ungewöhnlich
 function handleMotionEvent(event) {
     var x = event.accelerationIncludingGravity.x;
     var y = event.accelerationIncludingGravity.y;
     var z = event.accelerationIncludingGravity.z;
-  //für die Darstellung werden die Variablen auf eine Dezimalstelle gerundet
-  document.getElementById("sensorx").innerHTML = Math.round( x * 10 ) / 10;   
-  document.getElementById("sensory").innerHTML = Math.round( y * 10 ) / 10;
-  document.getElementById("sensorz").innerHTML = Math.round( z * 10 ) / 10;
+
+  //für die Darstellung in dr Detailansicht werden die Variablen auf eine Dezimalstelle gerundet
   // ich glaub es ist besser mit schwer oben / Azsgabeungekehrt
-if (modus == 1){zvar()}
-if (modus == 2){yvar()}
+if (modus == 1){zvar(),document.getElementById("sensora").innerHTML = Math.round( z * 10 ) / 10;}
+if (modus == 2){yvar(),document.getElementById("sensora").innerHTML = Math.round( y * 10 ) / 10;}
+if (modus == 3){xvar(),document.getElementById("sensora").innerHTML = Math.round( x * 10 ) / 10; }
   
 function zvar(){
   console.log("squatmodus")
@@ -64,12 +66,19 @@ if (z < 5) {leicht3()}
    }  
 
 function yvar(){
-   console.log("modusmodus")
+   console.log("pullmodus")
   if (y > 15) {schwer1()} 
   if (y > 9.8 && y < 10.1){normal2()} 
   if (y < 5) {leicht3()}
   }   
 
+  function xvar(){
+    console.log("VRmodus")
+   if (x > 15) {schwer1()} 
+   if (x > 9.8 && x < 10.1){normal2()} 
+   if (x < 5) {leicht3()}
+   }   
+ 
 } 
 
 var firstExecution = 0; // Store the first execution time
@@ -140,6 +149,7 @@ var scaleX = W/Probenanzahl;
 var scaleY = 5;
 linien.z = getInitArr(Probenanzahl);
 linien.y = getInitArr(Probenanzahl);
+linien.x = getInitArr(Probenanzahl);
 
 // DiviceMotionEvent ist spezialfunktion für den Sensor
 function start() {
@@ -159,10 +169,15 @@ tick();
 
 function doSample(event) {
 if (modus==1){
-  shift(linien.z, event.accelerationIncludingGravity.z);}
+    shift(linien.z, event.accelerationIncludingGravity.z);}
 if (modus==2){
     shift(linien.y, event.accelerationIncludingGravity.y);}
+if (modus==2){
+    shift(linien.x, event.accelerationIncludingGravity.x);}
 }
+
+
+
 
 function tick() {
   requestAnimationFrame(tick);
@@ -172,7 +187,7 @@ function tick() {
   zehnGlinie(),zehnleichtlinie();zehnschwerlinie()
   if (modus==1){drawGraph(linien.z, scaleX, scaleY);  }
   if (modus ==2) {drawGraph(linien.y, scaleX, scaleY);}
-
+  if (modus ==3) {drawGraph(linien.x, scaleX, scaleY);}
 
 }
 

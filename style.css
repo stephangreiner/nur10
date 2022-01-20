@@ -1,3 +1,4 @@
+body{background-color: black;}
 
 #startb{
   padding: 50px;
@@ -12,24 +13,33 @@
 text-align: center;
 justify-content: center;
 margin:auto;
-  
+color: white;
 } 
 
-#modus,#refrakt,#probenanzahl,#detailw,#tonw{
+#modus{
+  position: relative;
+  width: 20%;
+  text-align: center;
+  justify-content: center;
+  background-color: red;
+  margin-bottom: 10px;
+  color: white;
+  margin:auto;
+  }
+  
+
+#refrakt,#probenanzahl,#detailw,#tonw{
 width: 20%;
 text-align: center;
 justify-content: center;
 margin:auto;
 }
 
-#Anzeige{
+#Anzeige,#ZAnzeige{
+  color:white;
   text-align: center;
   justify-content: center;
-  margin:auto;
 }
 
-#sensorz,#sensorx,#sensory{ 
-    display: inline-block;
-  } 
- 
+
 

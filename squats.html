@@ -17,8 +17,10 @@
 
 Modus:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;          
 <select id="modus"> 
-        <option value="1">squat</option>
-        <option value="2">pull</option>     
+        <option value="1">squat flach</option>
+        <option value="2">pull up</option>  
+        <option value="3">squat quer</option> 
+
 </select> 
 
 <br>
@@ -51,7 +53,6 @@ Ton:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs
 </select> 
 
 </div>
-</div>
 
 <div id= "Anzeige">
         <canvas id="canvas" width="640" height="480"></canvas>
@@ -67,16 +68,8 @@ Ton:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs
         <button id="neub" onclick="neu()">neu</button>
 </div>
 
-
-<br><br>
-
-<div id="ZAnzeige">
-Z-Achse (hier dargestellt):       
- <div id= "sensorz" > z2 </div> <br>
-X Achse (links rechts schieben):
-<div id= "sensorx">x2 </div><br>
-Y Achse (oben unten schieben):
-<div id= "sensory" >y2 </div>
+<div id="ZAnzeige">  
+G- Wert jetzt: <a id= "sensora" >zyz</a>
 </div>
 
 <script type="text/JavaScript" src="script.js"></script>
