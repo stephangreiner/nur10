@@ -12,7 +12,7 @@ document.getElementById("ZAnzeige").style.display="none"
 standartbild()
 function standartbild(){
 var  img1 = document.createElement("img");
-      img1.src = "flach.png";
+      img1.src = "media/flach.png";
       img1.id ="img1"
       img1.style.width = "100px";
       img1.style.hight = "100px";
@@ -35,7 +35,7 @@ if (mo.value == "2"){modus = 2;
       if (document.getElementById('img2') != null) { console.log("gibts schon");
       } else {
       var  img2 = document.createElement("img");
-      img2.src = "hoch.png";
+      img2.src = "media/hoch.png";
       img2.id ="img2"
       img2.style.width = "100px";
       img2.style.hight = "100px";
@@ -49,7 +49,7 @@ if (mo.value == "3"){modus = 3;
     } else{
       var  img3 = document.createElement("img");
       img3.id ="img3"
-      img3.src = "quer.png";
+      img3.src = "media/quer.png";
       img3.style.width = "100px";
       img3.style.hight = "100px";
       startb.appendChild(img3); 
