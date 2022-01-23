@@ -9,16 +9,61 @@ document.getElementById("neub").style.display="none"
 document.getElementById("KniebA").style.display="none"
 document.getElementById("ZAnzeige").style.display="none"
 
+standartbild()
+function standartbild(){
+var  img1 = document.createElement("img");
+      img1.src = "flach.png";
+      img1.id ="img1"
+      img1.style.width = "100px";
+      img1.style.hight = "100px";
+      startb.appendChild(img1)
+}
+
 var mo = document.getElementById("modus") 
 mo.addEventListener("change", function() {
-    if(mo.value == "1"){modus = 1}
-    if (mo.value == "2"){modus = 2}
-    if (mo.value == "3"){modus = 3}
-          })  
+if(mo.value == "1"){ modus = 1;
+      if (document.getElementById('img2') != null) { document.getElementById('img2').remove();}
+      if (document.getElementById('img3') != null) { document.getElementById('img3').remove();}
+      if (document.getElementById('img1') != null) { console.log("gibts schon");
+      } else {
+        standartbild()
+            }
+                      }
+if (mo.value == "2"){modus = 2;
+      if (document.getElementById('img1') != null) { document.getElementById('img1').remove()}
+      if (document.getElementById('img3') != null) { document.getElementById('img3').remove()}
+      if (document.getElementById('img2') != null) { console.log("gibts schon");
+      } else {
+      var  img2 = document.createElement("img");
+      img2.src = "hoch.png";
+      img2.id ="img2"
+      img2.style.width = "100px";
+      img2.style.hight = "100px";
+      startb.appendChild(img2);
+            }
+                    }
+if (mo.value == "3"){modus = 3;
+    if (document.getElementById('img1') != null) { document.getElementById('img1').remove();}
+    if (document.getElementById('img2') != null) { document.getElementById('img2').remove();}
+    if (document.getElementById('img3') != null) { console.log(" img3  gibts schon");
+    } else{
+      var  img3 = document.createElement("img");
+      img3.id ="img3"
+      img3.src = "quer.png";
+      img3.style.width = "100px";
+      img3.style.hight = "100px";
+      startb.appendChild(img3); 
+         } 
+                 }
+                                        })  
+
+
+
+
 
 var re = document.getElementById("refrakt") 
 re.addEventListener("change", function() {
-    if(re.value == "1"){interval = 100;}
+    if (re.value == "1"){interval = 100;}
     if (re.value == "2"){interval = 300;}
     if (re.value == "3"){interval = 800;}
     if (re.value == "4"){interval = 1000;}
