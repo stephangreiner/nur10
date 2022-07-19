@@ -5,8 +5,6 @@ var cacheName = 'Kniebv1';
 
 // Default files to always cache
 var cacheFiles = [
-	"./index.html",
-    "./style.css",
 
 ]
 
