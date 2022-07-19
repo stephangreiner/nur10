@@ -1,0 +1,24 @@
+{
+    "name": "Liegestützenzähler",
+    "short_name": "LSStephan",
+    "version":1,
+    "icons": [
+      {
+        "src": "./bilder/push48x48.png",
+        "sizes": "48x48",
+        "type": "image/png"
+  
+      },
+      {
+      "src": "./bilder/LS48x48.png",
+      "sizes": "48x48",
+      "type": "image/png"
+}
+
+    ],
+    "theme_color": "#DEDEDE",
+    "background_color": "#DDDDDD",
+    "start_url": "/pushuptracker/",
+    "display": "standalone",
+    "orientation": "portrait"
+  }
