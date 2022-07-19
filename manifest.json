@@ -1,6 +1,6 @@
 {
-    "name": "Liegestützenzähler",
-    "short_name": "LSStephan",
+    "name": "Kniebeugentracker",
+    "short_name": "Kniebeugen",
     "version":1,
     "icons": [
   
@@ -29,7 +29,7 @@
     ],
     "theme_color": "#DEDEDE",
     "background_color": "#DDDDDD",
-    "start_url": "/pushuptracker/",
+    "start_url": "/Kniebeugentracker/",
     "display": "standalone",
     "orientation": "portrait"
   }
