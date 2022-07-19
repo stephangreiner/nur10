@@ -5,9 +5,7 @@ var cacheName = 'Kniebv1';
 
 // Default files to always cache
 var cacheFiles = [
-  "./index.html"
-  "./maninfest.json"
-  "./script.js"
+ 
 ]
 
     // e.waitUntil Delays the event until the Promise is resolved
