@@ -23,13 +23,12 @@
         
         
         
-        
-        
+  
 
     ],
     "theme_color": "#DEDEDE",
     "background_color": "#DDDDDD",
     "start_url": "/Kniebeugentracker/",
     "display": "standalone",
-    "orientation": "portrait"
+    "orientation": "landscape-primary"
   }
