@@ -30,5 +30,5 @@
     "background_color": "#DDDDDD",
     "start_url": "/Kniebeugentracker/",
     "display": "standalone",
-    "orientation": "landscape-primary"
+    "orientation": "landscape"
   }
