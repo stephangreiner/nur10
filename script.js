@@ -174,6 +174,7 @@ function leicht3() {
   o.stop(3)
 }
 
+
 // canvas gezchnet werden Linien
 var canvas = document.getElementById('canvas');
 var W = canvas.width;
@@ -240,6 +241,8 @@ function zehnschwerlinie() {
   ctx.lineTo(W, (H/2)-0);
   ctx.stroke();
 }
+
+
 function drawGraph(linien, scaleX, scaleY) {  
   ctx.save();
   ctx.translate(0, H/2); 

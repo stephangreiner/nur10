@@ -55,10 +55,10 @@ margin:auto;
   background-color: blue;
 }
 
-#canvas{ width: min-content;
-  height: min-content;
-  background-color: rgb(219, 132, 26);
-  color:white;
-  text-align: center;
-  justify-content: center;
+
+
+#canvas { 
+  height: 100vh; 
+  width: 100vw; 
+  display: block;
 }
