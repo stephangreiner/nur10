@@ -1,4 +1,4 @@
-body{background-color: black;}
+body{background-color: rgba(0, 0, 0, 0.423);}
 
 #startb{
   padding: 50px;
@@ -35,11 +35,32 @@ justify-content: center;
 margin:auto;
 }
 
-#Anzeige,#ZAnzeige{
+
+
+#Anzeige{
+  background-color: bisque;
+  width: 640px;
+  height: 480px;
   color:white;
   text-align: center;
   justify-content: center;
 }
 
+#ZAnzeige
+{
+  width: 640px;
+  height: 480px;
+  color:white;
+  text-align: center;
+  justify-content: center;
+  background-color: blue;
+}
 
-
+#canvas{
+  background-color: rgb(219, 132, 26);
+  width: 640px;
+  height: 480px;
+  color:white;
+  text-align: center;
+  justify-content: center;
+}
