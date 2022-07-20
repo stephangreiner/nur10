@@ -38,28 +38,26 @@ margin:auto;
 
 
 #Anzeige{
+  width: min-content;
+  height: min-content;
   background-color: bisque;
-  width: 640px;
-  height: 480px;
   color:white;
   text-align: center;
   justify-content: center;
 }
 
 #ZAnzeige
-{
-  width: 640px;
-  height: 480px;
+{ width: min-content;
+  height: min-content;
   color:white;
   text-align: center;
   justify-content: center;
   background-color: blue;
 }
 
-#canvas{
+#canvas{ width: min-content;
+  height: min-content;
   background-color: rgb(219, 132, 26);
-  width: 640px;
-  height: 480px;
   color:white;
   text-align: center;
   justify-content: center;
