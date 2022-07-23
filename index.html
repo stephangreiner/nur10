@@ -23,57 +23,55 @@
 </head>
 <body>
 <div id="wdiv">
-<button id="startb" onclick="start()"></button>    
-<br>
-
-Modus:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;          
-<select id="modus"> 
+    <button id="startb" onclick="start()"></button>    
+     <br>
+     Modus:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;          
+     <select id="modus"> 
         <option value="1">squat flach</option>
         <option value="2">pull up</option>  
         <option value="3">squat quer</option> 
-</select> 
+     </select> 
 
-<br>
-Refraktärzeit:
-<select id="refrakt">
+     <br>
+     Refraktärzeit:
+     <select id="refrakt">
         <option value="1">100 ms</option>
         <option value="2">300 ms</option>
         <option value="3">800 ms</option>
         <option value="4">1000 ms</option>
-</select>
-<br>
-Probenanzahl:
-<select id="probenanzahl">
+     </select>
+     <br>
+     Probenanzahl:
+     <select id="probenanzahl">
         <option value="1">500</option>
         <option value="2">100</option>
         <option value="3">1000</option>  
-</select>
-<br>
-Detailansicht:
-<select id="detailw">
+      </select>
+      <br>
+      Detailansicht:
+      <select id="detailw">
         <option value="1">aus</option>
         <option value="2">an </option>
       </select>
-<br>
-Ton:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;           
-         
-<select id="tonw">
+      <br>
+      Ton:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;           
+      <select id="tonw">
         <option value="1">aus</option>
         <option value="2">an</option>  
-</select> 
+       </select> 
 </div>
 
 <div id= "Anzeige">
-        <canvas id="canvas" width="360" height="300"></canvas>
+        <div id = "canvasdiv">
+              <canvas id="canvas" width="360" height="300"></canvas>
+        </div>
         <div id="sekAn"></div> 
         <div id="minAn"></div>
-        <br>
         <div id =KniebA> 
         unter 5g : <a id="A3">0</a><br>
         um  10g :  <a id="A2">0</a><br>
         über 15g : <a id="A1">0</a><br>
         </div>
-        <br>
         <button id="neub" onclick="neu()">neu</button>
 </div>
 
