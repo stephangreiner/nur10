@@ -26,9 +26,9 @@
   
 
     ],
-    "theme_color": "#DEDEDE",
-    "background_color": "#DDDDDD",
+    "theme_color": "#000000",
+    "background_color": "#000000",
     "start_url": "/Kniebeugentracker/",
     "display": "standalone",
-    "orientation": "landscape"
+    "orientation": "portrait-primary"
   }
