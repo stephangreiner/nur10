@@ -147,7 +147,6 @@ function schwer1() {
 }
 
 function normal2() {
-  gong();
   var date = new Date();
   var milliseconds = date.getTime(); 
   if((milliseconds - firstExecution) > interval)
