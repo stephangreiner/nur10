@@ -14,7 +14,6 @@ var nv = {'C0': 16.35,'C#0': 17.32,'Db0': 17.32,'D0': 18.35,'D#0': 19.45,'Eb0': 
 'Ab6': 1661.22,'A6': 1760.00,'A#6': 1864.66,'Bb6': 1864.66,'B6': 1975.53,'C7': 2093.00,'C#7': 2217.46,'Db7': 2217.46,
 'D7': 2349.32, 'D#7': 2489.02,'Eb7': 2489.02,'E7': 2637.02,'F7': 2793.83,'F#7': 2959.96,'Gb7': 2959.96,'G7': 3135.96,
 'G#7': 3322.44,'Ab7': 3322.44,'A7': 3520.00,'A#7': 3729.31,'Bb7': 3729.31,'B7': 3951.07,'C8': 4186.01};
-var ton = 1;
 var modus = 1;
 var Zahlsquats1 = 0;
 var Zahlsquats2 = 0;
@@ -87,12 +86,7 @@ pa.addEventListener("change", function() {
         if (pa.value == "3"){interval = 1000;}
         })
 
-var kt = document.getElementById("tonw") 
-kt.addEventListener("change", function() {
-    if(kt.value == "1"){ton = 1;}
-    if (kt.value == "2"){ton = 2;}
-      }) 
-      
+
 var ach = document.getElementById("detailw") 
 ach.addEventListener("change", function() {
     if(ach.value == "1"){document.getElementById("ZAnzeige").style.display="none"}
@@ -128,7 +122,7 @@ function yvar(){
 
 function xvar(){
   console.log("VRmodus")
-   if (x > 15) {schwer1()} 
+   if (x > 15) {schwer1(),audioc()} 
    if (x > 9.8 && x < 10.1){normal2()} 
    if (x < 5) {leicht3(),audioc()}
    }   
@@ -157,8 +151,6 @@ function normal2() {
     firstExecution = milliseconds;
     Zahlsquats2 = Zahlsquats2+ 1;
     document.getElementById("A2").innerHTML = Zahlsquats2;
-    if (ton == 1){console.log("ton1")}
-    if (ton == 2){tono(), console.log("ton2")};
   } else {
     console.log("zufrüh" +interval);
   }
@@ -177,18 +169,6 @@ function leicht3() {
   }
 }
 
- function tono(){
-  var context = new AudioContext()
-  var o = context.createOscillator()
-  var  g = context.createGain()
-  o.connect(g)
-  g.connect(context.destination)
-  g.gain.exponentialRampToValueAtTime( 0.00001, context.currentTime + 1)
-  o.frequency.value = 100
-  o.start(0)
-  // stop beendet nur offizielweil > als context.currenTime +1
-  o.stop(3)
-}
 
 
 // canvas gezchnet werden Linien
