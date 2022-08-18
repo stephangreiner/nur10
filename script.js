@@ -31,7 +31,8 @@ var  img1 = document.createElement("img");
       img1.id ="img1"
       img1.style.width = "200px";
       img1.style.hight = "200px";
-      startb.appendChild(img1)
+      startb.appendChild(img1);
+      screen.orientation.unlock()
 }
 
 var mo = document.getElementById("modus") 
@@ -102,27 +103,27 @@ function handleMotionEvent(event) {
     var y = event.accelerationIncludingGravity.y;
     var z = event.accelerationIncludingGravity.z;
 
-if (modus == 1){zvar(),document.getElementById("sensora").innerHTML = Math.round( z * 10 ) / 10; screen.orientation.unlock()}
+if (modus == 1){zvar(),document.getElementById("sensora").innerHTML = Math.round( z * 10 ) / 10; screen.orientation.lock("portrait")}
 if (modus == 2){yvar(),document.getElementById("sensora").innerHTML = Math.round( y * 10 ) / 10; screen.orientation.lock("portrait")}
 if (modus == 3){xvar(),document.getElementById("sensora").innerHTML = Math.round( x * 10 ) / 10; screen.orientation.lock("landscape-primary")}
   
 function zvar(){
   console.log("squatmodus")
-if (z > 15) {schwer1()} 
+if (z > 15) {schwer1(),document.getElementById('gongsound').play();} 
 if (z > 9.8 && z < 10.1){normal2()} 
 if (z < 5) {leicht3()}
    }  
 
 function yvar(){
    console.log("pullmodus")
-  if (y > 15) {schwer1()} 
+  if (y > 15) {schwer1(),document.getElementById('gongsound').play()} 
   if (y > 9.8 && y < 10.1){normal2()} 
   if (y < 5) {leicht3()}
   }   
 
 function xvar(){
   console.log("VRmodus")
-   if (x > 15) {schwer1(),audioc()} 
+   if (x > 15) {schwer1(),document.getElementById('gongsound').play();} 
    if (x > 9.8 && x < 10.1){normal2()} 
    if (x < 5) {leicht3(),audioc()}
    }   
