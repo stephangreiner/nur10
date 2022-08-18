@@ -109,25 +109,27 @@ if (modus == 3){xvar(),document.getElementById("sensora").innerHTML = Math.round
   
 function zvar(){
   console.log("squatmodus")
-if (z > 15) {schwer1(),document.getElementById('gongsound').play();} 
+if (z > 15) {schwer1(),gong()} 
 if (z > 9.8 && z < 10.1){normal2()} 
 if (z < 5) {leicht3()}
    }  
 
 function yvar(){
    console.log("pullmodus")
-  if (y > 15) {schwer1(),document.getElementById('gongsound').play()} 
+  if (y > 15) {schwer1(),gong()} 
   if (y > 9.8 && y < 10.1){normal2()} 
   if (y < 5) {leicht3()}
   }   
 
 function xvar(){
   console.log("VRmodus")
-   if (x > 15) {schwer1(),document.getElementById('gongsound').play();} 
+   if (x > 15) {schwer1(),gong()} 
    if (x > 9.8 && x < 10.1){normal2()} 
    if (x < 5) {leicht3(),audioc()}
    }   
 } 
+
+function gong(){document.getElementById('gongsound').play();}
 
 var firstExecution = 0; // Store the first execution time
 var interval = 300; // 2 millisekunden
