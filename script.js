@@ -109,23 +109,23 @@ if (modus == 3){xvar(),document.getElementById("sensora").innerHTML = Math.round
   
 function zvar(){
   console.log("squatmodus")
-if (z > 15) {schwer1(),gong()} 
+if (z > 15) {schwer1()} 
 if (z > 9.8 && z < 10.1){normal2()} 
 if (z < 5) {leicht3()}
    }  
 
 function yvar(){
    console.log("pullmodus")
-  if (y > 15) {schwer1(),gong()} 
+  if (y > 15) {schwer1()} 
   if (y > 9.8 && y < 10.1){normal2()} 
   if (y < 5) {leicht3()}
   }   
 
 function xvar(){
   console.log("VRmodus")
-   if (x > 15) {schwer1(),gong()} 
+   if (x > 15) {schwer1()} 
    if (x > 9.8 && x < 10.1){normal2()} 
-   if (x < 5) {leicht3(),audioc()}
+   if (x < 5) {leicht3()}
    }   
 } 
 
@@ -134,11 +134,12 @@ function gong(){document.getElementById('gongsound').play();}
 var firstExecution = 0; // Store the first execution time
 var interval = 300; // 2 millisekunden
 function schwer1() {
+      
     var date = new Date();
     var milliseconds = date.getTime(); 
     if((milliseconds - firstExecution) > interval)
-    {
-      firstExecution = milliseconds;
+    {firstExecution = milliseconds;
+      gong();
       Zahlsquats1 = Zahlsquats1+ 1;
       document.getElementById("A1").innerHTML = Zahlsquats1;
     } else {
@@ -160,12 +161,12 @@ function normal2() {
 }
 
 function leicht3() {
-  gong()
+ 
   var date = new Date();
   var milliseconds = date.getTime(); 
   if((milliseconds - firstExecution) > interval)
-  {
-    firstExecution = milliseconds;
+  {firstExecution = milliseconds;
+    audioc();
     Zahlsquats3 = Zahlsquats3+ 1;
     document.getElementById("A3").innerHTML = Zahlsquats3;
   } else {
