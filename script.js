@@ -129,7 +129,7 @@ function xvar(){
    }   
 } 
 
-function gong(){document.getElementById('gongsound').play();}
+
 
 var firstExecution = 0; // Store the first execution time
 var interval = 300; // 2 millisekunden
@@ -139,7 +139,8 @@ function schwer1() {
     var milliseconds = date.getTime(); 
     if((milliseconds - firstExecution) > interval)
     {firstExecution = milliseconds;
-      gong();
+      synth();
+    
       Zahlsquats1 = Zahlsquats1+ 1;
       document.getElementById("A1").innerHTML = Zahlsquats1;
     } else {
@@ -174,7 +175,10 @@ function leicht3() {
   }
 }
 
-
+function synth(){
+  let p = Synth.createInstrument('piano');
+   p.play("C",4,1)}
+                 
 
 // canvas gezchnet werden Linien
 var canvas = document.getElementById('canvas');
