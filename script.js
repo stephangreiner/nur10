@@ -134,12 +134,12 @@ function xvar(){
 var firstExecution = 0; // Store the first execution time
 var interval = 300; // 2 millisekunden
 function schwer1() {
-      
+      synth();
     var date = new Date();
     var milliseconds = date.getTime(); 
     if((milliseconds - firstExecution) > interval)
     {firstExecution = milliseconds;
-      synth();
+      
     
       Zahlsquats1 = Zahlsquats1+ 1;
       document.getElementById("A1").innerHTML = Zahlsquats1;
@@ -162,12 +162,12 @@ function normal2() {
 }
 
 function leicht3() {
- 
+ audioc();
   var date = new Date();
   var milliseconds = date.getTime(); 
   if((milliseconds - firstExecution) > interval)
   {firstExecution = milliseconds;
-    audioc();
+    
     Zahlsquats3 = Zahlsquats3+ 1;
     document.getElementById("A3").innerHTML = Zahlsquats3;
   } else {
@@ -316,7 +316,7 @@ var o = context.createOscillator()
 var  g = context.createGain()
 o.connect(g)
 g.connect(context.destination)
-g.gain.exponentialRampToValueAtTime( 0.00001, context.currentTime + 1)
+g.gain.exponentialRampToValueAtTime( 0.0001, context.currentTime + 1)
 i = i + 1
 if (i == 1){var frequency = nv["C4"]}
 else {var frequency = nv["G4"]}
