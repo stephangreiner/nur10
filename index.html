@@ -1,88 +1,125 @@
 <!DOCTYPE html>
+<html lang= "de">
 <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/vnd.microsoft.icon" href="bilder/favicon.ico">
         <link rel="manifest" href="./manifest.json" />
-         <link rel="icon" type="image/vnd.microsoft.icon" href="media/favicon.ico">
-        <link rel="stylesheet" href="style.css">
-        
-        <title>squats</title>
- <script>
-          if (navigator.serviceWorker) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker
-                    .register('/Kniebeugentracker/sw.js')
-                    .then(reg => console.log('Service Worker registriert'))
-                    .catch(swErr => console.log(
-                          `Service Worker Installationsfehler: ${swErr}}`));
-              });
-          }
-          
-              </script>  
-        
+    <link rel="stylesheet" href="style.css">
+    <script>
+  
+if (navigator.serviceWorker) {
+  window.addEventListener('load', () => {
+      navigator.serviceWorker
+          .register('/HIIT-Timer/sw.js')
+          .then(reg => console.log('Service Worker registriert'))
+          .catch(swErr => console.log(
+                `Service Worker Installationsfehler: ${swErr}}`));
+    });
+}
+      </script>
+
+    <title>HIIT</title>
 </head>
 <body>
-<div id="wdiv">
-    <button id="startb" onclick="start()"></button>    
-     <br>
-     Modus:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;          
-     <select id="modus"> 
-        <option value="1">squat flach</option>
-        <option value="2">pull up</option>  
-        <option value="3">squat quer</option> 
-     </select> 
+   <div id='Einstellungsdiv'> 
+    
+    
+    <div id=startdiv>
+       <button id=startknopf onklick=runtabata()>los</button>
+    </div>
+     <div id="moduswahldiv">
+     
+        <label class ="switch">
+         <input type="checkbox" id="fotocheck" onclick="camera()">
+        <span class = "slider"> <img src="./bilder/fotosymbol.png" width="40%" height="100%"alt=" Kamera:"></span>
+        
+        </label> 
 
-     <br>
-     Refraktärzeit:
-     <select id="refrakt">
-        <option value="1">100 ms</option>
-        <option value="2">300 ms</option>
-        <option value="3">800 ms</option>
-        <option value="4">1000 ms</option>
-     </select>
-     <br>
-     Probenanzahl:
-     <select id="probenanzahl">
-        <option value="1">500</option>
-        <option value="2">100</option>
-        <option value="3">1000</option>  
+      <select title ="audiowahl" id="Medienwahl">
+            <option value="10">🔇​</option>
+            <option value="1">🔈Gong</option>
+            <option value="2">🔈Marnie</option>
+            <option value="3">🔈Musik</option>
       </select>
-      <br>
-      Detailansicht:
-      <select id="detailw">
-        <option value="1">aus</option>
-        <option value="2">an </option>
-      </select>
-      <br>
+    </div>
+    <div id = "zeitwahldiv">
+    <div class='Zeilediv'>
+       <span class='text'>Dauer:</span> 
+       <input id='eindauer' type="range"> 
+       <span id='dauer'></span>
+    </div>  
+    <div class='Zeilediv'>
+       <span class='text'> Pause: </span> 
+       <input id='einruhe' type="range"> 
+       <span id='ruhe'></span>
+    </div>
+    <div class='Zeilediv'>
+       <span class='text'> Runden: </span> 
+       <input id='einrunden' type="range"> 
+       <span id='runden'></span>
+    </div>
+  </div>
+
+
+</div> 
+  
+<div id = "zeigendiv">
+    <div id='Textanzeige'><h1></h1></div>
+    <div id="Balkendiv">
+      <div id="Gesamtbalken"></div> 
+      <div id="Balkenzeit"></div>
+    </div>
+    <div id ="Zeitanzeige"> </div>
+    <div id ="Rundenanzeige"> </div>
+   
+  <!-- Fotohtml -->
+ 
+  <div id="Gesamtfotodiv">
+    <button id="herunterladenknopf" onclick=bildherunterladen() download="hiit.png" >Herunterladen</button>   
+    <!-- width and hight kann man hier hinzufügen,aber sobald video ankommt wird es in der Anzeige der contraints angzeigt -->
+         <video id="streamansicht" autoplay></video>   	 
+         <canvas id="bildcanvas"></canvas>        
+</div>
+ <button id="zurueckknopf" >zurück</button>
 </div>
 
-<div id= "Anzeige">
-        <div id = "canvasdiv">
-              <canvas id="canvas" width="360" height="300"></canvas>
-        </div>
-        <div id="sekAn"></div> 
-        <div id="minAn"></div>
-        <div id =KniebA> 
-        unter 5g : <a id="A3">0</a><br>
-        um  10g :  <a id="A2">0</a><br>
-        über 15g : <a id="A1">0</a><br>
- <button id="neub" onclick="neu()">neu</button>
-        <button id="" onclick="schwer1(),synth()">plusschwer</button>
-        <button id="" onclick="normal2()">normal</button>
-        <button id="" onclick="leicht3(),audioc()">leich3</button>
+<div>
+  <!--IDen und vorladen audio 1 die unterschiedlichen preload Einstellungen sind ein test -->
+  <audio id="gongsound" src="audio/gongsound.mp3" type="audio/mpeg"  preload="auto" ></audio>
+  <!--IDen und vorladen audio 2 -->
+  <audio id="gosound1" src="audio/go1.mp3" type="audio/mpeg" preload="auto"></audio>
+  <audio id="gosound2" src="audio/go2.mp3" type="audio/mpeg" preload="auto"></audio>
+  <audio id="gosound3" src="audio/go3.mp3" type="audio/mpeg" preload="auto"></audio>
+  <audio id="gosound4" src="audio/go4.mp3" type="audio/mpeg" preload="auto"></audio>
+  
+  <audio id="kurzepausesound1" src="audio/kurzepause1.mp3" type="audio/mpeg" preload="none"></audio>
+  <audio id="kurzepausesound2" src="audio/kurzepause2.mp3" type="audio/mpeg" preload="none"></audio>
+  <audio id="kurzepausesound3" src="audio/kurzepause3.mp3" type="audio/mpeg" preload="none"></audio>
+  <audio id="kurzepausesound4" src="audio/kurzepause4.mp3" type="audio/mpeg" preload="none"></audio>
+
+  <audio id="endesound1" src="audio/ende1.mp3" type="audio/mpeg" preload="metadata"></audio> 
+  <audio id="endesound2" src="audio/ende2.mp3" type="audio/mpeg" preload="metadata"></audio> 
+  <audio id="endesound3" src="audio/ende3.mp3" type="audio/mpeg" preload="metadata"></audio> 
+  <audio id="endesound4" src="audio/ende4.mp3" type="audio/mpeg" preload="metadata"></audio> 
 
 
-        </div>
-       
+  <audio id="vor1" src="audio/vor1.mp3" type="audio/mpeg" preload= "metadata"></audio>
+  <audio id="vor2" src="audio/vor2.mp3" type="audio/mpeg" preload= "metadata"></audio>
+  <audio id="vor3" src="audio/vor3.mp3" type="audio/mpeg" preload= "metadata"></audio>
+  <audio id="vor4" src="audio/vor4.mp3" type="audio/mpeg" preload= "metadata"></audio>
+
+  <!--IDen und vorladen audio 3 -->
+  <audio loop id="m1" src="audio/m1.mp3" type="audio/mpeg" preload="none"></audio>
+  
 </div>
 
-<div id="ZAnzeige">  
-G- Wert jetzt: <a id= "sensora" >zyz</a>
-</div>
-<script src="audiosynth.js"></script>
+     
+
+
+
 <script type="text/JavaScript" src="script.js"></script>
+
 </body>
+
 </html>
-
-
-
