@@ -1,257 +1,325 @@
-// Konstante zeigen lediglich auf html Elemente. Input von html 
-const belastungseingabe = document.getElementById('eindauer');
-const ausruheingabe = document.getElementById('einruhe');
-const rundeneingabe = document.getElementById('einrunden');
-const medienwahl = document.getElementById("Medienwahl");
+var nv = {'C0': 16.35,'C#0': 17.32,'Db0': 17.32,'D0': 18.35,'D#0': 19.45,'Eb0': 19.45,'E0': 20.60,'F0': 21.83,
+'F#0': 23.12,'Gb0': 23.12,'G0': 24.50,'G#0': 25.96,'Ab0': 25.96,'A0': 27.50,'A#0': 29.14,'Bb0': 29.14,'B0': 30.87,
+'C1': 32.70,'C#1': 34.65,'Db1': 34.65,'D1': 36.71,'D#1': 38.89,'Eb1': 38.89,'E1': 41.20,'F1': 43.65,'F#1': 46.25,
+'Gb1': 46.25,'G1': 49.00,'G#1': 51.91,'Ab1': 51.91,'A1': 55.00,'A#1': 58.27,'Bb1': 58.27,'B1': 61.74,'C2': 65.41,
+'C#2': 69.30,'Db2': 69.30,'D2': 73.42,'D#2': 77.78,'Eb2': 77.78,'E2': 82.41,'F2': 87.31,'F#2': 92.50,'Gb2': 92.50,
+'G2': 98.00,'G#2': 103.83,'Ab2': 103.83,'A2': 110.00,'A#2': 116.54,'Bb2': 116.54,'B2': 123.47,'C3': 130.81,'C#3': 138.59,
+'Db3': 138.59,'D3': 146.83,'D#3': 155.56,'Eb3': 155.56,'E3': 164.81,'F3': 174.61,'F#3': 185.00,'Gb3': 185.00,'G3': 196.00,
+'G#3': 207.65,'Ab3': 207.65,'A3': 220.00,'A#3': 233.08,'Bb3': 233.08,'B3': 246.94,'C4': 261.63,'C#4': 277.18,'Db4': 277.18,
+'D4': 293.66,'D#4': 311.13,'Eb4': 311.13,'E4': 329.63,'F4': 349.23,'F#4': 369.99,'Gb4': 369.99,'G4': 392.00,'G#4': 415.30,
+'Ab4': 415.30,'A4': 440.00,'A#4': 466.16,'Bb4': 466.16,'B4': 493.88,'C5': 523.25,'C#5': 554.37,'Db5': 554.37,'D5': 587.33,
+'D#5': 622.25,'Eb5': 622.25,'E5': 659.26,'F5': 698.46,'F#5': 739.99,'Gb5': 739.99,'G5': 783.99,'G#5': 830.61,'Ab5': 830.61,
+'A5': 880.00,'A#5': 932.33,'Bb5': 932.33,'B5': 987.77,'C6': 1046.50,'C#6': 1108.73,'Db6': 1108.73,'D6': 1174.66,
+'D#6': 1244.51,'Eb6': 1244.51,'E6': 1318.51,'F6': 1396.91,'F#6': 1479.98,'Gb6': 1479.98,'G6': 1567.98,'G#6': 1661.22,
+'Ab6': 1661.22,'A6': 1760.00,'A#6': 1864.66,'Bb6': 1864.66,'B6': 1975.53,'C7': 2093.00,'C#7': 2217.46,'Db7': 2217.46,
+'D7': 2349.32, 'D#7': 2489.02,'Eb7': 2489.02,'E7': 2637.02,'F7': 2793.83,'F#7': 2959.96,'Gb7': 2959.96,'G7': 3135.96,
+'G#7': 3322.44,'Ab7': 3322.44,'A7': 3520.00,'A#7': 3729.31,'Bb7': 3729.31,'B7': 3951.07,'C8': 4186.01};
+var modus = 1;
+var Zahlsquats1 = 0;
+var Zahlsquats2 = 0;
+var Zahlsquats3 = 0;
+var Probenanzahl = 500;
+document.getElementById("canvas").style.display="none"
+document.getElementById("neub").style.display="none"
+document.getElementById("KniebA").style.display="none"
+document.getElementById("ZAnzeige").style.display="none"
 
-
-// der Ausgang zu html 
-const ZA = document.getElementById('Zeitanzeige');
-const RA = document.getElementById('Rundenanzeige');
-const TA = document.getElementById('Textanzeige');
-const BB = document.getElementById("Balkenzeit")
-ZA.innerHTML = "-----";
-RA.innerHTML = '0 / 0';
-
-window.onload = function(){
-  document.getElementById("herunterladenknopf").style.display="none";
-  belastungseingabe.min = 1;
-  ausruheingabe.min = 1;
-  rundeneingabe.min = 1;
-  belastungseingabe.max = 60;
-  ausruheingabe.max = 60;
-  rundeneingabe.max = 20;
-  belastungseingabe.value = 20;
-  ausruheingabe.value = 10;
-  rundeneingabe.value = 8;
-  document.getElementById('dauer').innerHTML = belastungseingabe.value;
-  document.getElementById('ruhe').innerHTML = ausruheingabe.value;
-  document.getElementById('runden').innerHTML = rundeneingabe.value;
-  belastungseingabe.oninput = function() {document.getElementById('dauer').innerHTML = belastungseingabe.value;};
-  ausruheingabe.oninput = function()     {document.getElementById('ruhe').innerHTML = ausruheingabe.value;};
-  rundeneingabe.oninput = function()     {document.getElementById('runden').innerHTML = rundeneingabe.value;};
-                             };
-
-// Starten des Programms durch ausführen von Funktionen
-// Anzeige der eingegebenen Werte schon bevor Wertsetzenfunktion ausgeführt wird
-  // Grundanzeige vor Änderung der Variablen 
-
-startknopf.onclick = function() {
-  runTabata( 5 , belastungseingabe.value, ausruheingabe.value, rundeneingabe.value);
-  document.getElementById('zeigendiv').style.visibility = 'visible';
-  document.getElementById("Einstellungsdiv").style.display = "none"; 
-
-zurueckknopf.onclick = function(){location.reload()}                                  }
-
-// Eigentlicher Tabata array
-function runTabata(vorlauf, dauer, ruhe, runden) {
-  let arrPeriods = [vorlauf],
-  index = 0;
-  for(let i = 0; i < runden; i++) {arrPeriods.push(dauer);arrPeriods.push(ruhe);}
-  uhrwerk(arrPeriods, index);
-                                                 }
-// Setzen des Timers
-// Die setintervall Methode ruft die funtion x alle 1000ms auf. sie ist an l gekoppelt um mit der clearIntervall Methode gestoppt werden zu können
-// 2 Sekunden vor Zeitablauf verschwindet die Zeitanzeige
-// Bei Zeitablauf wird das Intervall beendet und ein index hochgezählt
-// Prüfung index (Arraydurchgänge 0 , gerade und vorletze, nirmalgerade , ungerade Reihenfolge
-function uhrwerk(arrPeriods, index) {
-  jetzt = Date.now()
-  dann = jetzt + arrPeriods[index] * 1000;
-  window.index = index;
-  window.arrPeriods = arrPeriods;
-  window.arrPeriods.length = arrPeriods.length;
-   l = setInterval(function x() {
-    var zeitunterschied = Math.round((dann - Date.now()) / 1000) + 1;
-    ZA.innerHTML ="Noch  " + zeitunterschied + "s";
-    RA.innerHTML ="Runde " + Math.floor(((index + 1) / 2)) + "/" + (arrPeriods.length - 1) / 2;
-    BB.innerHTML = zeitunterschied;
-    if (zeitunterschied < 2) {BB.innerHTML= ""}
-    if(zeitunterschied == 0) {clearInterval(l);
-    if(index < arrPeriods.length -1) {index++; uhrwerk(arrPeriods, index);} }
-                                },1000); 
-    if (index == 0 ) {vorlauf()}
-    else if (index % 2 == 0 &&  index == arrPeriods.length-1){ende()}
-    else if (index % 2 == 0 ) {setTimeout(function(){ruhe()},1000)}
-    else if (index % 1 == 0 ) {setTimeout(function(){aktiv()},1000)}
-                                 }
-
-
-var mediaV = 10
-medienwahl.addEventListener("change", function() {
-    if(medienwahl.value == "10")    {mediaV = 0; document.getElementById("Medienwahl").style.backgroundColor ="#737373"}
-    else if(medienwahl.value == "1"){mediaV = 1;document.getElementById("Medienwahl").style.backgroundColor ="#00ff00"}
-    else if(medienwahl.value == "2"){mediaV = Math.floor(Math.random() * (5 - 1 + 1)) + 1;document.getElementById("Medienwahl").style.backgroundColor ="#00ff00"}
-    else if(medienwahl.value == "3"){mediaV = 6;document.getElementById("Medienwahl").style.backgroundColor ="#00ff00"}
-})
-
-
-const Foto = document.getElementById("Fotomodus");
-const GFD = document.getElementById("Gesamtfotodiv")
-GFD.style.display="none"
-function camera() {
-var checkBox = document.getElementById("fotocheck");
-if (checkBox.checked == true){cameraStart(),GFD.style.display="";}
-else {cameraStop(),GFD.style.display="none"   } }
-
-
-
-// zugriff auf camera und stream zur Streamansicht
-function cameraStart() {
-  navigator.mediaDevices
-      .getUserMedia(constraints)
-      .then(function(stream) {
-          track = stream.getTracks()[0];
-          Streamansicht.srcObject = stream;  })
-      .catch(function(error) {console.error("Etwas hat nicht geklappt", error);});
-                          }
-// der track wird gestoppt, und die src auf null zuückgesetzt
-function cameraStop(){track.stop(),Streamansicht.srcObject = null };
-// der Stream hat eine andere größe, als das Bild, was man davon machen will, deshab muss man gleichsetzen
-
-
-
-function vorlauf(){
-      document.body.style.backgroundColor = "black";
-      document.getElementById("zurueckknopf").style.display = "none"
-      document.getElementById("Balkendiv").style.display = "none";
-      TA.innerHTML = "";
-                  }
-
-  
-function aktiv(){
-  console.log("mediaV"+ mediaV)
-  aktivbalkenschrumpfer(); aktivaudio()
-   document.body.style.backgroundColor = "#00ff00";
-   document.getElementById("zurueckknopf").style.display = "none";
-   document.getElementById("Balkendiv").style.display = "";
-   BB.style.color = "black";
-   ZA.style.display = "none";
-   TA.innerHTML= "GO !!";
-   var fotorand = 6;
-   var runde = Math.floor(((index + 1) / 2))
-   var Gesamtrunde = (arrPeriods.length - 1) / 2
-  console.log("laufende " + runde );
-   console.log("arrplang" + Gesamtrunde); // für jede runde hat der array 2 Elemente (Daueraktiv und Dauerruhe)
-  if (runde == Gesamtrunde) {fotorand = 0,console.log("fotorandgesetzt:" + fotorand)} 
-  else   { fotorand = Math.floor(Math.random() * 4 ),console.log("fotorandzufall:" + fotorand);}//Zufallszahl zwischen 0 und 3.    
-  console.log(Streamansicht.srcObject)
-  if (fotorand == 0 && Streamansicht.srcObject != null ) {setTimeout(function(){fotomachen();},
-  (belastungseingabe.value*1000/2)), setTimeout(function(){cameraStop()},belastungseingabe.value*1000)};
-
-
-  }
-  
-function ruhe(){
-
-   ruhebalkenwachser(),
-   document.getElementById('m1').pause();
-   document.body.style.background = "black"; 
-   document.getElementById("zurueckknopf").style.display = "none";
-   BB.style.color = "black";
-   ZA.style.display = "none";
-   TA.innerHTML = "Pause";
-   if (index % 2 == 0 &&  index == arrPeriods.length-3){vorletzteruheaudio(),console.log("vorl" + arrPeriods.length-3)}
-   else {ruheaudio()}  
-                 }
-
-function ende(){ 
-  if (Streamansicht.srcObject != null) {cameraStop()};
-   document.getElementById("zurueckknopf").style.display = "";
-   document.getElementById("herunterladenknopf").style.display = ""; 
-   document.getElementById("Balkendiv").style.display = "none";
-   document.body.style.backgroundColor = "blue";
-   BB.style.display = "none";
-   TA.innerHTML = "Super";
-   ZA.style.display = "none";
-   if (mediaV==0){console.log("mediaV = o")}
-   else if (mediaV==1){document.getElementById('gongsound').play();}
-   else if (mediaV==2){document.getElementById('endesound1').play()}
-   else if (mediaV==3){document.getElementById('endesound2').play()}
-   else if (mediaV==4){document.getElementById('endesound3').play()}
-   else if (mediaV==5){document.getElementById('endesound4').play()}
-                   }
-
-
-
-function aktivaudio(){
-  if  (mediaV==0){console.log("mediaV"+ mediaV)}
-   else if (mediaV==1){document.getElementById('gongsound').play();}
-   else if (mediaV==2){document.getElementById('gosound1').play();}
-   else if (mediaV==3){document.getElementById('gosound2').play();}
-   else if (mediaV==4){document.getElementById('gosound3').play();}
-   else if (mediaV==5){document.getElementById('gosound4').play();}
-   else if (mediaV==6){document.getElementById('m1').play();}
-   else{console.log("mediaV"+ mediaV)}
+standartbild()
+function standartbild(){
+var  img1 = document.createElement("img");
+      img1.src = "media/flach.png";
+      img1.id ="img1"
+      img1.style.width = "200px";
+      img1.style.hight = "200px";
+      startb.appendChild(img1);
+      screen.orientation.unlock()
 }
 
-function  ruheaudio(){
-  if (mediaV==0){console.log("mediaV = 0")}
-  else if (mediaV==1){document.getElementById('gongsound').play();}
-  else if (mediaV==2){document.getElementById('kurzepausesound1').play()}
-  else if (mediaV==3){document.getElementById('kurzepausesound2').play()}
-  else if (mediaV==4){document.getElementById('kurzepausesound3').play()}
-  else if (mediaV==5){document.getElementById('kurzepausesound4').play()}
-  else if (mediaV==6) {document.getElementById('m1').pause();}
-  else{console.log("mediaV"+ mediaV)}
-                        }
+var mo = document.getElementById("modus") 
+mo.addEventListener("change", function() {
+if(mo.value == "1"){ modus = 1;
+      if (document.getElementById('img2') != null) { document.getElementById('img2').remove();}
+      if (document.getElementById('img3') != null) { document.getElementById('img3').remove();}
+      if (document.getElementById('img1') != null) { console.log("gibts schon");} else {
+        standartbild()
+            }
+                      }
+if (mo.value == "2"){modus = 2;
+      if (document.getElementById('img1') != null) { document.getElementById('img1').remove()}
+      if (document.getElementById('img3') != null) { document.getElementById('img3').remove()}
+      if (document.getElementById('img2') != null) { console.log("gibts schon");
+      } else {
+      var  img2 = document.createElement("img");
+      img2.src = "media/hoch.png";
+      img2.id ="img2"
+      img2.style.width = "200px";
+      img2.style.hight = "200px";
+      startb.appendChild(img2);
+            }
+                    }
+if (mo.value == "3"){modus = 3;
+    if (document.getElementById('img1') != null) { document.getElementById('img1').remove();}
+    if (document.getElementById('img2') != null) { document.getElementById('img2').remove();}
+    if (document.getElementById('img3') != null) { console.log(" img3  gibts schon");
+    } else{
+      var  img3 = document.createElement("img");
+      img3.id ="img3"
+      img3.src = "media/quer.png";
+      img3.style.width = "200px";
+      img3.style.hight = "200px";
+      startb.appendChild(img3); 
+         } 
+                 }
+                                        })  
 
-function vorletzteruheaudio(){
-  if (mediaV==0){console.log("mediaV = 0")}
-  else if (mediaV==1){document.getElementById('gongsound').play();}
-  else if (mediaV==2){document.getElementById('vor1').play();}
-  else if (mediaV==3){document.getElementById('vor2').play();}
-  else if (mediaV==4){document.getElementById('vor3').play();}
-  else if (mediaV==5){document.getElementById('vor4').play();}
-  else if (mediaV==5){document.getElementById('vor4').play();}
-  else if (mediaV==6) {document.getElementById('m1').pause();} 
-  else{console.log("mediaV"+ mediaV)}  
-                        }
-   
+var re = document.getElementById("refrakt") 
+re.addEventListener("change", function() {
+    if (re.value == "1"){interval = 100;}
+    if (re.value == "2"){interval = 300;}
+    if (re.value == "3"){interval = 800;}
+    if (re.value == "4"){interval = 1000;}
+    })
 
-function aktivbalkenschrumpfer() {
-  var Ausganswert = 100;
-  var id = setInterval(was, belastungseingabe.value*10,1000);
-  function was(){if (Ausganswert === 1) {clearInterval(id);} 
-  else { Ausganswert= Ausganswert-1; BB.style.width = Ausganswert + '%';BB.style.fontSize = "300%"}}
-                           }
-function ruhebalkenwachser() {
-  var Ausgangswert = 1;
-  var id = setInterval(was, ausruheingabe.value*10,1000);
-  function was() { if (Ausgangswert === 100) {clearInterval(id);}
-  else {Ausgangswert = Ausgangswert+1}; BB.style.width = Ausgangswert + '%';BB.style.fontSize = "300%"}
-                         }
+var pa = document.getElementById("probenanzahl") 
+pa.addEventListener("change", function() {
+        if(pa.value == "1"){interval = 500;}
+        if (pa.value == "2"){interval = 100;}
+        if (pa.value == "3"){interval = 1000;}
+        })
+
+
+var ach = document.getElementById("detailw") 
+ach.addEventListener("change", function() {
+    if(ach.value == "1"){document.getElementById("ZAnzeige").style.display="none"}
+    if (ach.value == "2"){document.getElementById("ZAnzeige").style.display=""}
+          })  
+
+
+//für die Darstellung in dr Detailansicht werden die Variablen auf eine Dezimalstelle gerundet
+// ich glaub es ist besser mit schwer oben / Azsgabeungekehrt
+// startet die handleMotionEvent die ist speziell für den Sensor handling ungewöhnlich
+function handleMotionEvent(event) {
+    var x = event.accelerationIncludingGravity.x;
+    var y = event.accelerationIncludingGravity.y;
+    var z = event.accelerationIncludingGravity.z;
+
+if (modus == 1){zvar(),document.getElementById("sensora").innerHTML = Math.round( z * 10 ) / 10; screen.orientation.lock("portrait")}
+if (modus == 2){yvar(),document.getElementById("sensora").innerHTML = Math.round( y * 10 ) / 10; screen.orientation.lock("portrait")}
+if (modus == 3){xvar(),document.getElementById("sensora").innerHTML = Math.round( x * 10 ) / 10; screen.orientation.lock("landscape-primary")}
+  
+function zvar(){
+  console.log("squatmodus")
+if (z > 15) {schwer1()} 
+if (z > 9.8 && z < 10.1){normal2()} 
+if (z < 5) {leicht3()}
+   }  
+
+function yvar(){
+   console.log("pullmodus")
+  if (y > 15) {schwer1()} 
+  if (y > 9.8 && y < 10.1){normal2()} 
+  if (y < 5) {leicht3()}
+  }   
+
+function xvar(){
+  console.log("VRmodus")
+   if (x > 15) {schwer1()} 
+   if (x > 9.8 && x < 10.1){normal2()} 
+   if (x < 5) {leicht3()}
+   }   
+} 
+
+
+
+var firstExecution = 0; // Store the first execution time
+var interval = 300; // 2 millisekunden
+function schwer1() {
+      
+    var date = new Date();
+    var milliseconds = date.getTime(); 
+    if((milliseconds - firstExecution) > interval)
+    {firstExecution = milliseconds;
+      synth();
+    
+      Zahlsquats1 = Zahlsquats1+ 1;
+      document.getElementById("A1").innerHTML = Zahlsquats1;
+    } else {
+      console.log("zufrüh" + interval);
+    }
+}
+
+function normal2() {
+  var date = new Date();
+  var milliseconds = date.getTime(); 
+  if((milliseconds - firstExecution) > interval)
+  {
+    firstExecution = milliseconds;
+    Zahlsquats2 = Zahlsquats2+ 1;
+    document.getElementById("A2").innerHTML = Zahlsquats2;
+  } else {
+    console.log("zufrüh" +interval);
+  }
+}
+
+function leicht3() {
+ 
+  var date = new Date();
+  var milliseconds = date.getTime(); 
+  if((milliseconds - firstExecution) > interval)
+  {firstExecution = milliseconds;
+    audioc();
+    Zahlsquats3 = Zahlsquats3+ 1;
+    document.getElementById("A3").innerHTML = Zahlsquats3;
+  } else {
+    console.log("zufrüh" +interval);
+  }
+}
+
+function synth(){
+  let p = Synth.createInstrument('piano');
+   p.play("C",4,1)}
                  
 
-// constraints für Videostream festlegen hier fullhd Auflösung selbscamer und kein Audio
-// alternative 4K video: {width: {exact: }, height: {exact: }}
-// ideal : auflöung wenn möglich wie angegeben
-var constraints = { video: {width: {ideal: 3840}, height: {ideal: 2160}, facingMode: "user" }, audio: false };
-var track = null;
-const Streamansicht = document.getElementById("streamansicht");
-const Bildcanvas = document.getElementById("bildcanvas");
+// canvas gezchnet werden Linien
+var canvas = document.getElementById('canvas');
+var W = canvas.width;
+var H = canvas.height;
+var ctx = canvas.getContext('2d');
+var linien = {};
+var scaleX = W/Probenanzahl;
+var scaleY = 5;
+linien.z = getInitArr(Probenanzahl);
+linien.y = getInitArr(Probenanzahl);
+linien.x = getInitArr(Probenanzahl);
+
+// DiviceMotionEvent ist spezialfunktion für den Sensor
+function start() {
+document.getElementById("wdiv").style.display ="none"
+document.getElementById("canvas").style.display=""
+document.getElementById("neub").style.display=""
+document.getElementById("KniebA").style.display=""
+
+uhrlos()
+addEventListener("devicemotion", handleMotionEvent);
+addEventListener("devicemotion", doSample);
+tick();  
+}
 
 
-function fotomachen()  {
-    Bildcanvas.width = Streamansicht.videoWidth;
-    Bildcanvas.height = Streamansicht.videoHeight;
-    Bildcanvas.getContext("2d").drawImage(Streamansicht, 0, 0);   
-    cameraStop()                 };
+// wird y dann auch gezeichnet ?
+function doSample(event) {
+if (modus==1){ shift(linien.z, event.accelerationIncludingGravity.z);}
+if (modus==2){ shift(linien.y, event.accelerationIncludingGravity.y);}
+if (modus==3){ shift(linien.x, event.accelerationIncludingGravity.x);}
+}
 
-//Zum Download data URL durch actet stream ersetzen. Da browser download nur über html link in body erlauben wird temporärer link erschaffen
-function bildherunterladen() {
-    const canvas =  Bildcanvas.toDataURL("image/png").replace("image/png", "image/octet-stream");;
-    var link = document.createElement( 'a' ); 
-    var d = new Date();
-     var ja = d.getFullYear();
-     var mo = d.getMonth()+1;
-     var ta= d.getDate();
-     var st= d.getHours();
-     var mi = d.getMinutes();
-  link.download ='HIIT_'+ta+"_"+mo+"_"+ja+"_"+st+"_"+mi+".png";  
-  link.href = canvas;   
-  document.body.appendChild(link);  
-  link.click();  
-  document.body.removeChild(link);
-                                }
- 
+function tick() {
+  requestAnimationFrame(tick);
+  ctx.fillStyle = 'black';
+  ctx.fillRect(0, 0, W, H);
+  zehnGlinie(),zehnleichtlinie();zehnschwerlinie()
+  if (modus ==1) {drawGraph(linien.z, scaleX, scaleY);}
+  if (modus ==2) {drawGraph(linien.y, scaleX, scaleY);}
+  if (modus ==3) {drawGraph(linien.x, scaleX, scaleY);}
+}
+
+//die Zahlen sind entsprechend der oben angegeben Scale = 5 alle x *5
+function zehnGlinie() {
+  ctx.lineWidth = 1;
+  ctx.strokeStyle = 'white';
+  ctx.beginPath();
+  ctx.moveTo(0, (H/2)+50);
+  ctx.lineTo(W, (H/2)+50);
+  ctx.stroke();
+}
+function zehnleichtlinie() {
+  ctx.strokeStyle = 'brown';
+  ctx.beginPath();
+  ctx.moveTo(0, (H/2)+100);
+  ctx.lineTo(W, (H/2)+100);
+  ctx.stroke();
+}
+function zehnschwerlinie() {
+  ctx.strokeStyle = 'blue';
+  ctx.beginPath();
+  ctx.moveTo(0, (H/2)-0);
+  ctx.lineTo(W, (H/2)-0);
+  ctx.stroke();
+}
+
+
+function drawGraph(linien, scaleX, scaleY) {  
+  ctx.save();
+  ctx.translate(0, H/2); 
+  ctx.lineWidth = 4
+  ctx.strokeStyle = "green";
+  if (min >= 1){ctx.strokeStyle = "red";}
+  if (min >= 2){ ctx.strokeStyle = "violet";}
+  if (min >= 3){ ctx.strokeStyle = "rgb(255, 255, 0)";
+}
+  ctx.beginPath();
+  var len = linien.length;
+  ctx.moveTo(0, linien[0] * scaleY);
+  for(var i = 0; i < len; i++){
+    ctx.lineTo(i*scaleX, linien[i]*scaleY);
+   }
+  ctx.stroke();
+  ctx.restore();
+}
+
+//get Float32Array of length initialized to 0
+function getInitArr(length) {
+  var arr = new Float32Array(length);
+  return arr;
+}
+
+//zieht eine Probe aus doSample und fügt sie zeitlich hinten an den Array an und malt so die Linie
+function shift(arr, datum) {
+  var ret = arr[0];
+  for (var i = 1; i < arr.length; i++) { arr[i - 1] = arr[i]; }
+  arr[arr.length - 1] = datum;
+  return ret;
+}
+
+//stopuhr
+var sec = 0;
+var min = "";
+function tock(){
+  document.getElementById("sekAn").innerHTML= sec
+  document.getElementById("minAn").innerHTML= min
+    sec = sec+1;
+    if (sec >= 60) {sec = 0,min++;}
+              }
+function uhrlos() {i =setInterval(tock, 1000); }
+   
+function neu(){
+  sec = 0;
+  min =0;
+  Zahlsquats1 = 0;
+  Zahlsquats2 = 0;
+  Zahlsquats3 = 0;
+  document.getElementById("A1").innerHTML = Zahlsquats1;
+  document.getElementById("A2").innerHTML = Zahlsquats2;
+  document.getElementById("A3").innerHTML = Zahlsquats3;
+  document.getElementById("wdiv").style.display =""
+  document.getElementById("neub").style.display="none"
+  removeEventListener("devicemotion", handleMotionEvent)
+  removeEventListener("devicemotion", doSample)
+  clearInterval(i)
+}
+
+
+i = 0
+function audioc(){
+var context = new AudioContext()
+var o = context.createOscillator()
+var  g = context.createGain()
+o.connect(g)
+g.connect(context.destination)
+g.gain.exponentialRampToValueAtTime( 0.00001, context.currentTime + 1)
+i = i + 1
+if (i == 1){var frequency = nv["C4"]}
+else {var frequency = nv["G4"]}
+o.frequency.value = frequency
+o.start(0)
+o.stop(0.1)}
