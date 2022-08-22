@@ -15,6 +15,7 @@ var nv = {'C0': 16.35,'C#0': 17.32,'Db0': 17.32,'D0': 18.35,'D#0': 19.45,'Eb0': 
 'D7': 2349.32, 'D#7': 2489.02,'Eb7': 2489.02,'E7': 2637.02,'F7': 2793.83,'F#7': 2959.96,'Gb7': 2959.96,'G7': 3135.96,
 'G#7': 3322.44,'Ab7': 3322.44,'A7': 3520.00,'A#7': 3729.31,'Bb7': 3729.31,'B7': 3951.07,'C8': 4186.01};
 var modus = 1;
+var audioV = 1;
 var Zahlsquats1 = 0;
 var Zahlsquats2 = 0;
 var Zahlsquats3 = 0;
@@ -72,26 +73,13 @@ if (mo.value == "3"){modus = 3;
                  }
                                         })  
 
-var re = document.getElementById("refrakt") 
-re.addEventListener("change", function() {
-    if (re.value == "1"){interval = 100;}
-    if (re.value == "2"){interval = 300;}
-    if (re.value == "3"){interval = 800;}
-    if (re.value == "4"){interval = 1000;}
-    })
-
-var pa = document.getElementById("probenanzahl") 
-pa.addEventListener("change", function() {
-        if(pa.value == "1"){interval = 500;}
-        if (pa.value == "2"){interval = 100;}
-        if (pa.value == "3"){interval = 1000;}
-        })
 
 
-var ach = document.getElementById("detailw") 
+var ach = document.getElementById("audioW") 
 ach.addEventListener("change", function() {
-    if(ach.value == "1"){document.getElementById("ZAnzeige").style.display="none"}
-    if (ach.value == "2"){document.getElementById("ZAnzeige").style.display=""}
+    if      (ach.value == "1"){audioV = 1; document.getElementById("audioW").style.backgroundColor = "#737373"}
+    else if (ach.value == "2"){audioV = 2; document.getElementById("audioW").style.backgroundColor = "#d83535"}
+    else if (ach.value == "3"){audioV = 3; document.getElementById("audioW").style.backgroundColor =  "#d83535"}
           })  
 
 
@@ -109,32 +97,35 @@ if (modus == 3){xvar(),document.getElementById("sensora").innerHTML = Math.round
   
 function zvar(){
   console.log("squatmodus")
-if (z > 15) {schwer1()} 
+if (z > 20) {schwer1()} 
 if (z > 9.8 && z < 10.1){normal2()} 
-if (z < 5) {leicht3()}
+if (z < 0) {leicht3()}
    }  
 
 function yvar(){
    console.log("pullmodus")
-  if (y > 15) {schwer1()} 
+  if (y > 16) {schwer1()} 
   if (y > 9.8 && y < 10.1){normal2()} 
-  if (y < 5) {leicht3()}
+  if (y < 4) {leicht3()}
   }   
 
 function xvar(){
   console.log("VRmodus")
-   if (x > 15) {schwer1()} 
+   if (x > 20) {schwer1()} 
    if (x > 9.8 && x < 10.1){normal2()} 
-   if (x < 5) {leicht3()}
+   if (x < 0) {leicht3()}
    }   
 } 
-
 
 
 var firstExecution = 0; // Store the first execution time
 var interval = 300; // 2 millisekunden
 function schwer1() {
-      synth();
+
+    if (audioV == 1) {console.log(audioV)}
+    else if (audioV== 2) {synth()}
+    else if (audioV== 3) {audioc()}
+
     var date = new Date();
     var milliseconds = date.getTime(); 
     if((milliseconds - firstExecution) > interval)
@@ -149,6 +140,10 @@ function schwer1() {
 }
 
 function normal2() {
+
+
+
+
   var date = new Date();
   var milliseconds = date.getTime(); 
   if((milliseconds - firstExecution) > interval)
@@ -162,7 +157,10 @@ function normal2() {
 }
 
 function leicht3() {
- audioc();
+  if (audioV == 1) {console.log(audioV)}
+  else if (audioV == 2) {synth()}
+  else if (audioV == 3) {audioc()}
+
   var date = new Date();
   var milliseconds = date.getTime(); 
   if((milliseconds - firstExecution) > interval)
