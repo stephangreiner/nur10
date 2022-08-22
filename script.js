@@ -104,9 +104,9 @@ if (z < 0) {leicht3()}
 
 function yvar(){
    console.log("pullmodus")
-  if (y > 16) {schwer1()} 
+  if (y > 20) {schwer1()} 
   if (y > 9.8 && y < 10.1){normal2()} 
-  if (y < 4) {leicht3()}
+  if (y < 0) {leicht3()}
   }   
 
 function xvar(){
@@ -123,7 +123,7 @@ var interval = 300; // 2 millisekunden
 function schwer1() {
 
     if (audioV == 1) {console.log(audioV)}
-    else if (audioV== 2) {synth()}
+    else if (audioV== 2) {synthschwer()}
     else if (audioV== 3) {audioc()}
 
     var date = new Date();
@@ -158,7 +158,7 @@ function normal2() {
 
 function leicht3() {
   if (audioV == 1) {console.log(audioV)}
-  else if (audioV == 2) {synth()}
+  else if (audioV == 2) {synthleicht()}
   else if (audioV == 3) {audioc()}
 
   var date = new Date();
@@ -173,9 +173,13 @@ function leicht3() {
   }
 }
 
-function synth(){
+function synthleicht(){
   let p = Synth.createInstrument('piano');
-   p.play("C",4,1)}
+   p.play("C",5,0.5)}
+function synthschwer(){
+    let p = Synth.createInstrument('piano');
+     p.play("C",4,0.5)}
+                   
                  
 
 // canvas gezchnet werden Linien
@@ -193,6 +197,7 @@ linien.x = getInitArr(Probenanzahl);
 // DiviceMotionEvent ist spezialfunktion für den Sensor
 function start() {
 document.getElementById("wdiv").style.display ="none"
+document.getElementById("startb").style.display ="none"
 document.getElementById("canvas").style.display=""
 document.getElementById("neub").style.display=""
 document.getElementById("KniebA").style.display=""
@@ -300,7 +305,8 @@ function neu(){
   document.getElementById("A2").innerHTML = Zahlsquats2;
   document.getElementById("A3").innerHTML = Zahlsquats3;
   document.getElementById("wdiv").style.display =""
-  document.getElementById("neub").style.display="none"
+  document.getElementById("startb").style.display =""
+  document.getElementById("Anzeige").style.display="none"
   removeEventListener("devicemotion", handleMotionEvent)
   removeEventListener("devicemotion", doSample)
   clearInterval(i)
