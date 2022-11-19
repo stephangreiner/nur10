@@ -70,6 +70,9 @@ select {-moz-appearance: none;-webkit-appearance: none;}select::-ms-expand {disp
         height:100%
               }
 
+ #KB{
+font-size: larger
+        }
  /* ist child von flexbox-parent Anzeige -> nach links-> damit es andere Items nicht mitzieht eine order weiter */       
       #neub {margin-left:auto;order: 2;
       }       

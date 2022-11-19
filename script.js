@@ -1,8 +1,7 @@
 var modus = 1;
 var audioV = 0;
-var Zahlsquats1 = 0;
-var Zahlsquats2 = 0;
-var Zahlsquats3 = 0;
+var untenzahl = 0;
+var Kniebeugen = 0;
 var Probenanzahl = 500;
 var ss = 0; //situation Squat 0 = unten 1 = oben
 document.getElementById("canvas").style.display="none"
@@ -81,22 +80,22 @@ if (modus == 3){xvar(),document.getElementById("sensora").innerHTML = Math.round
   
 function zvar(){
   console.log("squatmodus")
-if (z < 0) {leicht3()} 
-if (z > 15) {schwer1()} 
+if (z < 5) {niedrigg()} 
+if (z > 15) {hochg()} 
   }
    }  
 
 function yvar(){
    console.log("pullmodus")
-     if (y < 0) {leicht3()}
-  if (y > 20) {schwer1()} 
+     if (y < 0) {niedrigg()}
+  if (y > 20) {hochg()} 
 
   }   
 
 function xvar(){
   console.log("VRmodus")
-   if (x < 0) {leicht3()}
-   if (x > 20) {schwer1()} 
+   if (x < 0) {niedrigg()}
+   if (x > 20) {hochg()} 
   
    }   
 
@@ -104,17 +103,13 @@ function xvar(){
 
 var firstExecution = 0; // Store the first execution time
 var interval = 300; // 2 millisekunden
-function schwer1() {
+function hochg() {
 var date = new Date();
 var milliseconds = date.getTime(); 
     if((milliseconds - firstExecution) > interval) 
     {firstExecution = milliseconds;
-      
-    
-      Zahlsquats1 = Zahlsquats1+ 1;
-      document.getElementById("A1").innerHTML = Zahlsquats1;
- if (audioV == 0) {console.log("audiv" + audioV)}
-    else if (audioV == 1 ) {} // synthschwer()-- rausgenommen damit nur 1 ton wenn vorher unten war
+      untenzahl = untenzahl+ 1;
+      document.getElementById("A1").innerHTML = untenzahl;
  if (ss == 0) {ss = ss + 1;console.log("ss11 "+ ss)} // startet die aktivierung
   else {console.log("komischss" + ss)}
 
@@ -129,13 +124,13 @@ var milliseconds = date.getTime();
 }
 
 
-function leicht3() {
+function niedrigg() {
 var date = new Date();
 var milliseconds = date.getTime(); 
   if((milliseconds - firstExecution) > interval && ss ==1) 
   {firstExecution = milliseconds;
-    Zahlsquats3 = Zahlsquats3 + 1;
-    document.getElementById("A3").innerHTML = Zahlsquats3;
+    Kniebeugen = Kniebeugen + 1;
+    document.getElementById("KB").innerHTML = Kniebeugen;
     ss = ss - 1;console.log("ss00 "+ ss) // setzt den aktivierung zurück  SS
 
       if (audioV == 0) {console.log("audiV" + audioV)}
@@ -148,15 +143,11 @@ else {console.log("zufrüh" +interval);}
 
 function synthleicht(){
   let p = Synth.createInstrument('piano');
-  if (Zahlsquats3 == 10){p.play("C",5,0.5)}
+  if (Kniebeugen == 10){p.play("C",5,0.5)}
   else (p.play("C",4,0.5))
    }
 
 
-function synthschwer(){
-    let p = Synth.createInstrument('piano');
-     p.play("C",4,0.5)}
-                   
                  
 
 // canvas gezchnet werden Linien
@@ -275,12 +266,12 @@ function uhrlos() {i =setInterval(tock, 1000); }
 function neu(){
   sec = 0;
   min =0;
-  Zahlsquats1 = 0;
+  untenzahl = 0;
   Zahlsquats2 = 0;
-  Zahlsquats3 = 0;
-  document.getElementById("A1").innerHTML = Zahlsquats1;
+  Kniebeugen = 0;
+  document.getElementById("A1").innerHTML = untenzahl;
   document.getElementById("A2").innerHTML = Zahlsquats2;
-  document.getElementById("A3").innerHTML = Zahlsquats3;
+  document.getElementById("A3").innerHTML = Kniebeugen;
   document.getElementById("wdiv").style.display =""
   document.getElementById("startb").style.display =""
   document.getElementById("Anzeige").style.display="none"
