@@ -20,6 +20,7 @@ var Zahlsquats1 = 0;
 var Zahlsquats2 = 0;
 var Zahlsquats3 = 0;
 var Probenanzahl = 500;
+var ss = 0; //situation Squat 0 = unten 1 = oben
 document.getElementById("canvas").style.display="none"
 document.getElementById("neub").style.display="none"
 document.getElementById("KniebA").style.display="none"
@@ -99,7 +100,8 @@ function zvar(){
   console.log("squatmodus")
 if (z > 20) {schwer1()} 
 if (z > 9.8 && z < 10.1){normal2()} 
-if (z < 0) {leicht3()}
+if (z < 0) {leicht3();
+  }
    }  
 
 function yvar(){
@@ -122,8 +124,8 @@ var firstExecution = 0; // Store the first execution time
 var interval = 300; // 2 millisekunden
 function schwer1() {
 
-    if (audioV == 1) {console.log(audioV)}
-    else if (audioV== 2) {synthschwer()}
+    if (audioV == 1) {console.log("audiv" + audioV)}
+    else if (audioV== 2 && ss ==1) {synthschwer()}
     else if (audioV== 3) {audioc()}
 
     var date = new Date();
@@ -137,6 +139,8 @@ function schwer1() {
     } else {
       console.log("zufrüh" + interval);
     }
+
+  if (ss == 1){ss = ss - 1;console.log("ss00 "+ ss)} // setzt den aktivierung zurück  SS
 }
 
 function normal2() {
@@ -157,8 +161,8 @@ function normal2() {
 }
 
 function leicht3() {
-  if (audioV == 1) {console.log(audioV)}
-  else if (audioV == 2) {synthleicht()}
+  if (audioV == 1) {console.log("audiV" + audioV)}
+  else if (audioV == 2) {} //synthleicht() -- rausgenommen damit nur 1 ton wenn vorher unten war
   else if (audioV == 3) {audioc()}
 
   var date = new Date();
@@ -171,6 +175,9 @@ function leicht3() {
   } else {
     console.log("zufrüh" +interval);
   }
+
+  if (ss == 0) {ss = ss + 1;console.log("ss11 "+ ss)} // startet die aktivierung
+  else {console.log("komischss" + ss)}
 }
 
 function synthleicht(){
