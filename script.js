@@ -125,7 +125,7 @@ var interval = 300; // 2 millisekunden
 function schwer1() {
 
     if (audioV == 1) {console.log("audiv" + audioV)}
-    else if (audioV== 2 && ss ==1) {synthschwer()}
+    else if (audioV== 2 ) {} // synthschwer()-- rausgenommen damit nur 1 ton wenn vorher unten war
     else if (audioV== 3) {audioc()}
 
     var date = new Date();
@@ -140,7 +140,9 @@ function schwer1() {
       console.log("zufrüh" + interval);
     }
 
-  if (ss == 1){ss = ss - 1;console.log("ss00 "+ ss)} // setzt den aktivierung zurück  SS
+
+  if (ss == 0) {ss = ss + 1;console.log("ss11 "+ ss)} // startet die aktivierung
+  else {console.log("komischss" + ss)}
 }
 
 function normal2() {
@@ -162,7 +164,7 @@ function normal2() {
 
 function leicht3() {
   if (audioV == 1) {console.log("audiV" + audioV)}
-  else if (audioV == 2) {} //synthleicht() -- rausgenommen damit nur 1 ton wenn vorher unten war
+  else if (audioV == 2 && ss ==1) {synthleicht()}  
   else if (audioV == 3) {audioc()}
 
   var date = new Date();
@@ -176,8 +178,8 @@ function leicht3() {
     console.log("zufrüh" +interval);
   }
 
-  if (ss == 0) {ss = ss + 1;console.log("ss11 "+ ss)} // startet die aktivierung
-  else {console.log("komischss" + ss)}
+  if (ss == 1){ss = ss - 1;console.log("ss00 "+ ss)} // setzt den aktivierung zurück  SS
+
 }
 
 function synthleicht(){
