@@ -1,7 +1,8 @@
 var modus = 1;
 var audioV = 0;
 var untenzahl = 0;
-var Kniebeugen = 0;
+var KB = 0;
+const KBspeich = 0;
 var Probenanzahl = 500;
 var ss = 0; //situation Squat 0 = unten 1 = oben
 document.getElementById("canvas").style.display="none"
@@ -19,6 +20,27 @@ var  img1 = document.createElement("img");
       startb.appendChild(img1);
       screen.orientation.unlock()
 }
+
+neuerTagTest()
+localStorage.setItem('zeitladenspeicher', +new Date);
+if (typeof localStorage.KBSPEICH ==="undefined") 
+{; document.getElementById("Gesamtanzeige").innerHTML =  "0"}
+else {document.getElementById("Gesamtanzeige").innerHTML =  localStorage.KBSPEICH};
+
+function neuerTagTest(){
+  ld = new Date(parseInt(localStorage.getItem('zeitladenspeicher')));
+  jd = new Date();
+  nld = parseInt(ld.getDate())
+  njd = parseInt(jd.getDate())
+  if (nld!=njd){LSGneu(),document.getElementById("t").innerHTML = "Guten Morgen"}
+  }
+  function LSGneu(){localStorage.clear(),document.getElementById("Gesamtanzeige").innerHTML = "0";}
+  
+
+
+
+
+
 
 var mo = document.getElementById("modus") 
 mo.addEventListener("change", function() {
@@ -77,27 +99,25 @@ function handleMotionEvent(event) {
 if (modus == 1){zvar(),document.getElementById("sensora").innerHTML = Math.round( z * 10 ) / 10; screen.orientation.lock("portrait")}
 if (modus == 2){yvar(),document.getElementById("sensora").innerHTML = Math.round( y * 10 ) / 10; screen.orientation.lock("portrait")}
 if (modus == 3){xvar(),document.getElementById("sensora").innerHTML = Math.round( x * 10 ) / 10; screen.orientation.lock("landscape-primary")}
-  
+                                    }  
 function zvar(){
   console.log("squatmodus")
 if (z < 5) {niedrigg()} 
 if (z > 15) {hochg()} 
-  }
-   }  
+               }
+     
 
 function yvar(){
    console.log("pullmodus")
      if (y < 0) {niedrigg()}
   if (y > 20) {hochg()} 
-
-  }   
+              }   
 
 function xvar(){
   console.log("VRmodus")
    if (x < 0) {niedrigg()}
    if (x > 20) {hochg()} 
-  
-   }   
+              }   
 
 
 
@@ -111,17 +131,10 @@ var milliseconds = date.getTime();
       untenzahl = untenzahl+ 1;
       document.getElementById("A1").innerHTML = untenzahl;
  if (ss == 0) {ss = ss + 1;console.log("ss11 "+ ss)} // startet die aktivierung
-  else {console.log("komischss" + ss)}
-
-    
-  } 
-  else {
-      console.log("zufrüh" + interval);
-    }
-
-
- 
-}
+ else {console.log("komischss" + ss)}
+    } 
+  else {console.log("zufrüh" + interval);}
+                 }
 
 
 function niedrigg() {
@@ -129,13 +142,22 @@ var date = new Date();
 var milliseconds = date.getTime(); 
   if((milliseconds - firstExecution) > interval && ss ==1) 
   {firstExecution = milliseconds;
-    Kniebeugen = Kniebeugen + 1;
-    document.getElementById("KB").innerHTML = Kniebeugen;
+    KB = KB + 1;
+    document.getElementById("KB").innerHTML = KB;
+    if (typeof(Storage) !== "undefined") {
+      if (localStorage.KBSPEICH) {localStorage.KBSPEICH= Number(localStorage.KBSPEICH)+1;} 
+      else {localStorage.KBSPEICH = 1;}
+                                     document.getElementById("Gesamtanzeige").innerHTML =  localStorage.KBSPEICH;
+                                     } else {document.getElementById("Gesamtanzeige").innerHTML = "Sorry, dein Speicher ist komisch";}
+  
+  
+  
+
+
     ss = ss - 1;console.log("ss00 "+ ss) // setzt den aktivierung zurück  SS
 
       if (audioV == 0) {console.log("audiV" + audioV)}
-      else if (audioV == 1) {synthleicht()}  
-    
+      else if (audioV == 1) {synthleicht()}   
   } 
 else {console.log("zufrüh" +interval);}
 
@@ -143,7 +165,10 @@ else {console.log("zufrüh" +interval);}
 
 function synthleicht(){
   let p = Synth.createInstrument('piano');
-  if (Kniebeugen == 10){p.play("C",5,0.5)}
+  if (KB === 10 || KB === 20 ||KB === 30 || KB ===40 ||KB === 50 ||
+    KB === 60 ||KB === 70 || KB ===80 || KB ===90 || KB ===100 || KB ===110 || KB ===120
+    ||KB === 130 || KB ===140 || KB ===150 || KB ===160 || KB ===170 
+    || KB ===180 || KB ===190 || KB ===200  ){p.play("C",5,0.5)}
   else (p.play("C",4,0.5))
    }
 
@@ -164,6 +189,7 @@ linien.x = getInitArr(Probenanzahl);
 
 // DiviceMotionEvent ist spezialfunktion für den Sensor
 function start() {
+  document.getElementById("LSGdiv").style.display ="none"
 document.getElementById("wdiv").style.display ="none"
 document.getElementById("startb").style.display ="none"
 document.getElementById("canvas").style.display=""
@@ -268,10 +294,10 @@ function neu(){
   min =0;
   untenzahl = 0;
   Zahlsquats2 = 0;
-  Kniebeugen = 0;
+  KB = 0;
   document.getElementById("A1").innerHTML = untenzahl;
   document.getElementById("A2").innerHTML = Zahlsquats2;
-  document.getElementById("A3").innerHTML = Kniebeugen;
+  document.getElementById("A3").innerHTML = KB;
   document.getElementById("wdiv").style.display =""
   document.getElementById("startb").style.display =""
   document.getElementById("Anzeige").style.display="none"
