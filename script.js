@@ -5,6 +5,9 @@ var KB = 0;
 const KBspeich = 0;
 var Probenanzahl = 500;
 var ss = 0; //situation Squat 0 = unten 1 = oben
+var GL =0;
+var GS = 20;
+
 document.getElementById("canvas").style.display="none"
 document.getElementById("neub").style.display="none"
 document.getElementById("KniebA").style.display="none"
@@ -79,6 +82,19 @@ if (mo.value == "3"){modus = 3;
                  }
                                         })  
 
+var glw = document.getElementById("GLW") 
+glw.addEventListener("change", function() {
+if      (glw.value == "1"){GL = 0;console.log("GL0=" + GL) }
+else if (glw.value == "2"){GL = 5;console.log("GL5=" + GL)}
+else if (glw.value == "3"){GL = 8;console.log("GL8=" + GL)}
+                                                  })  
+
+var gsw = document.getElementById("GSW") 
+gsw.addEventListener("change", function() {
+if      (gsw.value == "1"){GS = 20;console.log("GS20=" + GS) }
+else if (gsw.value == "2"){GS = 15;console.log("GS15=" + GS)}
+else if (gsw.value == "3"){GS = 12;console.log("GS12=" + GS)}
+})                                                                                                    
 
 
 var ach = document.getElementById("audioW") 
@@ -102,21 +118,20 @@ if (modus == 3){xvar(),document.getElementById("sensora").innerHTML = Math.round
                                       
 function zvar(){
   console.log("squatmodus")
-if (z < 5) {niedrigg()} 
-if (z > 15) {hochg()} 
+if (z < GL) {niedrigg()} 
+if (z > GS) {hochg()} 
                }
      
-
 function yvar(){
    console.log("pullmodus")
-     if (y < 0) {niedrigg()}
-  if (y > 20) {hochg()} 
+     if (y < GL) {niedrigg()}
+  if (y > GS) {hochg()} 
               }   
 
 function xvar(){
   console.log("VRmodus")
-   if (x < 0) {niedrigg()}
-   if (x > 20) {hochg()} 
+   if (x < GL) {niedrigg()}
+   if (x > GS) {hochg()} 
               }   
 
             }
