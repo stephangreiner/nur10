@@ -99,7 +99,7 @@ function handleMotionEvent(event) {
 if (modus == 1){zvar(),document.getElementById("sensora").innerHTML = Math.round( z * 10 ) / 10; screen.orientation.lock("portrait")}
 if (modus == 2){yvar(),document.getElementById("sensora").innerHTML = Math.round( y * 10 ) / 10; screen.orientation.lock("portrait")}
 if (modus == 3){xvar(),document.getElementById("sensora").innerHTML = Math.round( x * 10 ) / 10; screen.orientation.lock("landscape-primary")}
-                                    }  
+                                      
 function zvar(){
   console.log("squatmodus")
 if (z < 5) {niedrigg()} 
@@ -119,10 +119,10 @@ function xvar(){
    if (x > 20) {hochg()} 
               }   
 
-
+            }
 
 var firstExecution = 0; // Store the first execution time
-var interval = 300; // 2 millisekunden
+var interval = 100; // 2 millisekunden
 function hochg() {
 var date = new Date();
 var milliseconds = date.getTime(); 
