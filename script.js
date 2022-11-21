@@ -5,8 +5,8 @@ var KB = 0;
 const KBspeich = 0;
 var Probenanzahl = 500;
 var ss = 0; //situation Squat 0 = unten 1 = oben
-var GL =0;
-var GS = 20;
+var GL = 8;
+var GS = 12;
 
 document.getElementById("canvas").style.display="none"
 document.getElementById("neub").style.display="none"
@@ -84,16 +84,16 @@ if (mo.value == "3"){modus = 3;
 
 var glw = document.getElementById("GLW") 
 glw.addEventListener("change", function() {
-if      (glw.value == "1"){GL = 0;console.log("GL0=" + GL) }
+if      (glw.value == "1"){GL = 8;console.log("GL8=" + GL) }
 else if (glw.value == "2"){GL = 5;console.log("GL5=" + GL)}
-else if (glw.value == "3"){GL = 8;console.log("GL8=" + GL)}
+else if (glw.value == "3"){GL = 0;console.log("GL0=" + GL)}
                                                   })  
 
 var gsw = document.getElementById("GSW") 
 gsw.addEventListener("change", function() {
-if      (gsw.value == "1"){GS = 20;console.log("GS20=" + GS) }
+if      (gsw.value == "1"){GS = 12;console.log("GS12=" + GS) }
 else if (gsw.value == "2"){GS = 15;console.log("GS15=" + GS)}
-else if (gsw.value == "3"){GS = 12;console.log("GS12=" + GS)}
+else if (gsw.value == "3"){GS = 20;console.log("GS20=" + GS)}
 })                                                                                                    
 
 
@@ -117,24 +117,20 @@ if (modus == 2){yvar(),document.getElementById("sensora").innerHTML = Math.round
 if (modus == 3){xvar(),document.getElementById("sensora").innerHTML = Math.round( x * 10 ) / 10; screen.orientation.lock("landscape-primary")}
                                       
 function zvar(){
-  console.log("squatmodus")
+console.log("squatmodus")
 if (z < GL) {niedrigg()} 
-if (z > GS) {hochg()} 
-               }
-     
+if (z > GS) {hochg()}} 
+                 
 function yvar(){
-   console.log("pullmodus")
-     if (y < GL) {niedrigg()}
-  if (y > GS) {hochg()} 
-              }   
-
+console.log("pullmodus")
+if (y < GL) {niedrigg()}
+if (y > GS) {hochg()}}
+                 
 function xvar(){
-  console.log("VRmodus")
-   if (x < GL) {niedrigg()}
-   if (x > GS) {hochg()} 
-              }   
-
-            }
+console.log("VRmodus")
+if (x < GL) {niedrigg()}
+if (x > GS) {hochg()}}
+                                      }
 
 var firstExecution = 0; // Store the first execution time
 var interval = 100; // 2 millisekunden
@@ -155,20 +151,15 @@ var milliseconds = date.getTime();
 function niedrigg() {
 var date = new Date();
 var milliseconds = date.getTime(); 
-  if((milliseconds - firstExecution) > interval && ss ==1) 
-  {firstExecution = milliseconds;
+if((milliseconds - firstExecution) > interval && ss ==1) // die Verzögerung ist wahrscheinlich unnötig
+  { firstExecution = milliseconds;
     KB = KB + 1;
     document.getElementById("KB").innerHTML = KB;
     if (typeof(Storage) !== "undefined") {
-      if (localStorage.KBSPEICH) {localStorage.KBSPEICH= Number(localStorage.KBSPEICH)+1;} 
-      else {localStorage.KBSPEICH = 1;}
-                                     document.getElementById("Gesamtanzeige").innerHTML =  localStorage.KBSPEICH;
+    if (localStorage.KBSPEICH) {localStorage.KBSPEICH= Number(localStorage.KBSPEICH)+1;} 
+    else {localStorage.KBSPEICH = 1;}
+       document.getElementById("Gesamtanzeige").innerHTML =  localStorage.KBSPEICH;
                                      } else {document.getElementById("Gesamtanzeige").innerHTML = "Sorry, dein Speicher ist komisch";}
-  
-  
-  
-
-
     ss = ss - 1;console.log("ss00 "+ ss) // setzt den aktivierung zurück  SS
 
       if (audioV == 0) {console.log("audiV" + audioV)}
@@ -183,13 +174,13 @@ function synthleicht(){
   if (KB === 10 || KB === 20 ||KB === 30 || KB ===40 ||KB === 50 ||
     KB === 60 ||KB === 70 || KB ===80 || KB ===90 || KB ===100 || KB ===110 || KB ===120
     ||KB === 130 || KB ===140 || KB ===150 || KB ===160 || KB ===170 
-    || KB ===180 || KB ===190 || KB ===200  ){p.play("C",5,0.5)}
+    || KB ===180 || KB ===190 || KB ===200 ||KB === 210 || KB ===220 || KB ===230 || KB ===240 || KB ===250 
+    || KB ===260 || KB ===270 || KB ===280 ){p.play("C",5,0.5)}
   else (p.play("C",4,0.5))
    }
 
 
                  
-
 // canvas gezchnet werden Linien
 var canvas = document.getElementById('canvas');
 var W = canvas.width;
@@ -204,7 +195,7 @@ linien.x = getInitArr(Probenanzahl);
 
 // DiviceMotionEvent ist spezialfunktion für den Sensor
 function start() {
-  document.getElementById("LSGdiv").style.display ="none"
+document.getElementById("LSGdiv").style.display ="none"
 document.getElementById("wdiv").style.display ="none"
 document.getElementById("startb").style.display ="none"
 document.getElementById("canvas").style.display=""
