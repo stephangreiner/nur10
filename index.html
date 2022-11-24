@@ -19,8 +19,10 @@
           }
           
               </script>  
-        
+ 
+
 </head>
+<div id="startdiv">
  <button id="startb" onclick="start()"></button>    
 <body>
 <div id="wdiv">
@@ -31,21 +33,31 @@
         <option value="3"> squat quer</option> 
      </select> 
 
+            
+     <select id="ansichtw"> 
+      <option value="1"> kreis</option>
+      <option value="2"> canvas</option>  
+   </select> 
      
       <select id="audioW">
         <option value="0">🔇</option>
         <option value="1">🔈ding10dong </option>  
       </select>
 
-
-
 </div>
-<div id="LSGdiv">
+<div id="Lokalerspeicherdiv">
   Heute: <div id="Gesamtanzeige"></div> 
   <div id="t"></div> 
 </div> 
+</div>
 
-<div id= "Anzeige">
+<div id="aktivdiv">
+  <button id= "oneb"><a id="Anzahl">0</a></button>
+  <button id="zurueck" onclick="neu()">x</button> 
+</div>
+
+
+<div id= "aktivcanvasdiv">
         <div id = "canvasdiv">
               <canvas id="canvas" width="360" height="300"></canvas>
         </div>
@@ -54,9 +66,9 @@
         <div id =KniebA> 
         KB : <a id="KB">0</a><br>
        
- <button id="neub" onclick="neu()">neu</button>
-        <button id="" onclick="hochg()">hg</button>
-        <button id="" onclick="niedrigg()">ng</button>
+
+        <button id ="GLW_B" onclick="hochg()">+</button>
+        <button id ="GSW_B" onclick="niedrigg()">+</button>
         <br>
         <select id="GLW"> 
           <option value="1"> 8</option>
@@ -70,12 +82,10 @@
      </select> 
 untere <a id="A1">0</a><br>
         </div>
-       
+ <button id="zurueck2" onclick="neu()">x</button>       
 </div>
 
-<div id="ZAnzeige">  
-G- Wert jetzt: <a id= "sensora" >zyz</a>
-</div>
+
 <script src="audiosynth.js"></script>
 <script type="text/JavaScript" src="script.js"></script>
 </body>

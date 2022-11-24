@@ -7,11 +7,27 @@ var Probenanzahl = 500;
 var ss = 0; //situation Squat 0 = unten 1 = oben
 var GL = 8;
 var GS = 12;
+var AV = 1;
 
-document.getElementById("canvas").style.display="none"
-document.getElementById("neub").style.display="none"
-document.getElementById("KniebA").style.display="none"
-document.getElementById("ZAnzeige").style.display="none"
+document.getElementById("aktivcanvasdiv").style.display="none"
+document.getElementById("aktivdiv").style.display="none"
+
+var as = document.getElementById("ansichtw") 
+as.addEventListener("change", function() {
+if      (as.value == "1"){AV = 1,console.log("AV1W" + AV)}
+else if (as.value == "2"){AV = 2,console.log("AV2W" + AV)}
+})      
+// DiviceMotionEvent ist spezialfunktion für den Sensor
+function start() {
+document.getElementById("startdiv").style.display ="none"  
+if      (AV == 1){document.getElementById("aktivdiv").style.display = ""; document.getElementById("aktivcanvasdiv").style.display = "none";console.log("AV1" + AV)}
+else if (AV == 2){document.getElementById("aktivcanvasdiv").style.display = ""; document.getElementById("aktivdiv").style.display = "none";console.log("AV2" + AV)}
+else {console.log("canvasanzeige")}
+  uhrlos()
+  addEventListener("devicemotion", handleMotionEvent);
+  addEventListener("devicemotion", doSample);
+  tick();  
+  }
 
 standartbild()
 function standartbild(){
@@ -35,15 +51,9 @@ function neuerTagTest(){
   jd = new Date();
   nld = parseInt(ld.getDate())
   njd = parseInt(jd.getDate())
-  if (nld!=njd){LSGneu(),document.getElementById("t").innerHTML = "Guten Morgen"}
-  }
+  if (nld!=njd){LSGneu(),document.getElementById("t").innerHTML = "Guten Morgen"}}
   function LSGneu(){localStorage.clear(),document.getElementById("Gesamtanzeige").innerHTML = "0";}
   
-
-
-
-
-
 
 var mo = document.getElementById("modus") 
 mo.addEventListener("change", function() {
@@ -94,9 +104,9 @@ gsw.addEventListener("change", function() {
 if      (gsw.value == "1"){GS = 12;console.log("GS12=" + GS) }
 else if (gsw.value == "2"){GS = 15;console.log("GS15=" + GS)}
 else if (gsw.value == "3"){GS = 20;console.log("GS20=" + GS)}
-})                                                                                                    
+})    
 
-
+                                                                                              
 var ach = document.getElementById("audioW") 
 ach.addEventListener("change", function() {
     if      (ach.value == "0"){audioV = 0; document.getElementById("audioW").style.backgroundColor = "#737373"}
@@ -155,6 +165,7 @@ if((milliseconds - firstExecution) > interval && ss ==1) // die Verzögerung ist
   { firstExecution = milliseconds;
     KB = KB + 1;
     document.getElementById("KB").innerHTML = KB;
+    document.getElementById("Anzahl").innerHTML = KB;
     if (typeof(Storage) !== "undefined") {
     if (localStorage.KBSPEICH) {localStorage.KBSPEICH= Number(localStorage.KBSPEICH)+1;} 
     else {localStorage.KBSPEICH = 1;}
@@ -193,20 +204,6 @@ linien.z = getInitArr(Probenanzahl);
 linien.y = getInitArr(Probenanzahl);
 linien.x = getInitArr(Probenanzahl);
 
-// DiviceMotionEvent ist spezialfunktion für den Sensor
-function start() {
-document.getElementById("LSGdiv").style.display ="none"
-document.getElementById("wdiv").style.display ="none"
-document.getElementById("startb").style.display ="none"
-document.getElementById("canvas").style.display=""
-document.getElementById("neub").style.display=""
-document.getElementById("KniebA").style.display=""
-
-uhrlos()
-addEventListener("devicemotion", handleMotionEvent);
-addEventListener("devicemotion", doSample);
-tick();  
-}
 
 
 // wird y dann auch gezeichnet ?
@@ -296,20 +293,9 @@ function tock(){
 function uhrlos() {i =setInterval(tock, 1000); }
    
 function neu(){
-  sec = 0;
-  min =0;
-  untenzahl = 0;
-  Zahlsquats2 = 0;
-  KB = 0;
-  document.getElementById("A1").innerHTML = untenzahl;
-  document.getElementById("A2").innerHTML = Zahlsquats2;
-  document.getElementById("A3").innerHTML = KB;
-  document.getElementById("wdiv").style.display =""
-  document.getElementById("startb").style.display =""
-  document.getElementById("Anzeige").style.display="none"
-  removeEventListener("devicemotion", handleMotionEvent)
-  removeEventListener("devicemotion", doSample)
-  clearInterval(i)
-}
+location.reload()
+LSGneu(),
+document.getElementById("t").innerHTML = "Guten Morgen"}
+
 
 
