@@ -14,14 +14,14 @@ document.getElementById("aktivdiv").style.display="none"
 
 var as = document.getElementById("ansichtw") 
 as.addEventListener("change", function() {
-if      (as.value == "1"){AV = 1,console.log("AV1W" + AV)}
-else if (as.value == "2"){AV = 2,console.log("AV2W" + AV)}
+if      (as.value == "1"){AV = 1}
+else if (as.value == "2"){AV = 2}
 })      
 // DiviceMotionEvent ist spezialfunktion für den Sensor
 function start() {
 document.getElementById("startdiv").style.display ="none"  
-if      (AV == 1){document.getElementById("aktivdiv").style.display = ""; document.getElementById("aktivcanvasdiv").style.display = "none";console.log("AV1" + AV)}
-else if (AV == 2){document.getElementById("aktivcanvasdiv").style.display = ""; document.getElementById("aktivdiv").style.display = "none";console.log("AV2" + AV)}
+if      (AV == 1){document.getElementById("aktivdiv").style.display = ""; document.getElementById("aktivcanvasdiv").style.display = "none"}
+else if (AV == 2){document.getElementById("aktivcanvasdiv").style.display = ""; document.getElementById("aktivdiv").style.display = "none"}
 else {console.log("canvasanzeige")}
   uhrlos()
   addEventListener("devicemotion", handleMotionEvent);
@@ -43,8 +43,8 @@ var  img1 = document.createElement("img");
 neuerTagTest()
 localStorage.setItem('zeitladenspeicher', +new Date);
 if (typeof localStorage.KBSPEICH ==="undefined") 
-{; document.getElementById("Gesamtanzeige").innerHTML =  "0"}
-else {document.getElementById("Gesamtanzeige").innerHTML =  localStorage.KBSPEICH};
+{; document.getElementById("speicheranzeige").innerHTML =  "0"}
+else {document.getElementById("speicheranzeige").innerHTML =  localStorage.KBSPEICH};
 
 function neuerTagTest(){
   ld = new Date(parseInt(localStorage.getItem('zeitladenspeicher')));
@@ -52,7 +52,7 @@ function neuerTagTest(){
   nld = parseInt(ld.getDate())
   njd = parseInt(jd.getDate())
   if (nld!=njd){LSGneu(),document.getElementById("t").innerHTML = "Guten Morgen"}}
-  function LSGneu(){localStorage.clear(),document.getElementById("Gesamtanzeige").innerHTML = "0";}
+  function LSGneu(){localStorage.clear(),document.getElementById("speicheranzeige").innerHTML = "0";}
   
 
 var mo = document.getElementById("modus") 
@@ -94,16 +94,16 @@ if (mo.value == "3"){modus = 3;
 
 var glw = document.getElementById("GLW") 
 glw.addEventListener("change", function() {
-if      (glw.value == "1"){GL = 8;console.log("GL8=" + GL) }
-else if (glw.value == "2"){GL = 5;console.log("GL5=" + GL)}
-else if (glw.value == "3"){GL = 0;console.log("GL0=" + GL)}
+if      (glw.value == "1"){GL = 8}
+else if (glw.value == "2"){GL = 5}
+else if (glw.value == "3"){GL = 0}
                                                   })  
 
 var gsw = document.getElementById("GSW") 
 gsw.addEventListener("change", function() {
-if      (gsw.value == "1"){GS = 12;console.log("GS12=" + GS) }
-else if (gsw.value == "2"){GS = 15;console.log("GS15=" + GS)}
-else if (gsw.value == "3"){GS = 20;console.log("GS20=" + GS)}
+if      (gsw.value == "1"){GS = 12}
+else if (gsw.value == "2"){GS = 15}
+else if (gsw.value == "3"){GS = 20}
 })    
 
                                                                                               
@@ -169,16 +169,14 @@ if((milliseconds - firstExecution) > interval && ss ==1) // die Verzögerung ist
     if (typeof(Storage) !== "undefined") {
     if (localStorage.KBSPEICH) {localStorage.KBSPEICH= Number(localStorage.KBSPEICH)+1;} 
     else {localStorage.KBSPEICH = 1;}
-       document.getElementById("Gesamtanzeige").innerHTML =  localStorage.KBSPEICH;
-                                     } else {document.getElementById("Gesamtanzeige").innerHTML = "Sorry, dein Speicher ist komisch";}
+       document.getElementById("speicheranzeige").innerHTML =  localStorage.KBSPEICH;
+                                     } else {document.getElementById("speicheranzeige").innerHTML = "Sorry, dein Speicher ist komisch";}
     ss = ss - 1;console.log("ss00 "+ ss) // setzt den aktivierung zurück  SS
 
       if (audioV == 0) {console.log("audiV" + audioV)}
       else if (audioV == 1) {synthleicht()}   
-  } 
-else {console.log("zufrüh" +interval);}
-
-                     }
+  } else {console.log("zufrüh oder komisch");}
+                    }
 
 function synthleicht(){
   let p = Synth.createInstrument('piano');
@@ -292,10 +290,7 @@ function tock(){
               }
 function uhrlos() {i =setInterval(tock, 1000); }
    
-function neu(){
-location.reload()
-LSGneu(),
-document.getElementById("t").innerHTML = "Guten Morgen"}
+function neu(){location.reload()}
 
 
 
