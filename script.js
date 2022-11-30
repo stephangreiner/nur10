@@ -9,8 +9,52 @@ var GL = 8;
 var GS = 12;
 var AV = 1;
 
+window.onload = function () {
+localStorage.removeItem("KBSPEICHneu")
+document.getElementById("monat").innerHTML =  localStorage.KBSPEICHmonat;
 document.getElementById("aktivcanvasdiv").style.display="none"
 document.getElementById("aktivdiv").style.display="none"
+}
+
+
+neuerTagTest()
+localStorage.setItem('KBzeitspeicher', +new Date);
+if (typeof localStorage.KBSPEICH ==="undefined") 
+{; document.getElementById("Tagesanzeige").innerHTML =  "0"}
+else {document.getElementById("Tagesanzeige").innerHTML =  localStorage.KBSPEICH};
+
+function neuerTagTest(){
+  ld = new Date(parseInt(localStorage.getItem('KBzeitspeicher')));
+  jd = new Date();
+  nld = parseInt(ld.getDate())
+  njd = parseInt(jd.getDate())
+  if (nld!=njd){LSGneu(),document.getElementById("t").innerHTML = "Guten Morgen"}}
+
+
+
+
+  function LSGneu(){
+    localStorage.removeItem("KBSPEICH"),
+    document.getElementById("Tagesanzeige").innerHTML = "0";}
+
+    
+    
+    
+    function neuerMonatTest(){
+         ld = new Date(parseInt(localStorage.getItem('KBzeitspeicher')));
+         jd = new Date();
+         nld = parseInt(ld.getMonth())
+         njd = parseInt(jd.getMonth())
+         if (nld!=njd){monatneu()}
+         console.log("monatpeicher = ")
+         console.log("monatjezt = ")
+         }
+    
+function monatneu(){    
+localStorage.removeItem("KBSPEICHmonat"),
+document.getElementById("monat").innerHTML = "0";}
+              
+              
 
 var as = document.getElementById("ansichtw") 
 as.addEventListener("change", function() {
@@ -40,19 +84,7 @@ var  img1 = document.createElement("img");
       screen.orientation.unlock()
 }
 
-neuerTagTest()
-localStorage.setItem('zeitladenspeicher', +new Date);
-if (typeof localStorage.KBSPEICH ==="undefined") 
-{; document.getElementById("speicheranzeige").innerHTML =  "0"}
-else {document.getElementById("speicheranzeige").innerHTML =  localStorage.KBSPEICH};
 
-function neuerTagTest(){
-  ld = new Date(parseInt(localStorage.getItem('zeitladenspeicher')));
-  jd = new Date();
-  nld = parseInt(ld.getDate())
-  njd = parseInt(jd.getDate())
-  if (nld!=njd){LSGneu(),document.getElementById("t").innerHTML = "Guten Morgen"}}
-  function LSGneu(){localStorage.clear(),document.getElementById("speicheranzeige").innerHTML = "0";}
   
 
 var mo = document.getElementById("modus") 
@@ -166,11 +198,24 @@ if((milliseconds - firstExecution) > interval && ss ==1) // die Verzögerung ist
     KB = KB + 1;
     document.getElementById("KB").innerHTML = KB;
     document.getElementById("Anzahl").innerHTML = KB;
+
     if (typeof(Storage) !== "undefined") {
     if (localStorage.KBSPEICH) {localStorage.KBSPEICH= Number(localStorage.KBSPEICH)+1;} 
     else {localStorage.KBSPEICH = 1;}
-       document.getElementById("speicheranzeige").innerHTML =  localStorage.KBSPEICH;
-                                     } else {document.getElementById("speicheranzeige").innerHTML = "Sorry, dein Speicher ist komisch";}
+    document.getElementById("Tagesanzeige").innerHTML =  localStorage.KBSPEICH;
+   } else {document.getElementById("Tagesanzeige").innerHTML = "komisch";}
+
+    if (typeof(Storage) !== "undefined") {
+     if (localStorage.KBSPEICHneu) {localStorage.KBSPEICHneu= Number(localStorage.KBSPEICHneu)+1;} 
+     else {localStorage.KBSPEICHneu = 1;}
+   } else {console.log("komisch")}
+
+   if (typeof(Storage) !== "undefined") {
+     if (localStorage.KBSPEICHmonat) {localStorage.KBSPEICHmonat= Number(localStorage.KBSPEICHmonat)+1;} 
+     else {localStorage.KBSPEICHmonat = 1;}
+   } else {console.log("komisch")}
+
+
     ss = ss - 1;console.log("ss00 "+ ss) // setzt den aktivierung zurück  SS
 
       if (audioV == 0) {console.log("audiV" + audioV)}
