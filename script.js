@@ -16,7 +16,10 @@ localStorage.removeItem("KBSPEICHneu");
 document.getElementById("monat").innerHTML =  localStorage.KBSPEICHmonat;
 document.getElementById("aktivcanvasdiv").style.display="none";
 document.getElementById("aktivdiv").style.display="none";
-}
+document.getElementById("sta_div").style.display = "none";
+                            }
+
+
 
 localStorage.setItem('KBzeitspeicher', +new Date);
 if (typeof localStorage.KBSPEICH ==="undefined") 
@@ -48,7 +51,18 @@ function monatneu(){
   localStorage.removeItem("KBSPEICHmonat"),
   document.getElementById("monat").innerHTML = "0";}
               
-              
+
+function sta_zeigen(){
+d = new Date();  
+document.getElementById("datum").innerHTML = d
+document.getElementById("mittelwert").innerHTML = localStorage.KBSPEICHmonat  / d.getDate()
+document.getElementById("sta_div").style.display = "";
+document.getElementById("aktivcanvasdiv").style.display="none";
+document.getElementById("aktivdiv").style.display="none";
+document.getElementById("startdiv").style.display="none";
+
+  }
+
 
 var as = document.getElementById("ansichtw") 
 as.addEventListener("change", function() {

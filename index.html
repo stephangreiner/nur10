@@ -45,16 +45,37 @@
       </select>
 
 </div>
-<div id="LSGdiv">
-  Heute: <a id="Tagesanzeige"></a> <br>
-  Monat: <a id="monat"></a> <br>
-  <div id="t"></div>
-</div> 
+
+<button id="sta_b" onclick="sta_zeigen()">statistik</button>
 </div>
+ <div id="sta_div">
+
+
+  <table id="tabel">
+    <tr>
+      <td>Heute:</td>
+      <td> <a id="Tagesanzeige"></a></td>
+     
+    </tr>
+    <tr>
+      <td>Monat:</td>
+      <td><a id="monat"></a></td>
+    </tr>
+    <tr>
+      <td>&empty; - Monat:</td>
+      <td><a id="mittelwert"></td>
+    </tr>
+  </table>
+  <br><br>
+  <div id="datum"></div>
+  <div id="t"></div>
+  <button class="zurueck" onclick="neu()">x</button>   
+</div> 
+
 
 <div id="aktivdiv">
   <button id= "oneb"><a id="Anzahl">0</a></button>
-  <button id="zurueck" onclick="neu()">x</button> 
+  <button class="zurueck" onclick="neu()">x</button> 
 </div>
 
 
@@ -83,7 +104,7 @@
      </select> 
 untere <a id="A1">0</a><br>
         </div>
- <button id="zurueck2" onclick="neu()">x</button>       
+ <button class="zurueck" onclick="neu()">x</button>       
 </div>
 
 

@@ -35,10 +35,28 @@ align-items: center;
             align-items: center;
                  } 
 
-            #Tagesanzeige,#LSGdiv{
-            text-align: center;
-            color: white;}
+            #sta_b{
+            
+            background-color: #00000012;
+            color: gray;
 
+          }
+
+
+            #sta_div{
+              display:flex;/* ist flexbox body -> damit die child divs im fixed Raum fer */
+              flex-direction: column;
+              justify-content:flex-start;
+              align-items: center; 
+              margin: 10%;
+              color: white;}
+           
+            #tabel{
+             width: 50%;
+      
+           }
+
+            
      
              #modus,#audioW,#ansichtw{
              background-color: rgb(115, 115, 115);
@@ -90,11 +108,12 @@ justify-content:space-around;
                     color: rgb(255, 255, 255);
                     font-size: 400%;
                    }
-                   #zurueck, #zurueck2 {
+                   .zurueck{
                        background-color: rgba(255, 255, 255, 0.427);
                        color: rgb(7, 6, 6);
                        width: 10%;
                        height: 5%;
+                       margin: 5%;
                        border: none;
                        cursor: pointer;
                        margin-left: auto;/* ist child von flexbox-parent aktivdiv -> nach links-> damit es andere Items nicht mitzieht eine order weiter */
