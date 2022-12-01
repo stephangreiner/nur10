@@ -1,101 +1,72 @@
 
 
 // Set a name for the current cache
-var cacheName = 'Kniebv1'; 
 
-// Default files to always cache
-var cacheFiles = [
- 
-]
+var cacheName = 'Kniebv1';
+var cacheAssets = [
 
-    // e.waitUntil Delays the event until the Promise is resolved
-	// Open the cache
-	// Add all the default files to the cache
-	// end e.waitUntil
-self.addEventListener('install', function(e) {
-    console.log('[ServiceWorker] Installed');
-    e.waitUntil(
-	    caches.open(cacheName).then(function(cache) {	
-			console.log('[ServiceWorker] Caching cacheFiles');
-			return cache.addAll(cacheFiles);
-	    })
-	); 
-});
+];
 
-
-self.addEventListener('activate', function(e) {
-    console.log('[ServiceWorker] Activated');
-
-    e.waitUntil(
-
-    	// Get all the cache keys (cacheName)
-		caches.keys().then(function(cacheNames) {
-			return Promise.all(cacheNames.map(function(thisCacheName) {
-
-				// If a cached item is saved under a previous cacheName
-				if (thisCacheName !== cacheName) {
-
-					// Delete that cached file
-					console.log('[ServiceWorker] Removing Cached Files from Cache - ', thisCacheName);
-					return caches.delete(thisCacheName);
-				}
-			}));
+// Call install Event
+	// Wait until promise is finished
+	// When everything is set
+self.addEventListener('install', e => {
+	e.waitUntil(
+		caches.open(cacheName)
+		.then(cache => {
+			console.log(`Service Worker: Caching Files: ${cache}`);
+			cache.addAll(cacheAssets)			
+				.then(() => self.skipWaiting())
 		})
-	); // end e.waitUntil
+	);
+})
 
-});
-
-
-self.addEventListener('fetch', function(e) {
-	console.log('[ServiceWorker] Fetch', e.request.url);
-
-	// e.respondWidth Responds to the fetch event
-	e.respondWith(
-
-		// Check in cache for the request being made
-		caches.match(e.request)
-
-
-			.then(function(response) {
-
-				// If the request is in the cache
-				if ( response ) {
-					console.log("[ServiceWorker] Found in Cache", e.request.url, response);
-					// Return the cached version
-					return response;
-				}
-
-				// If the request is NOT in the cache, fetch and cache
-
-				var requestClone = e.request.clone();
-				return fetch(requestClone)
-					.then(function(response) {
-
-						if ( !response ) {
-							console.log("[ServiceWorker] No response from fetch ")
-							return response;
+// Call Activate Event
+// Clean up old caches by looping through all of the
+	// caches and deleting any old caches or caches that
+	// are not defined in the list
+self.addEventListener('activate', e => {
+	console.log('Service Worker: Activated');
+	e.waitUntil(
+		caches.keys().then(cacheNames => {
+			return Promise.all(
+				cacheNames.map(
+					cache => {
+						if (cache !== cacheName) {
+							console.log('Service Worker: Clearing Old Cache');
+							return caches.delete(cache);
 						}
+					}
+				)
+			)
+		})
+	);
+})
 
-						var responseClone = response.clone();
+var cacheName = 'Kniebv1';
 
-						//  Open the cache
-						caches.open(cacheName).then(function(cache) {
+// Call Fetch Event
+	// The response is a stream and in order the browser
+			// to consume the response and in the same time the
+			// cache consuming the response it needs to be
+			// cloned in order to have two streams.
+// Open cache
+	// Add response to cache
 
-							// Put the fetched response in the cache
-							cache.put(e.request, responseClone);
-							console.log('[ServiceWorker] New Data Cached', e.request.url);
-
-							// Return the response
-							return response;
-			
-				        }); // end caches.open
-
-					})
-					.catch(function(err) {
-						console.log('[ServiceWorker] Error Fetching & Caching New Data', err);
-					});
-
-
-			}) // end caches.match(e.request)
-	); // end e.respondWith
+self.addEventListener('fetch', e => {
+	console.log('Service Worker: Fetching');
+	e.respondWith(
+		fetch(e.request)
+		.then(res => {	
+			const resClone = res.clone();	
+			caches.open(cacheName)
+				.then(cache => {		
+					cache.put(e.request, resClone);
+				});
+			return res;
+		}).catch(
+			err => caches.match(e.request)
+			.then(res => res)
+		)
+	);
 });

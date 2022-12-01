@@ -4,23 +4,23 @@ var untenzahl = 0;
 var KB = 0;
 const KBspeich = 0;
 var Probenanzahl = 500;
-var ss = 0; //situation Squat 0 = unten 1 = oben
+var ss = 0; 
 var GL = 8;
 var GS = 12;
 var AV = 1;
 
 window.onload = function () {
-localStorage.removeItem("KBSPEICHneu")
+neuerTagTest();
+neuerMonatTest();  
+localStorage.removeItem("KBSPEICHneu");
 document.getElementById("monat").innerHTML =  localStorage.KBSPEICHmonat;
-document.getElementById("aktivcanvasdiv").style.display="none"
-document.getElementById("aktivdiv").style.display="none"
+document.getElementById("aktivcanvasdiv").style.display="none";
+document.getElementById("aktivdiv").style.display="none";
 }
 
-
-neuerTagTest()
 localStorage.setItem('KBzeitspeicher', +new Date);
 if (typeof localStorage.KBSPEICH ==="undefined") 
-{; document.getElementById("Tagesanzeige").innerHTML =  "0"}
+{document.getElementById("Tagesanzeige").innerHTML =  "0"}
 else {document.getElementById("Tagesanzeige").innerHTML =  localStorage.KBSPEICH};
 
 function neuerTagTest(){
@@ -30,29 +30,23 @@ function neuerTagTest(){
   njd = parseInt(jd.getDate())
   if (nld!=njd){LSGneu(),document.getElementById("t").innerHTML = "Guten Morgen"}}
 
+function LSGneu(){
+  localStorage.removeItem("KBSPEICH"),
+  document.getElementById("Tagesanzeige").innerHTML = "0";}
 
-
-
-  function LSGneu(){
-    localStorage.removeItem("KBSPEICH"),
-    document.getElementById("Tagesanzeige").innerHTML = "0";}
-
-    
-    
-    
-    function neuerMonatTest(){
+function neuerMonatTest(){
          ld = new Date(parseInt(localStorage.getItem('KBzeitspeicher')));
          jd = new Date();
          nld = parseInt(ld.getMonth())
          njd = parseInt(jd.getMonth())
          if (nld!=njd){monatneu()}
-         console.log("monatpeicher = ")
-         console.log("monatjezt = ")
+         console.log("monatpeicher = " + nld)
+         console.log("monatjezt = " + njd) 
          }
     
 function monatneu(){    
-localStorage.removeItem("KBSPEICHmonat"),
-document.getElementById("monat").innerHTML = "0";}
+  localStorage.removeItem("KBSPEICHmonat"),
+  document.getElementById("monat").innerHTML = "0";}
               
               
 
@@ -61,7 +55,7 @@ as.addEventListener("change", function() {
 if      (as.value == "1"){AV = 1}
 else if (as.value == "2"){AV = 2}
 })      
-// DiviceMotionEvent ist spezialfunktion für den Sensor
+
 function start() {
 document.getElementById("startdiv").style.display ="none"  
 if      (AV == 1){document.getElementById("aktivdiv").style.display = ""; document.getElementById("aktivcanvasdiv").style.display = "none"}
