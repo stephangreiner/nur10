@@ -17,25 +17,77 @@ document.getElementById("monat").innerHTML =  localStorage.KBSPEICHmonat;
 document.getElementById("aktivcanvasdiv").style.display="none";
 document.getElementById("aktivdiv").style.display="none";
 document.getElementById("sta_div").style.display = "none";
+localStorage.setItem('KBzeitspeicher', +new Date);
+if (typeof localStorage.KBSPEICH ==="undefined") 
+{document.getElementById("heute").innerHTML =  "0"}
+else {document.getElementById("heute").innerHTML =  localStorage.KBSPEICH};
                             }
 
 
+function sta_zeigen(){
+  const monatn = ["Januar","Februar","März","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"];
+  d = new Date();  
+  let name = monatn[d.getMonth()];
+  document.getElementById("datum").innerHTML = d.getDate() + "." + (d.getMonth()+1) + "." + d.getFullYear();
+  document.getElementById("mittelwert").innerHTML = Math.round(localStorage.KBSPEICHmonat  / d.getDate())
+document.getElementById("sta_div").style.display = "";
+document.getElementById("aktivcanvasdiv").style.display="none";
+document.getElementById("aktivdiv").style.display="none";
+document.getElementById("startdiv").style.display="none";
+document.getElementById("monatname").innerHTML = name;
+document.getElementById("monatname2").innerHTML = name;
+document.getElementById("t1").innerHTML = localStorage.getItem("Ktag1")
+document.getElementById("t2").innerHTML = localStorage.getItem("Ktag2") 
+document.getElementById("t3").innerHTML = localStorage.getItem("Ktag3")
+document.getElementById("t4").innerHTML = localStorage.getItem("Ktag4") 
+document.getElementById("t5").innerHTML = localStorage.getItem("Ktag5")
+document.getElementById("t6").innerHTML = localStorage.getItem("Ktag6") 
+document.getElementById("t7").innerHTML = localStorage.getItem("Ktag7")
+document.getElementById("t8").innerHTML = localStorage.getItem("Ktag8") 
+document.getElementById("t9").innerHTML = localStorage.getItem("Ktag9")
+document.getElementById("t10").innerHTML = localStorage.getItem("Ktag10") 
+document.getElementById("t11").innerHTML = localStorage.getItem("Ktag11")
+document.getElementById("t12").innerHTML = localStorage.getItem("Ktag12") 
+document.getElementById("t13").innerHTML = localStorage.getItem("Ktag13")
+document.getElementById("t14").innerHTML = localStorage.getItem("Ktag14") 
+document.getElementById("t15").innerHTML = localStorage.getItem("Ktag15")
+document.getElementById("t16").innerHTML = localStorage.getItem("Ktag16") 
+document.getElementById("t17").innerHTML = localStorage.getItem("Ktag17")
+document.getElementById("t18").innerHTML = localStorage.getItem("Ktag18") 
+document.getElementById("t19").innerHTML = localStorage.getItem("Ktag19")
+document.getElementById("t20").innerHTML = localStorage.getItem("Ktag20") 
+document.getElementById("t21").innerHTML = localStorage.getItem("Ktag21")
+document.getElementById("t22").innerHTML = localStorage.getItem("Ktag22") 
+document.getElementById("t23").innerHTML = localStorage.getItem("Ktag23")
+document.getElementById("t24").innerHTML = localStorage.getItem("Ktag24") 
+document.getElementById("t25").innerHTML = localStorage.getItem("Ktag25")
+document.getElementById("t26").innerHTML = localStorage.getItem("Ktag26") 
+document.getElementById("t27").innerHTML = localStorage.getItem("Ktag27")
+document.getElementById("t28").innerHTML = localStorage.getItem("Ktag28") 
+document.getElementById("t29").innerHTML = localStorage.getItem("Ktag29")
+document.getElementById("t30").innerHTML = localStorage.getItem("Ktag30") 
+const monate = document.getElementsByClassName("monats");
+for (let i = 0; i < d.getDate() ; i++) {
+ monate[i].innerHTML = (i +1) + "." + (name)
 
-localStorage.setItem('KBzeitspeicher', +new Date);
-if (typeof localStorage.KBSPEICH ==="undefined") 
-{document.getElementById("Tagesanzeige").innerHTML =  "0"}
-else {document.getElementById("Tagesanzeige").innerHTML =  localStorage.KBSPEICH};
+  }
+
+}
+
 
 function neuerTagTest(){
   ld = new Date(parseInt(localStorage.getItem('KBzeitspeicher')));
   jd = new Date();
   nld = parseInt(ld.getDate())
   njd = parseInt(jd.getDate())
-  if (nld!=njd){LSGneu(),document.getElementById("t").innerHTML = "Guten Morgen"}}
+  if (nld!=njd){neuer_tag()}}
 
-function LSGneu(){
-  localStorage.removeItem("KBSPEICH"),
-  document.getElementById("Tagesanzeige").innerHTML = "0";}
+function neuer_tag(){
+d = new Date();  
+a =  localStorage.getItem("KBSPEICH");
+localStorage.setItem("Ktag" + d.getDate(), a)
+localStorage.removeItem("KBSPEICH")
+}
 
 function neuerMonatTest(){
          ld = new Date(parseInt(localStorage.getItem('KBzeitspeicher')));
@@ -51,17 +103,6 @@ function monatneu(){
   localStorage.removeItem("KBSPEICHmonat"),
   document.getElementById("monat").innerHTML = "0";}
               
-
-function sta_zeigen(){
-d = new Date();  
-document.getElementById("datum").innerHTML = d
-document.getElementById("mittelwert").innerHTML = localStorage.KBSPEICHmonat  / d.getDate()
-document.getElementById("sta_div").style.display = "";
-document.getElementById("aktivcanvasdiv").style.display="none";
-document.getElementById("aktivdiv").style.display="none";
-document.getElementById("startdiv").style.display="none";
-
-  }
 
 
 var as = document.getElementById("ansichtw") 
@@ -210,8 +251,8 @@ if((milliseconds - firstExecution) > interval && ss ==1) // die Verzögerung ist
     if (typeof(Storage) !== "undefined") {
     if (localStorage.KBSPEICH) {localStorage.KBSPEICH= Number(localStorage.KBSPEICH)+1;} 
     else {localStorage.KBSPEICH = 1;}
-    document.getElementById("Tagesanzeige").innerHTML =  localStorage.KBSPEICH;
-   } else {document.getElementById("Tagesanzeige").innerHTML = "komisch";}
+    document.getElementById("heute").innerHTML =  localStorage.KBSPEICH;
+   } else {document.getElementById("heute").innerHTML = "komisch";}
 
     if (typeof(Storage) !== "undefined") {
      if (localStorage.KBSPEICHneu) {localStorage.KBSPEICHneu= Number(localStorage.KBSPEICHneu)+1;} 

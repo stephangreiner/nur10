@@ -35,27 +35,24 @@ align-items: center;
             align-items: center;
                  } 
 
-            #sta_b{
-            
-            background-color: #00000012;
-            color: gray;
-
-          }
-
-
-            #sta_div{
-              display:flex;/* ist flexbox body -> damit die child divs im fixed Raum fer */
-              flex-direction: column;
-              justify-content:flex-start;
-              align-items: center; 
-              margin: 10%;
-              color: white;}
            
-            #tabel{
-             width: 50%;
-      
-           }
+#sta_b{background-color: #00000017; color: grey;
+}
 
+#sta_div{
+  height: 100%;
+  width: 100%;
+  color: white;
+  display:flex;
+  flex-direction: column;
+  justify-content:space-evenly;
+  align-items: center; }
+     
+
+
+         #datum {border: none; margin-right: 80%;}
+         #tabel{width: 50%;background-color: rgb(19, 21, 21);}
+         #tab_monat{width: 50%;font-size: smaller;background-color: rgb(19, 21, 21);}
             
      
              #modus,#audioW,#ansichtw{
