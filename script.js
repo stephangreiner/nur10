@@ -85,7 +85,7 @@ function neuerTagTest(){
 function neuer_tag(){
 d = new Date();  
 a =  localStorage.getItem("KBSPEICH");
-localStorage.setItem("Ktag" + d.getDate(), a)
+localStorage.setItem("Ktag" + (d.getDate()-1), a)
 localStorage.removeItem("KBSPEICH")
 }
 
