@@ -1,57 +1,42 @@
 body {
-  background-color: rgb(0, 0, 0);    
-  position: fixed; 
-  height: 100%;
-  width: 100%;
-  margin: 0;
-  padding: 0;
-  display:flex;
-  flex-direction: column;
-  justify-content:space-evenly;
-  align-items: center; 
-}
- 
-#Einstellungsdiv{  
-       background-color: rgb(0, 0, 0);
-       height: 100%;
-       width: 100%;
-       border:none;
-       display:flex;
-           flex-direction: column;
-           justify-content:space-evenly;
-           align-items: center;        }
-      #startb{  
-        background-color: rgb(247, 255, 29);
-        color:black;
-        padding: 10%;
-        border:none;
-        cursor: pointer;
-        border-radius: 4%;           
-      }
-      #selectdiv{
-        width: 100%;
-        display:flex;
-        flex-direction: row;
-        justify-content: space-between
-       }
- 
-     
-     #Tonwahl,#Bildwahl{
-      background-color: rgb(115, 115, 115);
-      color: #000000;
-      cursor: pointer;
-      text-align: center;
-      border: none;
-      width: 18%;
-      height: 90%;
-      border-radius: 5%;
-      margin: 3%;
-       } option{background-color: 115,115,115;}  
- 
+background-color: rgb(0, 0, 0);  
+position: fixed;
+height: 100%;
+width: 100%;
+margin: 0;
+padding: 0;
+  }
 
-#sta_b{
-  background-color: #00000017;
-  color: grey;
+#startdiv{
+background-color: rgb(0, 0, 0);  /* feste Postion kein scrollen -> geeignet für flexbox divs -> relative größenangaben */
+position: fixed;
+height: 100%;
+width: 100%;
+margin: 0;
+padding: 0;
+display:flex;/* ist flexbox body -> damit die child divs im fixed Raum fer */
+flex-direction: column;
+justify-content:space-evenly;
+align-items: center;  
+      } 
+
+           #startb{
+            background-color: rgb(216, 53, 53);         
+            text-align: center;
+            border-radius: 50%;
+            border:none;
+                  } 
+
+            #wdiv{
+            width: 100%;
+            display:flex;
+            flex-direction: row;
+            justify-content: space-evenly;
+            align-items: center;
+                 } 
+
+           
+#sta_b{background-color: #00000017; color: grey;
 }
 
 #sta_div{
@@ -65,152 +50,72 @@ body {
      
 
 
-#datum {border: none; margin-right: 80%;}
-
-#tabel{width: 50%;background-color: rgb(19, 21, 21);}
-#tab_monat{width: 50%;font-size: smaller;background-color: rgb(19, 21, 21);}
-
-           
-#zurueck_sta {
-  background-color: rgba(255, 255, 255, 0.427);
-  color: rgb(7, 6, 6);
-  width: 10%;
-  height: 5%;
-  border: none;
-  cursor: pointer;
-  margin-left: auto;/* ist child von flexbox-parent aktivdiv -> nach links-> damit es andere Items nicht mitzieht eine order weiter */
-  order: 2;
-            }
+         #datum {border: none; margin-right: 80%;}
+         #tabel{width: 50%;background-color: rgb(19, 21, 21);}
+         #tab_monat{width: 50%;font-size: smaller;background-color: rgb(19, 21, 21);}
+            
+     
+             #modus,#audioW,#ansichtw{
+             background-color: rgb(115, 115, 115);
+             color: #000000;
+             cursor: pointer;
+             text-align: center;
+             border: none;
+             width: 18%;
+             height: 90%;
+             border-radius: 5%;
+             margin: 3%; } option{background-color: 115,115,115;}  
+      
+   
+     
+#aktivcanvasdiv{
+background-color: rgb(0, 0, 0);
+color:white;
+display:flex;
+flex-direction: column;
+justify-content:space-between;
+align-items: center; 
+               }
+   #KB{font-size:xx-large}
+               #GLW,#GLW_B{color: rgb(42, 112, 165);}
+               #GSW,#GSW_B{color: rgb(217, 114, 40);}
+            
+          
+              
 
 #aktivdiv{
-       background-color: rgba(0, 0, 0, 0.422);
-       width: 90%;
-       height: 100%;
-       display:flex;/* ist flexbox div -> besondere Angaben */
-       flex-direction: column;
-       justify-content:space-around;
-           }
+background-color: rgba(0, 0, 0, 0.422);
+width: 100%;
+height: 100%;
+display:flex;/* ist flexbox div -> besondere Angaben */
+flex-direction: column;
+justify-content:space-around;
+                    }
+         
+                   #oneb{
+                     background-color:  rgb(255, 29, 29);
+                     width: 100%;
+                     height: 60%;
+                     text-align: center;
+                     border: none;
+                     border-radius: 50%; 
+                     align-items: center;/* ist child von flexbox-parent aktivdiv -> margin statt float */
+                     }
+                   #Anzahl{
+                    color: rgb(255, 255, 255);
+                    font-size: 400%;
+                   }
+                   .zurueck{
+                       background-color: rgba(255, 255, 255, 0.427);
+                       color: rgb(7, 6, 6);
+                       width: 10%;
+                       height: 5%;
+                       margin: 5%;
+                       border: none;
+                       cursor: pointer;
+                       margin-left: auto;/* ist child von flexbox-parent aktivdiv -> nach links-> damit es andere Items nicht mitzieht eine order weiter */
+                       order: 2;
+                     }
 
-          #oneb{
-            background-color:  rgb(247, 255, 29);
-            width: 100%;
-            height: 60%;
-            text-align: center;
-            border: none;
-            border-radius: 50%; 
-            align-items: center;/* ist child von flexbox-parent aktivdiv -> margin statt float */
-            }
-          #Anzahl{
-           color: black;
-           font-size: 300%;
-          }
 
-          #zurueck_akt{
-            background-color: rgba(255, 255, 255, 0.427);
-            color: rgb(7, 6, 6);
-            width: 10%;
-            height: 5%;
-            border: none;
-            cursor: pointer;
-            margin-left: auto;/* ist child von flexbox-parent aktivdiv -> nach links-> damit es andere Items nicht mitzieht eine order weiter */
-            order: 2;
-          }
 
-#klavierdiv{
-  width: 100%;
-  height: 300px;
-          }
-              #butdiv{
-               width: 100%;  
-               height: 60px;
-               display:flex;
-               flex-direction: row;
-               justify-content: space-between;
-              } 
-                #bku,#bla {
-                  width: 33.33%;
-                  height: 100%;
-                  text-align: justify;
-                  text-align: center;
-                          }
-              #ganztondiv {
-                width: 100%;  
-                height: 300px;
-                display:flex;
-                flex-direction: row;
-                justify-content: space-between;
-                            }          
-                    #C4,#D4,#E4,#F4,#G4,#A4,#B4,#C5,#D5,#E5,#F5,#G5,#A5,#B5{
-                       background: #fff; 
-                       width: 7.1%;
-                       border: 1px solid #1b1b1e;
-                       border-radius: 0 0 6% 6%;
-                       cursor: pointer;}
-                        #C4 p,#C5 p{
-                          color: red;
-                          font-size: 60%;
-                          position: relative;
-                          top: 100px;}          
-                        #F4 p,#F5 p{
-                          color: rgb(101, 149, 29);
-                          font-size: 60%;
-                          position: relative;
-                          top: 100px;
-                    
-                                       }
-        
-              #halbtondiv {
-                width: 100%;
-                height: 66%;
-                display:flex;
-                flex-direction: row;
-                justify-content:space-around;
-                           }
-                    #Cis4,#Dis4,#Fis4,#Gis4,#Ais4,#Cis5,#Dis5,#Fis5,#Gis5,#Ais5{
-                      background: #000000;
-                      width: 7.1%;
-                      height: 100%;
-                      padding: 0%;
-                      margin-left: 1%;
-                      position: relative;
-                      top: -299px;
-                      left: 3.5%;
-                      border: none;
-                      cursor: pointer;
-                      border-bottom-left-radius: 6%;
-                      border-bottom-right-radius: 6%;
-                                }
-                    #Eisnicht4,#Bisnicht4{
-                      background-color: rgba(255, 255, 255, 0);
-                      width: 7.1%;
-                      height: 1%;
-                      margin-left: 1%;
-                      position: relative;    
-                      top: -299px;
-                      cursor: pointer;
-                      left: 3.5%;
-                      border: none;
-                                         }                    
-                 #Eflex5{
-                      background-color: rgba(255, 255, 255, 0);
-                      width: 7.1%;
-                      height: 26%;
-                      position: relative;    
-                      top: -299px;
-                      cursor: pointer;
-                      left: 3.5%;
-                      border: none;
-                      margin-left: 1%;
-                           }   
-                 #Bflex5{
-                      background-color: rgba(255, 255, 255, 0);
-                      width: 7.1%;
-                      height: 70%;
-                      position: relative;    
-                      top: -299px;
-                      cursor: pointer;
-                      left: 3.5%;
-                      border: none;
-                      margin-left: 1%;
-                          }   
-                           
