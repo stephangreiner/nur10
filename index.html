@@ -3,167 +3,160 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="manifest" href="./manifest.json" />
-         <link rel="icon" type="image/vnd.microsoft.icon" href="media/favicon.ico">
+         <link rel="icon" type="image/vnd.microsoft.icon" href="bilder/favicon.ico">
         <link rel="stylesheet" href="style.css">
-        
-        <title>squats</title>
- <script>
+        <title>Liegestützen</title>
+        <script>
           if (navigator.serviceWorker) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker
-                    .register('/Kniebeugentracker/sw.js')
+                    .register('/pushuptracker/swLieg.js',)
                     .then(reg => console.log('Service Worker registriert'))
-                    .catch(swErr => console.log(
-                          `Service Worker Installationsfehler: ${swErr}}`));
+                    .catch(swErr => console.log( `Service Worker Installationsfehler: ${swErr}}`));
               });
           }
           
-              </script>  
- 
-
+              </script>    
 </head>
-
-<div id="startdiv">
- <button id="startb" onclick="start()"></button>    
 <body>
-<div id="wdiv">
-           
-     <select id="modus"> 
-        <option value="1"> squat flach</option>
-        <option value="2"> pull up</option>  
-        <option value="3"> squat quer</option> 
-     </select> 
 
-            
-     <select id="ansichtw"> 
-      <option value="1"> kreis</option>
-      <option value="2"> canvas</option>  
-   </select> 
-     
-      <select id="audioW">
-        <option value="0">🔈ding10dong</option>
-        <option value="1"> 🔇</option>  
-      </select>
+<div id ="Einstellungsdiv" >
+     <button id= "startb" onclick="start()">start</button>
 
-</div>
+   
+     <div id="selectdiv">
+          <select id="Tonwahl">
+            <option value="1">🔈10dingdong</option>
+            <option value="2">🔈tonleiter</option>
+            <option value="3">🔈cant help</option>
+            <option value="4">🔇</option>
+          </select>
+   
+        <select id="Bildwahl">
+          <option value="1">Kreis</option>
+        <option value="2">Fotokreis</option>
+        <option value="3">Klaviertasten</option>
+        </select>
+      </div>
 
 
-<button id="sta_b" onclick="sta_zeigen()">statistik</button>
-</div>
- <div id="sta_div">
-  <div id="datum"></div>
-  <h5>Kniebeugen</h5>   
-  <table id="tabel">
- <tr>
-    <td>Heute:</td>
-    <td> <a id="heute"></a></td>    
- </tr>
- <tr>
-   <td><a id="monatname"></a>:</td>
-   <td><a id="monat"></a></td>
- </tr>
- <tr>
-   <td>&empty; - <a id="monatname2"></a>:</td>
-   <td><a id="mittelwert"></td>
- </tr>
-</table><br> <br>
+     <button id="sta_b" onclick="sta_zeigen()">statistik</button>
+</div> 
 
+<div id="sta_div">
+  <div id="datum"></div>  
+  <h5>Liegestützen</h5> 
+        <table id="tabel">
+       <tr>
+          <td>Heute:</td>
+          <td> <a id="heute"></a></td>    
+       </tr>
+       <tr>
+         <td><a id="monatname"></a></td>
+         <td><a id="monat"></a></td>
+       </tr>
+       <tr>
+         <td>&empty;-<a id="monatname2"></a></td>
+         <td><a id="mittelwert"></td>
+       </tr>
+      </table><br> <br>
+  
 <table id="tab_monat">
-  <tr>
+        <tr>
+           <td><a class="monats"></a></td>
+           <td> <a id="t1"></a></td>    
+        </tr>
+        <tr>
+          <td><a class="monats"></a></td>
+          <td><a id="t2"></a></td>
+        </tr>
+        <tr>
+          <td><a class="monats"></a></td>
+          <td><a id="t3"></td>
+        </tr>
+        <tr>
+          <td><a class="monats"></a></td>
+          <td> <a id="t4"></a></td>    
+       </tr>
+       <tr>
+         <td><a class="monats"></a></td>
+         <td><a id="t5"></a></td>
+       </tr>
+       <tr>
+         <td><a class="monats"></a></td>
+         <td><a id="t6"></td>
+       </tr>
+       <tr>
+        <td><a class="monats"></a></td>
+        <td><a id="t7"></td>
+      </tr>
+      <tr>
+        <td><a class="monats"></a></td>
+        <td> <a id="t8"></a></td>    
+     </tr>
+     <tr>
+       <td><a class="monats"></a></td>
+       <td><a id="t9"></a></td>
+     </tr>
+     <tr>
+       <td><a class="monats"></a></td>
+       <td><a id="t10"></td>
+     </tr>
+     <tr>
+      <td><a class="monats"></a></td>
+      <td> <a id="t11"></a></td>    
+   </tr>
+   <tr>
      <td><a class="monats"></a></td>
-     <td> <a id="t1"></a></td>    
+     <td><a id="t12"></a></td>
+   </tr>
+   <tr>
+     <td><a class="monats"></a></td>
+     <td><a id="t13"></td>
+   </tr>
+   <tr>
+     <td><a class="monats"></a></td>
+     <td> <a id="t14"></a></td>    
   </tr>
   <tr>
     <td><a class="monats"></a></td>
-    <td><a id="t2"></a></td>
+    <td><a id="t15"></a></td>
   </tr>
   <tr>
     <td><a class="monats"></a></td>
-    <td><a id="t3"></td>
+    <td><a id="t16"></td>
   </tr>
   <tr>
-    <td><a class="monats"></a></td>
-    <td> <a id="t4"></a></td>    
+   <td><a class="monats"></a></td>
+   <td><a id="t17"></td>
  </tr>
  <tr>
    <td><a class="monats"></a></td>
-   <td><a id="t5"></a></td>
- </tr>
- <tr>
-   <td><a class="monats"></a></td>
-   <td><a id="t6"></td>
- </tr>
- <tr>
-  <td><a class="monats"></a></td>
-  <td><a id="t7"></td>
+   <td> <a id="t18"></a></td>    
 </tr>
 <tr>
   <td><a class="monats"></a></td>
-  <td> <a id="t8"></a></td>    
+  <td><a id="t19"></a></td>
+</tr>
+<tr>
+  <td><a class="monats"></a></td>
+  <td><a id="t20"></td>
+</tr>
+<tr>
+  <td><a class="monats"></a></td>
+  <td> <a id="t21"></a></td>    
 </tr>
 <tr>
  <td><a class="monats"></a></td>
- <td><a id="t9"></a></td>
+ <td><a id="t22"></a></td>
 </tr>
 <tr>
  <td><a class="monats"></a></td>
- <td><a id="t10"></td>
+ <td><a id="t23"></td>
 </tr>
 <tr>
-<td><a class="monats"></a></td>
-<td> <a id="t11"></a></td>    
-</tr>
-<tr>
-<td><a class="monats"></a></td>
-<td><a id="t12"></a></td>
-</tr>
-<tr>
-<td><a class="monats"></a></td>
-<td><a id="t13"></td>
-</tr>
-<tr>
-<td><a class="monats"></a></td>
-<td> <a id="t14"></a></td>    
-</tr>
-<tr>
-<td><a class="monats"></a></td>
-<td><a id="t15"></a></td>
-</tr>
-<tr>
-<td><a class="monats"></a></td>
-<td><a id="t16"></td>
-</tr>
-<tr>
-<td><a class="monats"></a></td>
-<td><a id="t17"></td>
-</tr>
-<tr>
-<td><a class="monats"></a></td>
-<td> <a id="t18"></a></td>    
-</tr>
-<tr>
-<td><a class="monats"></a></td>
-<td><a id="t19"></a></td>
-</tr>
-<tr>
-<td><a class="monats"></a></td>
-<td><a id="t20"></td>
-</tr>
-<tr>
-<td><a class="monats"></a></td>
-<td> <a id="t21"></a></td>    
-</tr>
-<tr>
-<td><a class="monats"></a></td>
-<td><a id="t22"></a></td>
-</tr>
-<tr>
-<td><a class="monats"></a></td>
-<td><a id="t23"></td>
-</tr>
-<tr>
-<td><a class="monats"></a></td>
-<td> <a id="t24"></a></td>    
+ <td><a class="monats"></a></td>
+ <td> <a id="t24"></a></td>    
 </tr>
 <tr>
 <td><a class="monats"></a></td>
@@ -196,52 +189,69 @@
 
 
 
- </table><br> <br>
 
 
-  <button class="zurueck" onclick="neu()">x</button>   
+
+       </table><br> <br>
+
+      <div id="t"></div>
+      <button id="zurueck_sta" onclick="zurueck()">x</button> 
 </div> 
 
-
 <div id="aktivdiv">
-  <button id= "oneb"><a id="Anzahl">0</a></button>
-  <button class="zurueck" onclick="neu()">x</button> 
+       <button id= "oneb" onclick="nasedrauf()"><a id="Anzahl">0</a></button>
+       <button id="zurueck_akt" onclick="zurueck()">x</button> 
 </div>
 
 
-<div id= "aktivcanvasdiv">
-        <div id = "canvasdiv">
-              <canvas id="canvas" width="360" height="300"></canvas>
-        </div>
-        <div id="sekAn"></div> 
-        <div id="minAn"></div>
-        <div id =KniebA> 
-        KB : <a id="KB">0</a><br>
-       
 
-        <button id ="GLW_B" onclick="hochg()">+</button>
-        <button id ="GSW_B" onclick="niedrigg()">+</button>
-        <br>
-        <select id="GLW"> 
-          <option value="1"> 8</option>
-          <option value="2"> 5</option>  
-          <option value="3"> 0</option> 
-       </select> 
-       <select id="GSW"> 
-        <option value="1"> 12</option>
-        <option value="2"> 15</option>  
-        <option value="3"> 20</option> 
-     </select> 
-untere <a id="A1">0</a><br>
-        </div>
- <button class="zurueck" onclick="neu()">x</button>       
+
+
+<div id="klavierdiv">
+    <div id="butdiv">
+    <button id="bku" onclick="dkurz()">_</button>
+    <button id="bla" onclick="dlang()">_ _ _</button>
+</div>
+
+  <div id="ganztondiv">
+    <button id ="C4" onclick="C4_click()"><p>C4</p></button>
+    <button id ="D4" onclick="D4_click()"></button>
+    <button id ="E4" onclick="E4_click()"></button>
+    <button id ="F4" onclick="F4_click()"><p>F4</p></button>
+    <button id ="G4" onclick="G4_click()"></button>
+    <button id ="A4" onclick="A4_click()"></button>
+    <button id ="B4" onclick="B4_click()"></button>
+    <button id ="C5" onclick="C5_click()"><p>C5</p></button>
+    <button id ="D5" onclick="D5_click()"></button>
+    <button id ="E5" onclick="E5_click()"></button>
+    <button id ="F5" onclick="F5_click()"><p>F5</p></button>
+    <button id ="G5" onclick="G5_click()"></button>
+    <button id ="A5" onclick="A5_click()"></button>
+    <button id ="B5" onclick="B5_click()"></button>
+    
+  </div>
+  <div id="halbtondiv">
+    <button id ="Cis4" onclick="Cis4_click()"></button>
+    <button id ="Dis4" onclick="Dis4_click()"></button>
+    <button id ="Eisnicht4"></button>
+    <button id ="Fis4" onclick="Fis4_click()"></button>
+    <button id ="Gis4" onclick="Gis4_click()"></button>
+    <button id ="Ais4" onclick="Ais4_click()"></button>
+    <button id ="Bisnicht4"></button>
+    <button id ="Cis5" onclick="Cis5_click()"></button>
+    <button id ="Dis5" onclick="Dis5_click()"></button>
+    <button id ="Eflex5"onclick="Eflex5_click()"></button>
+    <button id ="Fis5" onclick="Fis5_click()"></button>
+    <button id ="Gis5" onclick="Gis5_click()"></button>
+    <button id ="Ais5" onclick="Ais5_click()"></button>
+    <button id ="Bflex5" ></button>
+  </div>
 </div>
 
 
 <script src="audiosynth.js"></script>
 <script type="text/JavaScript" src="script.js"></script>
+
 </body>
+
 </html>
-
-
-
