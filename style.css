@@ -36,7 +36,11 @@ align-items: center;
                  } 
 
            
-#sta_b{background-color: #00000017; color: grey;
+#sta_b{background-color: #00000017;
+  color: grey;
+  opacity: 0.5;
+
+
 }
 
 #sta_div{
