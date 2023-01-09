@@ -135,7 +135,7 @@ var  img1 = document.createElement("img");
 }
 
 const modusV = document.getElementById('mod');
-modusV.value = 1;
+modusV.value = 2;
 modusV.min = 1;
 modusV.max = 3; 
 
@@ -143,14 +143,14 @@ modusV.max = 3;
 
 var mo = document.getElementById("mod") 
 mo.addEventListener("change", function() {
-if(modusV.value == "1"){ modus = 1;
+if(modusV.value == "2"){ modus = 2;
       if (document.getElementById('img2') != null) { document.getElementById('img2').remove();}
       if (document.getElementById('img3') != null) { document.getElementById('img3').remove();}
       if (document.getElementById('img1') != null) { console.log("gibts schon");} else {
         standartbild()
             }
                       }
-if (modusV.value == "2"){modus = 2;
+if (modusV.value == "1"){modus = 1;
       if (document.getElementById('img1') != null) { document.getElementById('img1').remove()}
       if (document.getElementById('img3') != null) { document.getElementById('img3').remove()}
       if (document.getElementById('img2') != null) { console.log("gibts schon");
