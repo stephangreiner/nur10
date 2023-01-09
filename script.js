@@ -134,19 +134,23 @@ var  img1 = document.createElement("img");
       screen.orientation.unlock()
 }
 
+const modusV = document.getElementById('mod');
+modusV.value = 1;
+modusV.min = 1;
+modusV.max = 3; 
 
-  
 
-var mo = document.getElementById("modus") 
+
+var mo = document.getElementById("mod") 
 mo.addEventListener("change", function() {
-if(mo.value == "1"){ modus = 1;
+if(modusV.value == "1"){ modus = 1;
       if (document.getElementById('img2') != null) { document.getElementById('img2').remove();}
       if (document.getElementById('img3') != null) { document.getElementById('img3').remove();}
       if (document.getElementById('img1') != null) { console.log("gibts schon");} else {
         standartbild()
             }
                       }
-if (mo.value == "2"){modus = 2;
+if (modusV.value == "2"){modus = 2;
       if (document.getElementById('img1') != null) { document.getElementById('img1').remove()}
       if (document.getElementById('img3') != null) { document.getElementById('img3').remove()}
       if (document.getElementById('img2') != null) { console.log("gibts schon");
@@ -159,7 +163,7 @@ if (mo.value == "2"){modus = 2;
       startb.appendChild(img2);
             }
                     }
-if (mo.value == "3"){modus = 3;
+if (modusV.value == "3"){modus = 3;
     if (document.getElementById('img1') != null) { document.getElementById('img1').remove();}
     if (document.getElementById('img2') != null) { document.getElementById('img2').remove();}
     if (document.getElementById('img3') != null) { console.log(" img3  gibts schon");
