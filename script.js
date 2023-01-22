@@ -12,15 +12,24 @@ var AV = 1;
 window.onload = function () {
 neuerTagTest();
 neuerMonatTest();  
+localStorage.removeItem("LSPEICHneu")
 localStorage.removeItem("KBSPEICHneu");
 document.getElementById("monat").innerHTML =  localStorage.KBSPEICHmonat;
+document.getElementById("monatL").innerHTML =  localStorage.LSPEICHmonat;
+
 document.getElementById("aktivcanvasdiv").style.display="none";
+document.getElementById("Ldiv").style.display="none";
 document.getElementById("aktivdiv").style.display="none";
 document.getElementById("sta_div").style.display = "none";
 localStorage.setItem('KBzeitspeicher', +new Date);
 if (typeof localStorage.KBSPEICH ==="undefined") 
 {document.getElementById("heute").innerHTML =  "0"}
 else {document.getElementById("heute").innerHTML =  localStorage.KBSPEICH};
+
+if (typeof localStorage.LSPEICH ==="undefined") 
+{document.getElementById("heuteL").innerHTML =  "0"}
+else {document.getElementById("heuteL").innerHTML =  localStorage.LSPEICH};
+
                             }
 
 
@@ -29,7 +38,8 @@ function sta_zeigen(){
   d = new Date();  
   let name = monatn[d.getMonth()];
   document.getElementById("datum").innerHTML = d.getDate() + "." + (d.getMonth()+1) + "." + d.getFullYear();
-  document.getElementById("mittelwert").innerHTML = Math.round(localStorage.KBSPEICHmonat  / d.getDate())
+  document.getElementById("mittelwert").innerHTML = Math.round(localStorage.KBSPEICHmonat  / d.getDate());
+  document.getElementById("mittelwertL").innerHTML = Math.round(localStorage.LSPEICHmonat  / d.getDate());
 document.getElementById("sta_div").style.display = "";
 document.getElementById("aktivcanvasdiv").style.display="none";
 document.getElementById("aktivdiv").style.display="none";
@@ -70,6 +80,38 @@ const monate = document.getElementsByClassName("monats");
 for (let i = 0; i < d.getDate() ; i++) {
  monate[i].innerHTML = (i +1) + "." + (name)
 
+ document.getElementById("t1L").innerHTML = localStorage.getItem("tag1")
+document.getElementById("t2L").innerHTML = localStorage.getItem("tag2") 
+document.getElementById("t3L").innerHTML = localStorage.getItem("tag3")
+document.getElementById("t4L").innerHTML = localStorage.getItem("tag4") 
+document.getElementById("t5L").innerHTML = localStorage.getItem("tag5")
+document.getElementById("t6L").innerHTML = localStorage.getItem("tag6") 
+document.getElementById("t7L").innerHTML = localStorage.getItem("tag7")
+document.getElementById("t8L").innerHTML = localStorage.getItem("tag8") 
+document.getElementById("t9L").innerHTML = localStorage.getItem("tag9")
+document.getElementById("t10L").innerHTML = localStorage.getItem("tag10") 
+document.getElementById("t11L").innerHTML = localStorage.getItem("tag11")
+document.getElementById("t12L").innerHTML = localStorage.getItem("tag12") 
+document.getElementById("t13L").innerHTML = localStorage.getItem("tag13")
+document.getElementById("t14L").innerHTML = localStorage.getItem("tag14") 
+document.getElementById("t15L").innerHTML = localStorage.getItem("tag15")
+document.getElementById("t16L").innerHTML = localStorage.getItem("tag16") 
+document.getElementById("t17L").innerHTML = localStorage.getItem("tag17")
+document.getElementById("t18L").innerHTML = localStorage.getItem("tag18") 
+document.getElementById("t19L").innerHTML = localStorage.getItem("tag19")
+document.getElementById("t20L").innerHTML = localStorage.getItem("tag20") 
+document.getElementById("t21L").innerHTML = localStorage.getItem("tag21")
+document.getElementById("t22L").innerHTML = localStorage.getItem("tag22") 
+document.getElementById("t23L").innerHTML = localStorage.getItem("tag23")
+document.getElementById("t24L").innerHTML = localStorage.getItem("tag24") 
+document.getElementById("t25L").innerHTML = localStorage.getItem("tag25")
+document.getElementById("t26L").innerHTML = localStorage.getItem("tag26") 
+document.getElementById("t27L").innerHTML = localStorage.getItem("tag27")
+document.getElementById("t28L").innerHTML = localStorage.getItem("tag28") 
+document.getElementById("t29L").innerHTML = localStorage.getItem("tag29")
+document.getElementById("t30L").innerHTML = localStorage.getItem("tag30") 
+document.getElementById("t31L").innerHTML = localStorage.getItem("tag31") 
+ 
   }
 
 }
@@ -82,12 +124,20 @@ function neuerTagTest(){
   njd = parseInt(jd.getDate())
   if (nld!=njd){neuer_tag()}}
 
+  
 function neuer_tag(){
 d = new Date();  
+
 a =  localStorage.getItem("KBSPEICH");
 localStorage.setItem("Ktag" + (d.getDate()-1), a)
 localStorage.removeItem("KBSPEICH")
+
+l =  localStorage.getItem("LSPEICH");
+localStorage.setItem("tag" + (d.getDate()-1), l)
+localStorage.removeItem("LSPEICH")
 }
+
+
 
 function neuerMonatTest(){
          ld = new Date(parseInt(localStorage.getItem('KBzeitspeicher')));
@@ -103,7 +153,8 @@ function monatneu(){
   localStorage.removeItem("KBSPEICHmonat"),
   localStorage.clear();
   document.getElementById("monat").innerHTML = "0";}
-              
+  
+
 
 
 var as = document.getElementById("ansichtw") 
@@ -117,67 +168,111 @@ document.getElementById("startdiv").style.display ="none"
 if      (AV == 1){document.getElementById("aktivdiv").style.display = ""; document.getElementById("aktivcanvasdiv").style.display = "none"}
 else if (AV == 2){document.getElementById("aktivcanvasdiv").style.display = ""; document.getElementById("aktivdiv").style.display = "none"}
 else {console.log("canvasanzeige")}
+
+if (modus == 1 || 2 || 3 ){
+
+  document.getElementById ("Ldiv").style.display ="none"
   uhrlos()
   addEventListener("devicemotion", handleMotionEvent);
   addEventListener("devicemotion", doSample);
   tick();  
-  }
 
+
+}
+ if (modus == 4){document.getElementById ("aktivdiv").style.display ="none"; document.getElementById ("Ldiv").style.display ="";
+
+
+  }
+}
 standartbild()
+
 function standartbild(){
-var  img1 = document.createElement("img");
-      img1.src = "media/flach.png";
-      img1.id ="img1"
-      img1.style.width = "200px";
-      img1.style.hight = "200px";
-      startb.appendChild(img1);
+var  flachbild = document.createElement("img");
+flachbild.src = "media/flach.png";
+flachbild.id ="flachbild"
+flachbild.style.width = "200px";
+flachbild.style.hight = "200px";
+      startb.appendChild(flachbild);
       screen.orientation.unlock()
 }
 
 const modusV = document.getElementById('mod');
 modusV.value = 2;
 modusV.min = 1;
-modusV.max = 3; 
+modusV.max = 4; 
 
 
 
 var mo = document.getElementById("mod") 
 mo.addEventListener("change", function() {
 if(modusV.value == "2"){ modus = 2;
-      if (document.getElementById('img2') != null) { document.getElementById('img2').remove();}
-      if (document.getElementById('img3') != null) { document.getElementById('img3').remove();}
-      if (document.getElementById('img1') != null) { console.log("gibts schon");} else {
-        standartbild()
-            }
+      if (document.getElementById('flachbild') != null) { console.log("gibts schon");}
+      if (document.getElementById('hochbild') != null) { document.getElementById('hochbild').remove();}
+      if (document.getElementById('querbild') != null) { document.getElementById('querbild').remove();}
+      if (document.getElementById('liegesbild') != null) { document.getElementById('liegesbild').remove();}
+      else {
+      var  flachbild = document.createElement("img");
+      flachbild.src = "media/flach.png";
+      flachbild.id ="flachbild"
+      flachbild.style.width = "200px";
+      flachbild.style.hight = "200px";
+            startb.appendChild(flachbild);
+            screen.orientation.unlock()}
                       }
+
+
 if (modusV.value == "1"){modus = 1;
-      if (document.getElementById('img1') != null) { document.getElementById('img1').remove()}
-      if (document.getElementById('img3') != null) { document.getElementById('img3').remove()}
-      if (document.getElementById('img2') != null) { console.log("gibts schon");
-      } else {
-      var  img2 = document.createElement("img");
-      img2.src = "media/hoch.png";
-      img2.id ="img2"
-      img2.style.width = "200px";
-      img2.style.hight = "200px";
-      startb.appendChild(img2);
+      if (document.getElementById('hochbild') != null) { console.log("gibts schon");}
+      if (document.getElementById('flachbild') != null) { document.getElementById('flachbild').remove()}
+      if (document.getElementById('querbild') != null) { document.getElementById('querbild').remove()}
+      if (document.getElementById('liegesbild') != null) { document.getElementById('liegesbild').remove();}
+ 
+       else {
+      var  hochbild = document.createElement("img");
+      hochbild.src = "media/hoch.png";
+      hochbild.id ="hochbild"
+      hochbild.style.width = "200px";
+      hochbild.style.hight = "200px";
+      startb.appendChild(hochbild);
             }
                     }
 if (modusV.value == "3"){modus = 3;
-    if (document.getElementById('img1') != null) { document.getElementById('img1').remove();}
-    if (document.getElementById('img2') != null) { document.getElementById('img2').remove();}
-    if (document.getElementById('img3') != null) { console.log(" img3  gibts schon");
-    } else{
-      var  img3 = document.createElement("img");
-      img3.id ="img3"
-      img3.src = "media/quer.png";
-      img3.style.width = "200px";
-      img3.style.hight = "200px";
-      startb.appendChild(img3); 
+    if (document.getElementById('querbild') != null) { console.log("querbild  gibts schon");}
+    if (document.getElementById('flachbild') != null) { document.getElementById('flachbild').remove();}
+    if (document.getElementById('hochbild') != null) { document.getElementById('hochbild').remove();}
+    if (document.getElementById('liegesbild') != null) { document.getElementById('liegesbild').remove();}
+     else{
+      var  querbild = document.createElement("img");
+      querbild.id ="querbild"
+      querbild.src = "media/quer.png";
+      querbild.style.width = "200px";
+      querbild.style.hight = "200px";
+      startb.appendChild(querbild); 
          } 
                  }
+
+if (modusV.value == "4"){modus = 4;
+   console.log ("LiegeM = 4")
+    if (document.getElementById('liegesbild')!= null) { console.log(" liegesbild gibts schon");}
+    if (document.getElementById('flachbild')!= null) { document.getElementById('flachbild').remove();}
+    if (document.getElementById('hochbild') != null) { document.getElementById('hochbild').remove();}
+    if (document.getElementById('querbild') != null) { document.getElementById('querbild').remove();} 
+    
+    else{
+    var  liegesbild = document.createElement("img");
+    liegesbild.id ="liegesbild"
+    liegesbild.src = "media/LiegeS.png";
+    liegesbild.style.width = "200px";
+    liegesbild.style.hight = "200px";
+   startb.appendChild(liegesbild); 
+                       } 
+                               }
+
+
+
                                         })  
 
+                                        
 var glw = document.getElementById("GLW") 
 glw.addEventListener("change", function() {
 if      (glw.value == "1"){GL = 8}
@@ -203,15 +298,18 @@ ach.addEventListener("change", function() {
 //für die Darstellung in dr Detailansicht werden die Variablen auf eine Dezimalstelle gerundet
 // ich glaub es ist besser mit schwer oben / Azsgabeungekehrt
 // startet die handleMotionEvent die ist speziell für den Sensor handling ungewöhnlich
+
+
 function handleMotionEvent(event) {
     var x = event.accelerationIncludingGravity.x;
     var y = event.accelerationIncludingGravity.y;
     var z = event.accelerationIncludingGravity.z;
 
-if (modus == 1){zvar(),document.getElementById("sensora").innerHTML = Math.round( z * 10 ) / 10; screen.orientation.lock("portrait")}
-if (modus == 2){yvar(),document.getElementById("sensora").innerHTML = Math.round( y * 10 ) / 10; screen.orientation.lock("portrait")}
-if (modus == 3){xvar(),document.getElementById("sensora").innerHTML = Math.round( x * 10 ) / 10; screen.orientation.lock("landscape-primary")}
-                                      
+if (modus == 1){zvar()}
+if (modus == 2){yvar()}
+if (modus == 3){xvar()}
+
+
 function zvar(){
 console.log("squatmodus")
 if (z < GL) {niedrigg()} 
@@ -393,3 +491,29 @@ function neu(){location.reload()}
 
 
 
+
+
+L = 0
+function nasedrauf(){
+  console.log(L)
+  L = L+ 1;
+  document.getElementById("LieA").innerHTML = L; 
+  if (typeof(Storage) !== "undefined") {
+    if (localStorage.LSPEICH) {localStorage.LSPEICH= Number(localStorage.LSPEICH)+1;} 
+    else {localStorage.LSPEICH = 1;}
+    document.getElementById("heute").innerHTML =  localStorage.LSPEICH;
+  } else {console.log("komisch")}
+
+  if (typeof(Storage) !== "undefined") {
+   if (localStorage.LSPEICHneu) {localStorage.LSPEICHneu= Number(localStorage.LSPEICHneu)+1;} 
+   else {localStorage.LSPEICHneu = 1;}
+ } else {console.log("komisch")}
+
+ if (typeof(Storage) !== "undefined") {
+   if (localStorage.LSPEICHmonat) {localStorage.LSPEICHmonat= Number(localStorage.LSPEICHmonat)+1;} 
+   else {localStorage.LSPEICHmonat = 1;}
+ } else {console.log("komisch")}
+
+    }
+
+    
