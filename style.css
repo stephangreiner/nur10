@@ -20,7 +20,7 @@ justify-content:space-evenly;
 align-items: center;  
       } 
 
-#mod{width: 20%;} 
+#mod{width: 40%;} 
       
 input[type="range"] {
   -webkit-appearance: none;
@@ -59,13 +59,16 @@ input[type="range"] {
             text-align: center;
             border-radius: 50%;
             border:none;
+            size: 50px;
+           
+padding: 40px;
                   } 
 
             #wdiv{
             width: 100%;
             display:flex;
             flex-direction: row;
-            justify-content: space-evenly;
+            justify-content: space-between;
             align-items: center;
                  } 
 
@@ -89,8 +92,7 @@ input[type="range"] {
 
 
          #datum {border: none; margin-right: 80%;}
-         #tabel{width: 50%;background-color: rgb(19, 21, 21);}
-         #tab_monat{width: 50%;font-size: smaller;background-color: rgb(19, 21, 21);}
+         #tabel{width: 80%;background-color: rgb(19, 21, 21);font-size: smaller;text-align: center;}
             
      
              #audioW,#ansichtw{
