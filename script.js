@@ -167,7 +167,7 @@ else if (as.value == "3"){AV = 3}
 function start() {
 document.getElementById("startdiv").style.display ="none"  
 if      (AV == 1){document.getElementById("aktivdiv").style.display = ""; document.getElementById("aktivcanvasdiv").style.display = "none"; }
-else if (AV == 2){ console.log("AV3 =" + AV)}
+else if (AV == 2){ document.getElementById("aktivdiv").style.display = ""}
 else if (AV == 3){document.getElementById("aktivcanvasdiv").style.display = ""; document.getElementById("aktivdiv").style.display = "none"; }
 else {console.log("canvasanzeige")}
 
@@ -205,71 +205,63 @@ modusV.max = 4;
 
 var mo = document.getElementById("mod") 
 mo.addEventListener("change", function() {
-if(modusV.value == "1"){ modus = 1;
-  document.getElementById( "startb").style.backgroundColor = "rgb(255, 29, 29)"
-      if (document.getElementById('flachbild') != null) { console.log("gibts schon");}
-      if (document.getElementById('hochbild') != null) { document.getElementById('hochbild').remove();}
-      if (document.getElementById('querbild') != null) { document.getElementById('querbild').remove();}
-      if (document.getElementById('liegesbild') != null) { document.getElementById('liegesbild').remove();}
-      else {
+if(modusV.value == "1"){ modus = 1; 
       var  flachbild = document.createElement("img");
       flachbild.src = "media/flach.png";
       flachbild.id ="flachbild"
       flachbild.style.width = "200px";
       flachbild.style.hight = "200px";
-            startb.appendChild(flachbild);
-            screen.orientation.unlock()}
+      startb.appendChild(flachbild);
+      document.getElementById( "startb").style.backgroundColor = "rgb(255, 29, 29)"
+      if (document.getElementById('flachbild') != null) { console.log("gibts schon");}
+      if (document.getElementById('hochbild') != null) { document.getElementById('hochbild').remove();}
+      if (document.getElementById('querbild') != null) { document.getElementById('querbild').remove();}
+      if (document.getElementById('liegesbild') != null) { document.getElementById('liegesbild').remove();}
+      else {console.log("komisch1")}
                       }
 
 
 if (modusV.value == "2"){modus = 2;
-       document.getElementById( "startb").style.backgroundColor = "rgb(155, 29, 29)"
+     var  hochbild = document.createElement("img");
+      hochbild.src = "media/hoch.png";
+      hochbild.id ="hochbild";
+      hochbild.style.width = "200px";
+      hochbild.style.hight = "200px";
+      startb.appendChild(hochbild);
+      document.getElementById( "startb").style.backgroundColor = "rgb(155, 29, 29)"
       if (document.getElementById('hochbild') != null) { console.log("gibts schon");}
       if (document.getElementById('flachbild') != null) { document.getElementById('flachbild').remove()}
       if (document.getElementById('querbild') != null) { document.getElementById('querbild').remove()}
       if (document.getElementById('liegesbild') != null) { document.getElementById('liegesbild').remove();}
- 
-       else {
-      var  hochbild = document.createElement("img");
-      hochbild.src = "media/hoch.png";
-      hochbild.id ="hochbild"
-      hochbild.style.width = "200px";
-      hochbild.style.hight = "200px";
-      startb.appendChild(hochbild);
-            }
+       else {console.log("komisch2")}
                     }
-if (modusV.value == "3"){modus = 3;
+if (modusV.value == "3"){modus = 3; 
+     var  querbild = document.createElement("img");
+    querbild.id ="querbild";
+   querbild.src = "media/quer.png";
+    querbild.style.width = "200px";
+    querbild.style.hight = "200px";
+    startb.appendChild(querbild); 
     document.getElementById( "startb").style.backgroundColor = "rgb(55, 229, 229)"
     if (document.getElementById('querbild') != null) { console.log("querbild  gibts schon");}
     if (document.getElementById('flachbild') != null) { document.getElementById('flachbild').remove();}
     if (document.getElementById('hochbild') != null) { document.getElementById('hochbild').remove();}
     if (document.getElementById('liegesbild') != null) { document.getElementById('liegesbild').remove();}
-     else{
-      var  querbild = document.createElement("img");
-      querbild.id ="querbild"
-      querbild.src = "media/quer.png";
-      querbild.style.width = "200px";
-      querbild.style.hight = "200px";
-      startb.appendChild(querbild); 
-         } 
+    else{console.log("komisch3")} 
                  }
 
-if (modusV.value == "4"){modus = 4;
-   console.log ("LiegeM = 4")
+if (modusV.value == "4"){modus = 4;  var  liegesbild = document.createElement("img");
+    liegesbild.id ="liegesbild";
+    liegesbild.src = "media/LiegeS.png";
+    liegesbild.style.width = "200px";
+    liegesbild.style.hight = "200px";
+    startb.appendChild(liegesbild);                 
     document.getElementById( "startb").style.backgroundColor = "rgb(247, 255, 29)";
     if (document.getElementById('liegesbild')!= null) { console.log(" liegesbild gibts schon");}
     if (document.getElementById('flachbild')!= null) { document.getElementById('flachbild').remove();}
     if (document.getElementById('hochbild') != null) { document.getElementById('hochbild').remove();}
-    if (document.getElementById('querbild') != null) { document.getElementById('querbild').remove();} 
-    
-    else{
-    var  liegesbild = document.createElement("img");
-    liegesbild.id ="liegesbild"
-    liegesbild.src = "media/LiegeS.png";
-    liegesbild.style.width = "200px";
-    liegesbild.style.hight = "200px";
-   startb.appendChild(liegesbild); 
-                       } 
+    if (document.getElementById('querbild') != null) { document.getElementById('querbild').remove();}  
+    else{console.log("komisch4")} 
                                }
 
 
@@ -347,11 +339,12 @@ var milliseconds = date.getTime();
 
 
 function niedrigg() {
+   if (AV == 2) {bildwechselKB ()}
 var date = new Date();
 var milliseconds = date.getTime(); 
 if((milliseconds - firstExecution) > interval && ss ==1) // die Verzögerung ist wahrscheinlich unnötig
   { firstExecution = milliseconds;
-    KB = KB + 1;
+    KB = KB + 1; 
     document.getElementById("KB").innerHTML = KB;
     document.getElementById("Anzahl").innerHTML = KB;
 
@@ -377,7 +370,68 @@ if((milliseconds - firstExecution) > interval && ss ==1) // die Verzögerung ist
       if (audioV == 0) {synthleicht()}
       else if (audioV == 1) {console.log("audiV1keinton" + audioV)}   
   } else {console.log("ton komisch");}
-                    }
+
+
+}
+                    
+
+
+
+function bildwechselKB () {
+  if      (KB === 10 || KB === 20 ||KB === 30 || KB ===40 ||KB === 50 ||
+    KB === 60 ||KB === 70 || KB ===80 || KB ===90 || KB ===100 || KB ===110 || KB ===120
+    ||KB === 130 || KB ===140 || KB ===150 || KB ===160 || KB ===170 
+    || KB ===180 || KB ===190 || KB ===200 ) {bildKB ()}      
+}  
+
+
+
+const ONEK = document.getElementById("oneb") 
+function bildKB(){
+mediaV = Math.floor(Math.random() * 27) + 1
+if      (mediaV==1){ONEK.style.background = "url('media/bm1.jpg') no-repeat center";}
+else if (mediaV==2){ONEK.style.background = "url('media/bm2.jpg') no-repeat center";}
+else if (mediaV==3){ONEK.style.background = "url('media/bm3.jpg') no-repeat center";}
+else if (mediaV==4){ONEK.style.background = "url('media/bm4.jpg') no-repeat center";}
+else if (mediaV==5){ONEK.style.background = "url('media/bm5.jpg') no-repeat center";}
+else if (mediaV==6){ONEK.style.background = "url('media/bm6.jpg') no-repeat center";}
+else if (mediaV==7){ONEK.style.background = "url('media/bm7.jpg') no-repeat center";}
+else if (mediaV==8){ONEK.style.background = "url('media/bm8.jpg') no-repeat center";}
+else if (mediaV==9){ONEK.style.background = "url('media/bm9.jpg') no-repeat center";}
+else if (mediaV==10){ONEK.style.background = "url('media/bm10.jpg') no-repeat center";}
+else if (mediaV==11){ONEK.style.background = "url('media/bm11.jpg') no-repeat center";}
+else if (mediaV==12){ONEK.style.background = "url('media/bm12.jpg') no-repeat center";}
+else if (mediaV==13){ONEK.style.background = "url('media/bm13.jpg') no-repeat center";}
+else if (mediaV==14){ONEK.style.background = "url('media/bm14.jpg') no-repeat center";}
+else if (mediaV==15){ONEK.style.background = "url('media/bm15.jpg') no-repeat center";}
+else if (mediaV==16){ONEK.style.background = "url('media/bm16.jpg') no-repeat center";}
+else if (mediaV==17){ONEK.style.background = "url('media/bm17.jpg') no-repeat center";}
+else if (mediaV==18){ONEK.style.background = "url('media/bm18.jpg') no-repeat center";}
+else if (mediaV==19){ONEK.style.background = "url('media/bm19.jpg') no-repeat center";}        
+else if (mediaV==20){ONEK.style.background = "url('media/bm20.jpg') no-repeat center";}
+else if (mediaV==21){ONEK.style.background = "url('media/bm21.jpg') no-repeat center";}
+else if (mediaV==22){ONEK.style.background = "url('media/bm22.jpg') no-repeat center";}
+else if (mediaV==23){ONEK.style.background = "url('media/bm23.jpg') no-repeat center";}
+else if (mediaV==24){ONEK.style.background = "url('media/bm24.jpg') no-repeat center";}
+else if (mediaV==25){ONEK.style.background = "url('media/bm25.jpg') no-repeat center";}  
+else if (mediaV==26){ONEK.style.background = "url('media/bm26.jpg') no-repeat center";}
+else if (mediaV==27){ONEK.style.background = "url('media/bm27.jpg') no-repeat center";}           
+}  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 function synthleicht(){
   let p = Synth.createInstrument('piano');
