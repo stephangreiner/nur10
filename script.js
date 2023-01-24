@@ -11,12 +11,12 @@ var AV = 1;
 
 window.onload = function () {
 neuerTagTest();
-neuerMonatTest();  
+neuerMonatTest();
+standartbild()
 localStorage.removeItem("LSPEICHneu")
 localStorage.removeItem("KBSPEICHneu");
 document.getElementById("monat").innerHTML =  localStorage.KBSPEICHmonat;
 document.getElementById("monatL").innerHTML =  localStorage.LSPEICHmonat;
-
 document.getElementById("aktivcanvasdiv").style.display="none";
 document.getElementById("Ldiv").style.display="none";
 document.getElementById("aktivdiv").style.display="none";
@@ -80,7 +80,7 @@ const monate = document.getElementsByClassName("monats");
 for (let i = 0; i < d.getDate() ; i++) {
  monate[i].innerHTML = (i +1) + "." + (name)
 
- document.getElementById("t1L").innerHTML = localStorage.getItem("tag1")
+document.getElementById("t1L").innerHTML = localStorage.getItem("tag1")
 document.getElementById("t2L").innerHTML = localStorage.getItem("tag2") 
 document.getElementById("t3L").innerHTML = localStorage.getItem("tag3")
 document.getElementById("t4L").innerHTML = localStorage.getItem("tag4") 
@@ -111,34 +111,25 @@ document.getElementById("t28L").innerHTML = localStorage.getItem("tag28")
 document.getElementById("t29L").innerHTML = localStorage.getItem("tag29")
 document.getElementById("t30L").innerHTML = localStorage.getItem("tag30") 
 document.getElementById("t31L").innerHTML = localStorage.getItem("tag31") 
- 
   }
-
 }
-
 
 function neuerTagTest(){
   ld = new Date(parseInt(localStorage.getItem('KBzeitspeicher')));
   jd = new Date();
   nld = parseInt(ld.getDate())
   njd = parseInt(jd.getDate())
-  if (nld!=njd){neuer_tag()}}
-
-  
+  if (nld!=njd){neuer_tag()}
+                       }
 function neuer_tag(){
-d = new Date();  
-
-a =  localStorage.getItem("KBSPEICH");
-localStorage.setItem("Ktag" + (d.getDate()-1), a)
-localStorage.removeItem("KBSPEICH")
-
-l =  localStorage.getItem("LSPEICH");
-localStorage.setItem("tag" + (d.getDate()-1), l)
-localStorage.removeItem("LSPEICH")
-}
-
-
-
+  d = new Date();  
+  a =  localStorage.getItem("KBSPEICH");
+  localStorage.setItem("Ktag" + (d.getDate()-1), a)
+  localStorage.removeItem("KBSPEICH")
+  l =  localStorage.getItem("LSPEICH");
+  localStorage.setItem("tag" + (d.getDate()-1), l)
+  localStorage.removeItem("LSPEICH")
+                   }
 function neuerMonatTest(){
          ld = new Date(parseInt(localStorage.getItem('KBzeitspeicher')));
          jd = new Date();
@@ -147,15 +138,13 @@ function neuerMonatTest(){
          if (nld!=njd){monatneu()}
          console.log("monatpeicher = " + nld)
          console.log("monatjezt = " + njd) 
-         }
-    
+                          }   
 function monatneu(){    
   localStorage.removeItem("KBSPEICHmonat"),
   localStorage.clear();
-  document.getElementById("monat").innerHTML = "0";}
+  document.getElementById("monat").innerHTML = "0";
+                        }
   
-
-
 
 var as = document.getElementById("ansichtw") 
 as.addEventListener("change", function() {
@@ -166,13 +155,12 @@ else if (as.value == "3"){AV = 3}
 
 function start() {
 document.getElementById("startdiv").style.display ="none"  
-if      (AV == 1){document.getElementById("aktivdiv").style.display = ""; document.getElementById("aktivcanvasdiv").style.display = "none"; }
-else if (AV == 2){ document.getElementById("aktivdiv").style.display = ""}
-else if (AV == 3){document.getElementById("aktivcanvasdiv").style.display = ""; document.getElementById("aktivdiv").style.display = "none"; }
-else {console.log("canvasanzeige")}
+if  (AV == 1){document.getElementById("aktivdiv").style.display = ""; document.getElementById("aktivcanvasdiv").style.display = "none"; }
+  else if (AV == 2){ document.getElementById("aktivdiv").style.display = ""}
+  else if (AV == 3){document.getElementById("aktivcanvasdiv").style.display = ""; document.getElementById("aktivdiv").style.display = "none"; }
+  else {console.log("canvasanzeige")}
 
 if (modus == 1 || 2 || 3 ){
-
   document.getElementById ("Ldiv").style.display ="none"
   uhrlos()
   addEventListener("devicemotion", handleMotionEvent);
@@ -180,27 +168,24 @@ if (modus == 1 || 2 || 3 ){
   tick();  
 }
   if (modus == 4){document.getElementById ("aktivdiv").style.display ="none"; document.getElementById ("Ldiv").style.display ="";
+           }
+                      }
 
-
-  }
-}
-standartbild()
 
 function standartbild(){
-var  flachbild = document.createElement("img");
-flachbild.src = "media/flach.png";
-flachbild.id ="flachbild"
-flachbild.style.width = "200px";
-flachbild.style.hight = "200px";
-      startb.appendChild(flachbild);
-      screen.orientation.unlock()
-}
+   var  flachbild = document.createElement("img");
+   flachbild.src = "media/flach.png";
+   flachbild.id ="flachbild"
+   flachbild.style.width = "200px";
+   flachbild.style.hight = "200px";
+   startb.appendChild(flachbild);
+   screen.orientation.unlock()
+                      }
 
 const modusV = document.getElementById('mod');
 modusV.value = 1;
 modusV.min = 1;
 modusV.max = 4; 
-
 
 
 var mo = document.getElementById("mod") 
@@ -339,12 +324,13 @@ var milliseconds = date.getTime();
 
 
 function niedrigg() {
-   if (AV == 2) {bildwechselKB ()}
+  
 var date = new Date();
 var milliseconds = date.getTime(); 
 if((milliseconds - firstExecution) > interval && ss ==1) // die Verzögerung ist wahrscheinlich unnötig
   { firstExecution = milliseconds;
     KB = KB + 1; 
+  
     document.getElementById("KB").innerHTML = KB;
     document.getElementById("Anzahl").innerHTML = KB;
 
@@ -364,14 +350,17 @@ if((milliseconds - firstExecution) > interval && ss ==1) // die Verzögerung ist
      else {localStorage.KBSPEICHmonat = 1;}
    } else {console.log("komisch")}
 
-
+ if (AV == 2) {bildwechselKB ()}
+   
     ss = ss - 1;console.log("ss00 "+ ss) // setzt den aktivierung zurück  SS
 
+   
+   
       if (audioV == 0) {synthleicht()}
       else if (audioV == 1) {console.log("audiV1keinton" + audioV)}   
   } else {console.log("ton komisch");}
 
-
+ 
 }
                     
 
