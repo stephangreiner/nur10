@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<html>
 <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -27,8 +28,16 @@
 <body>
 <div id="startdiv">
 <button id="startb" onclick="start()"></button>    
-
-<input id='mod' type="range">
+<div id ="rangediv">
+<input id='mod' type="range" min ="1" max="4" step="1" list="steplist">
+<datalist id="steplist">
+  <option value="1" id="o1" label ="|"></option>
+  <option value="2" id="o2" label ="|"></option>
+  <option value="3" id="o3" label ="|"></option>
+  <option value="4" id="o4" label ="|"></option>
+ 
+</datalist>
+</div>
 
 <div id="wdiv">
  

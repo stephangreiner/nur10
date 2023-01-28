@@ -213,7 +213,7 @@ if (modusV.value == "2"){modus = 2;
       hochbild.style.width = "200px";
       hochbild.style.hight = "200px";
       startb.appendChild(hochbild);
-      document.getElementById( "startb").style.backgroundColor = "rgb(155, 29, 29)"
+      document.getElementById( "startb").style.backgroundColor = "rgb(149, 216, 32)"
       if (document.getElementById('hochbild') != null) { console.log("gibts schon");}
       if (document.getElementById('flachbild') != null) { document.getElementById('flachbild').remove()}
       if (document.getElementById('querbild') != null) { document.getElementById('querbild').remove()}
@@ -377,7 +377,7 @@ function bildwechselKB () {
 
 const ONEK = document.getElementById("oneb") 
 function bildKB(){
-mediaV = Math.floor(Math.random() * 27) + 1
+mediaV = Math.floor(Math.random() * 26) + 1
 if      (mediaV==1){ONEK.style.background = "url('media/bm1.jpg') no-repeat center";}
 else if (mediaV==2){ONEK.style.background = "url('media/bm2.jpg') no-repeat center";}
 else if (mediaV==3){ONEK.style.background = "url('media/bm3.jpg') no-repeat center";}
@@ -575,7 +575,7 @@ function nasedrauf(){
   
   const ONE = document.getElementById("LieB") 
   function bild(){
-    mediaV = Math.floor(Math.random() * 27) + 1
+    mediaV = Math.floor(Math.random() * 26) + 1
     if      (mediaV==1){ONE.style.background = "url('media/bm1.jpg') no-repeat center";}
     else if (mediaV==2){ONE.style.background = "url('media/bm2.jpg') no-repeat center";}
     else if (mediaV==3){ONE.style.background = "url('media/bm3.jpg') no-repeat center";}
