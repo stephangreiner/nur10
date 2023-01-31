@@ -28,7 +28,7 @@ input[type="range"] {
   background: transparent;
   cursor: pointer;
   width: 25rem;
- }
+       }
  
 
  
@@ -37,7 +37,7 @@ input[type="range"] {
  input[type="range"]::-webkit-slider-runnable-track {
   background-color: rgb(115, 115, 115);
   height: 0.2rem;
- }
+          }
  
  /* slider thumb */
  input[type="range"]::-webkit-slider-thumb {
@@ -48,25 +48,25 @@ input[type="range"] {
   border-radius: 0.5rem;
   height: 1rem;
   width: 1rem;
- }
+          }
  
 
- #rangediv { width: 60%;}
+ #rangediv { width: 50%;}
 
  #mod{
    width: 100%;
    display: flex;
    flex-direction: row;
    justify-content: space-between;
- }
+    }
 
  datalist{
-  margin-top: -1rem; 
+   margin-top: -1rem; 
    width: 100%;
    display: flex;
    flex-direction: row;
    justify-content: space-between;
- }
+        }
  
  #o1 {color: rgb(255, 29, 29);}
  #o2 {color:rgb(149, 216, 32);}
@@ -74,10 +74,6 @@ input[type="range"] {
  #o4 {color: rgb(255, 238, 0);}
 
 
-
- 
-
- 
 
            #startb{
             background-color: rgb(216, 53, 53);         
@@ -99,9 +95,7 @@ input[type="range"] {
 #sta_b{background-color: #00000017;
   color: grey;
   opacity: 0.5;
-
-
-}
+      }
 
 #sta_div{
   height: 100%;
@@ -115,7 +109,7 @@ input[type="range"] {
 
 
          #datum {border: none; margin-right: 80%;}
-         #tabel{width: 80%;background-color: rgb(19, 21, 21);font-size: smaller;text-align: center;}
+         #tabel{width: 90%;background-color: rgb(19, 21, 21);font-size: smaller;text-align: center;}
             
      
              #audioW,#ansichtw{
@@ -155,19 +149,18 @@ flex-direction: column;
 justify-content:space-around;
                     }
          
-                   #oneb{
-                   
+                   #oneb{                  
                      width: 100%;
                      height: 60%;
                      text-align: center;
                      border: none;
                      border-radius: 50%; 
                      align-items: center;/* ist child von flexbox-parent aktivdiv -> margin statt float */
-                     }
+                        }
                    #Anzahl{
                     color: rgb(255, 255, 255);
                     font-size: 400%;
-                   }
+                          }
                    .zurueck{
                        background-color: rgba(255, 255, 255, 0.427);
                        color: rgb(7, 6, 6);
@@ -178,7 +171,7 @@ justify-content:space-around;
                        cursor: pointer;
                        margin-left: auto;/* ist child von flexbox-parent aktivdiv -> nach links-> damit es andere Items nicht mitzieht eine order weiter */
                        order: 2;
-                     }
+                            }
 
 
 /*Liegestützen*/
@@ -202,9 +195,9 @@ justify-content:space-around;
   align-items: center;/* ist child von flexbox-parent aktivdiv -> margin statt float */
      }
                     
-     #LieA{
-                     color: black;
-                     font-size: 300%;
+  #LieA{
+    color: black;
+    font-size: 300%;
                     }
 
 

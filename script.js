@@ -15,14 +15,20 @@ neuerMonatTest();
 standartbild()
 localStorage.removeItem("LSPEICHneu")
 localStorage.removeItem("KBSPEICHneu");
+localStorage.removeItem("KZPEICHneu")
+localStorage.removeItem("RHSPEICHneu");
+
 document.getElementById("monat").innerHTML =  localStorage.KBSPEICHmonat;
-document.getElementById("monatL").innerHTML =  localStorage.LSPEICHmonat;
 document.getElementById("monatKZ").innerHTML =  localStorage.KZSPEICHmonat;
+document.getElementById("monatRH").innerHTML =  localStorage.RHSPEICHmonat;
+document.getElementById("monatL").innerHTML =  localStorage.LSPEICHmonat;
+
 document.getElementById("aktivcanvasdiv").style.display="none";
 document.getElementById("Ldiv").style.display="none";
 document.getElementById("aktivdiv").style.display="none";
 document.getElementById("sta_div").style.display = "none";
 localStorage.setItem('KBzeitspeicher', +new Date);
+
 if (typeof localStorage.KBSPEICH ==="undefined") 
 {document.getElementById("heute").innerHTML =  "0"}
 else {document.getElementById("heute").innerHTML =  localStorage.KBSPEICH};
@@ -35,16 +41,24 @@ if (typeof localStorage.KZSPEICH ==="undefined")
 {document.getElementById("heuteKZ").innerHTML =  "0"}
 else {document.getElementById("heuteKZ").innerHTML =  localStorage.KZSPEICH};
 
+if (typeof localStorage.RHSPEICH ==="undefined") 
+{document.getElementById("heuteRH").innerHTML =  "0"}
+else {document.getElementById("heuteRH").innerHTML =  localStorage.RHSPEICH};
                             }
 
 
 function sta_zeigen(){
-  const monatn = ["Jan","Feb","Mär","Apr","Mai","Jun","Jul","Aug","Sep","Okt","Nov","Dez"];
   d = new Date();  
-  let name = monatn[d.getMonth()];
   document.getElementById("datum").innerHTML = d.getDate() + "." + (d.getMonth()+1) + "." + d.getFullYear();
+  const monatn = ["Jan","Feb","Mär","Apr","Mai","Jun","Jul","Aug","Sep","Okt","Nov","Dez"];
+  let name = monatn[d.getMonth()];
+  const monate = document.getElementsByClassName("monats");
+  for (let i = 0; i < d.getDate() ; i++) {monate[i].innerHTML = (i +1) + "." + (name)} 
+
+  
   document.getElementById("mittelwert").innerHTML = Math.round(localStorage.KBSPEICHmonat  / d.getDate());
-   document.getElementById("mittelwertKZ").innerHTML = Math.round(localStorage.KZSPEICHmonat  / d.getDate());
+  document.getElementById("mittelwertKZ").innerHTML = Math.round(localStorage.KZSPEICHmonat  / d.getDate());
+  document.getElementById("mittelwertRH").innerHTML = Math.round(localStorage.RHSPEICHmonat  / d.getDate());
   document.getElementById("mittelwertL").innerHTML = Math.round(localStorage.LSPEICHmonat  / d.getDate());
  
 document.getElementById("sta_div").style.display = "";
@@ -53,6 +67,7 @@ document.getElementById("aktivdiv").style.display="none";
 document.getElementById("startdiv").style.display="none";
 document.getElementById("monatname").innerHTML = name;
 document.getElementById("monatname2").innerHTML = name;
+
 document.getElementById("t1").innerHTML = localStorage.getItem("Ktag1")
 document.getElementById("t2").innerHTML = localStorage.getItem("Ktag2") 
 document.getElementById("t3").innerHTML = localStorage.getItem("Ktag3")
@@ -83,10 +98,7 @@ document.getElementById("t27").innerHTML = localStorage.getItem("Ktag27")
 document.getElementById("t28").innerHTML = localStorage.getItem("Ktag28") 
 document.getElementById("t29").innerHTML = localStorage.getItem("Ktag29")
 document.getElementById("t30").innerHTML = localStorage.getItem("Ktag30") 
-const monate = document.getElementsByClassName("monats");
-for (let i = 0; i < d.getDate() ; i++) {
- monate[i].innerHTML = (i +1) + "." + (name)
-} // das ist umgesetzt von hinter dem Blook Problem ?
+
 document.getElementById("t1L").innerHTML = localStorage.getItem("tag1")
 document.getElementById("t2L").innerHTML = localStorage.getItem("tag2") 
 document.getElementById("t3L").innerHTML = localStorage.getItem("tag3")
@@ -150,6 +162,43 @@ document.getElementById("t28KZ").innerHTML = localStorage.getItem("KZtag28")
 document.getElementById("t29KZ").innerHTML = localStorage.getItem("KZtag29")
 document.getElementById("t30KZ").innerHTML = localStorage.getItem("KZtag30") 
 document.getElementById("t31KZ").innerHTML = localStorage.getItem("tag31") 
+
+document.getElementById("t1RH").innerHTML = localStorage.getItem("RHtag1")
+document.getElementById("t2RH").innerHTML = localStorage.getItem("RHtag2") 
+document.getElementById("t3RH").innerHTML = localStorage.getItem("RHtag3")
+document.getElementById("t4RH").innerHTML = localStorage.getItem("RHtag4") 
+document.getElementById("t5RH").innerHTML = localStorage.getItem("RHtag5")
+document.getElementById("t6RH").innerHTML = localStorage.getItem("RHtag6") 
+document.getElementById("t7RH").innerHTML = localStorage.getItem("RHtag7")
+document.getElementById("t8RH").innerHTML = localStorage.getItem("RHtag8") 
+document.getElementById("t9RH").innerHTML = localStorage.getItem("RHtag9")
+document.getElementById("t10RH").innerHTML = localStorage.getItem("RHtag10") 
+document.getElementById("t11RH").innerHTML = localStorage.getItem("RHtag11")
+document.getElementById("t12RH").innerHTML = localStorage.getItem("RHtag12") 
+document.getElementById("t13RH").innerHTML = localStorage.getItem("RHtag13")
+document.getElementById("t14RH").innerHTML = localStorage.getItem("RHtag14") 
+document.getElementById("t15RH").innerHTML = localStorage.getItem("RHtag15")
+document.getElementById("t16RH").innerHTML = localStorage.getItem("RHtag16") 
+document.getElementById("t17RH").innerHTML = localStorage.getItem("RHtag17")
+document.getElementById("t18RH").innerHTML = localStorage.getItem("RHtag18") 
+document.getElementById("t19RH").innerHTML = localStorage.getItem("RHtag19")
+document.getElementById("t20RH").innerHTML = localStorage.getItem("RHtag20") 
+document.getElementById("t21RH").innerHTML = localStorage.getItem("RHtag21")
+document.getElementById("t22RH").innerHTML = localStorage.getItem("RHtag22") 
+document.getElementById("t23RH").innerHTML = localStorage.getItem("RHtag23")
+document.getElementById("t24RH").innerHTML = localStorage.getItem("RHtag24") 
+document.getElementById("t25RH").innerHTML = localStorage.getItem("RHtag25")
+document.getElementById("t26RH").innerHTML = localStorage.getItem("RHtag26") 
+document.getElementById("t27RH").innerHTML = localStorage.getItem("RHtag27")
+document.getElementById("t28RH").innerHTML = localStorage.getItem("RHtag28") 
+document.getElementById("t29RH").innerHTML = localStorage.getItem("RHtag29")
+document.getElementById("t30RH").innerHTML = localStorage.getItem("RHtag30") 
+document.getElementById("t31RH").innerHTML = localStorage.getItem("RHtag31") 
+
+
+
+
+
 }
 
 function neuerTagTest(){
@@ -170,6 +219,9 @@ function neuer_tag(){
   k =  localStorage.getItem("KZSPEICH");
   localStorage.setItem("KZtag" + (d.getDate()-1), k)
   localStorage.removeItem("KZSPEICH")
+  r =  localStorage.getItem("RHSPEICH");
+  localStorage.setItem("RHtag" + (d.getDate()-1), r)
+  localStorage.removeItem("RHSPEICH")
 
 
 
@@ -280,7 +332,8 @@ if (modusV.value == "3"){modus = 3;
     else{console.log("komisch3")} 
                  }
 
-if (modusV.value == "4"){modus = 4;  var  liegesbild = document.createElement("img");
+if (modusV.value == "4"){modus = 4;  
+    var  liegesbild = document.createElement("img");
     liegesbild.id ="liegesbild";
     liegesbild.src = "media/LiegeS.png";
     liegesbild.style.width = "200px";
@@ -331,9 +384,9 @@ function handleMotionEvent(event) {
     var y = event.accelerationIncludingGravity.y;
     var z = event.accelerationIncludingGravity.z;
 
-if (modus == 1){zvar(); document.getElementById("oneb").style.backgroundColor ="red"}
-if (modus == 2){yvar(); document.getElementById("oneb").style.backgroundColor ="green"}
-if (modus == 3){xvar();  document.getElementById("oneb").style.backgroundColor ="blue"}
+if (modus == 1){zvar(); document.getElementById("oneb").style.backgroundColor ="rgb(255, 29, 29)"}
+if (modus == 2){yvar(); document.getElementById("oneb").style.backgroundColor ="rgb(149, 216, 32)"}
+if (modus == 3){xvar(); document.getElementById("oneb").style.backgroundColor ="rgb(55, 229, 229)"}
 
 
 function zvar(){
@@ -417,11 +470,24 @@ if (modus == 2){
  } else {console.log("komisch")}
 }
 
-   
-   
-     
+if (modus == 3){
+  if (typeof(Storage) !== "undefined") {
+  if (localStorage.RHSPEICH) {localStorage.RHSPEICH= Number(localStorage.RHSPEICH)+1;} 
+  else {localStorage.RHSPEICH = 1;}
+  document.getElementById("heuteRH").innerHTML =  localStorage.RHSPEICH;
+  } else {document.getElementById("heuteRH").innerHTML = "komisch";}
 
- 
+ if (typeof(Storage) !== "undefined") {
+ if (localStorage.RHSPEICHneu) {localStorage.RHSPEICHneu= Number(localStorage.RHSPEICHneu)+1;} 
+ else {localStorage.RHSPEICHneu = 1;}
+ } else {console.log("komisch")}
+
+ if (typeof(Storage) !== "undefined") {
+ if (localStorage.RHSPEICHmonat) {localStorage.RHSPEICHmonat= Number(localStorage.RHSPEICHmonat)+1;} 
+ else {localStorage.RHSPEICHmonat = 1;}
+} else {console.log("komisch")}
+}
+
 }
                     
 
@@ -432,8 +498,7 @@ function bildwechselKB () {
     KB === 60 ||KB === 70 || KB ===80 || KB ===90 || KB ===100 || KB ===110 || KB ===120
     ||KB === 130 || KB ===140 || KB ===150 || KB ===160 || KB ===170 
     || KB ===180 || KB ===190 || KB ===200 ) {bildKB ()}      
-}  
-
+                           }  
 
 
 const ONEK = document.getElementById("oneb") 
@@ -467,20 +532,6 @@ else if (mediaV==25){ONEK.style.background = "url('media/bm25.jpg') no-repeat ce
 else if (mediaV==26){ONEK.style.background = "url('media/bm26.jpg') no-repeat center";}
 else if (mediaV==27){ONEK.style.background = "url('media/bm27.jpg') no-repeat center";}           
 }  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 function synthleicht(){
@@ -568,13 +619,13 @@ function drawGraph(linien, scaleX, scaleY) {
    }
   ctx.stroke();
   ctx.restore();
-}
+                                         }
 
 //get Float32Array of length initialized to 0
 function getInitArr(length) {
   var arr = new Float32Array(length);
   return arr;
-}
+                            }
 
 //zieht eine Probe aus doSample und fügt sie zeitlich hinten an den Array an und malt so die Linie
 function shift(arr, datum) {
@@ -582,7 +633,7 @@ function shift(arr, datum) {
   for (var i = 1; i < arr.length; i++) { arr[i - 1] = arr[i]; }
   arr[arr.length - 1] = datum;
   return ret;
-}
+                          }
 
 //stopuhr
 var sec = 0;
@@ -596,8 +647,6 @@ function tock(){
 function uhrlos() {i =setInterval(tock, 1000); }
    
 function neu(){location.reload()}
-
-
 
 
 
@@ -623,14 +672,14 @@ function nasedrauf(){
  } else {console.log("komisch")}
 
  if (AV == 2) {bildwechsel ()}
-    }
+                   }
 
  function bildwechsel () {
       if      (L === 10 || L === 20 ||L === 30 || L ===40 ||L === 50 ||
         L === 60 ||L === 70 || L ===80 || L ===90 || L ===100 || L ===110 || L ===120
         ||L === 130 || L ===140 || L ===150 || L ===160 || L ===170 
         || L ===180 || L ===190 || L ===200 ) {bild ()}      
-  }  
+                        }  
 
    
   
