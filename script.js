@@ -17,6 +17,7 @@ localStorage.removeItem("LSPEICHneu")
 localStorage.removeItem("KBSPEICHneu");
 document.getElementById("monat").innerHTML =  localStorage.KBSPEICHmonat;
 document.getElementById("monatL").innerHTML =  localStorage.LSPEICHmonat;
+document.getElementById("monatKZ").innerHTML =  localStorage.KZSPEICHmonat;
 document.getElementById("aktivcanvasdiv").style.display="none";
 document.getElementById("Ldiv").style.display="none";
 document.getElementById("aktivdiv").style.display="none";
@@ -30,16 +31,22 @@ if (typeof localStorage.LSPEICH ==="undefined")
 {document.getElementById("heuteL").innerHTML =  "0"}
 else {document.getElementById("heuteL").innerHTML =  localStorage.LSPEICH};
 
+if (typeof localStorage.KZSPEICH ==="undefined") 
+{document.getElementById("heuteKZ").innerHTML =  "0"}
+else {document.getElementById("heuteKZ").innerHTML =  localStorage.KZSPEICH};
+
                             }
 
 
 function sta_zeigen(){
-  const monatn = ["Januar","Februar","März","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"];
+  const monatn = ["Jan","Feb","Mär","Apr","Mai","Jun","Jul","Aug","Sep","Okt","Nov","Dez"];
   d = new Date();  
   let name = monatn[d.getMonth()];
   document.getElementById("datum").innerHTML = d.getDate() + "." + (d.getMonth()+1) + "." + d.getFullYear();
   document.getElementById("mittelwert").innerHTML = Math.round(localStorage.KBSPEICHmonat  / d.getDate());
+   document.getElementById("mittelwertKZ").innerHTML = Math.round(localStorage.KZSPEICHmonat  / d.getDate());
   document.getElementById("mittelwertL").innerHTML = Math.round(localStorage.LSPEICHmonat  / d.getDate());
+ 
 document.getElementById("sta_div").style.display = "";
 document.getElementById("aktivcanvasdiv").style.display="none";
 document.getElementById("aktivdiv").style.display="none";
@@ -79,7 +86,7 @@ document.getElementById("t30").innerHTML = localStorage.getItem("Ktag30")
 const monate = document.getElementsByClassName("monats");
 for (let i = 0; i < d.getDate() ; i++) {
  monate[i].innerHTML = (i +1) + "." + (name)
-
+} // das ist umgesetzt von hinter dem Blook Problem ?
 document.getElementById("t1L").innerHTML = localStorage.getItem("tag1")
 document.getElementById("t2L").innerHTML = localStorage.getItem("tag2") 
 document.getElementById("t3L").innerHTML = localStorage.getItem("tag3")
@@ -111,7 +118,38 @@ document.getElementById("t28L").innerHTML = localStorage.getItem("tag28")
 document.getElementById("t29L").innerHTML = localStorage.getItem("tag29")
 document.getElementById("t30L").innerHTML = localStorage.getItem("tag30") 
 document.getElementById("t31L").innerHTML = localStorage.getItem("tag31") 
-  }
+  
+document.getElementById("t1KZ").innerHTML = localStorage.getItem("KZtag1")
+document.getElementById("t2KZ").innerHTML = localStorage.getItem("KZtag2") 
+document.getElementById("t3KZ").innerHTML = localStorage.getItem("KZtag3")
+document.getElementById("t4KZ").innerHTML = localStorage.getItem("KZtag4") 
+document.getElementById("t5KZ").innerHTML = localStorage.getItem("KZtag5")
+document.getElementById("t6KZ").innerHTML = localStorage.getItem("KZtag6") 
+document.getElementById("t7KZ").innerHTML = localStorage.getItem("KZtag7")
+document.getElementById("t8KZ").innerHTML = localStorage.getItem("KZtag8") 
+document.getElementById("t9KZ").innerHTML = localStorage.getItem("KZtag9")
+document.getElementById("t10KZ").innerHTML = localStorage.getItem("KZtag10") 
+document.getElementById("t11KZ").innerHTML = localStorage.getItem("KZtag11")
+document.getElementById("t12KZ").innerHTML = localStorage.getItem("KZtag12") 
+document.getElementById("t13KZ").innerHTML = localStorage.getItem("KZtag13")
+document.getElementById("t14KZ").innerHTML = localStorage.getItem("KZtag14") 
+document.getElementById("t15KZ").innerHTML = localStorage.getItem("KZtag15")
+document.getElementById("t16KZ").innerHTML = localStorage.getItem("KZtag16") 
+document.getElementById("t17KZ").innerHTML = localStorage.getItem("KZtag17")
+document.getElementById("t18KZ").innerHTML = localStorage.getItem("KZtag18") 
+document.getElementById("t19KZ").innerHTML = localStorage.getItem("KZtag19")
+document.getElementById("t20KZ").innerHTML = localStorage.getItem("KZtag20") 
+document.getElementById("t21KZ").innerHTML = localStorage.getItem("KZtag21")
+document.getElementById("t22KZ").innerHTML = localStorage.getItem("KZtag22") 
+document.getElementById("t23KZ").innerHTML = localStorage.getItem("KZtag23")
+document.getElementById("t24KZ").innerHTML = localStorage.getItem("KZtag24") 
+document.getElementById("t25KZ").innerHTML = localStorage.getItem("KZtag25")
+document.getElementById("t26KZ").innerHTML = localStorage.getItem("KZtag26") 
+document.getElementById("t27KZ").innerHTML = localStorage.getItem("KZtag27")
+document.getElementById("t28KZ").innerHTML = localStorage.getItem("KZtag28") 
+document.getElementById("t29KZ").innerHTML = localStorage.getItem("KZtag29")
+document.getElementById("t30KZ").innerHTML = localStorage.getItem("KZtag30") 
+document.getElementById("t31KZ").innerHTML = localStorage.getItem("tag31") 
 }
 
 function neuerTagTest(){
@@ -129,6 +167,13 @@ function neuer_tag(){
   l =  localStorage.getItem("LSPEICH");
   localStorage.setItem("tag" + (d.getDate()-1), l)
   localStorage.removeItem("LSPEICH")
+  k =  localStorage.getItem("KZSPEICH");
+  localStorage.setItem("KZtag" + (d.getDate()-1), k)
+  localStorage.removeItem("KZSPEICH")
+
+
+
+
                    }
 function neuerMonatTest(){
          ld = new Date(parseInt(localStorage.getItem('KBzeitspeicher')));
@@ -286,9 +331,9 @@ function handleMotionEvent(event) {
     var y = event.accelerationIncludingGravity.y;
     var z = event.accelerationIncludingGravity.z;
 
-if (modus == 1){zvar()}
-if (modus == 2){yvar()}
-if (modus == 3){xvar()}
+if (modus == 1){zvar(); document.getElementById("oneb").style.backgroundColor ="red"}
+if (modus == 2){yvar(); document.getElementById("oneb").style.backgroundColor ="green"}
+if (modus == 3){xvar();  document.getElementById("oneb").style.backgroundColor ="blue"}
 
 
 function zvar(){
@@ -330,35 +375,51 @@ var milliseconds = date.getTime();
 if((milliseconds - firstExecution) > interval && ss ==1) // die Verzögerung ist wahrscheinlich unnötig
   { firstExecution = milliseconds;
     KB = KB + 1; 
-  
+ss = ss - 1;console.log("ss00 "+ ss) // setzt den aktivierung zurück  SS
+    if (audioV == 0) {synthleicht()} else if (audioV == 1) {console.log("audiV1keinton" + audioV)}} else {console.log("ton komisch");}
+    if (AV == 2) {bildwechselKB ()}
     document.getElementById("KB").innerHTML = KB;
     document.getElementById("Anzahl").innerHTML = KB;
 
-    if (typeof(Storage) !== "undefined") {
-    if (localStorage.KBSPEICH) {localStorage.KBSPEICH= Number(localStorage.KBSPEICH)+1;} 
-    else {localStorage.KBSPEICH = 1;}
-    document.getElementById("heute").innerHTML =  localStorage.KBSPEICH;
-   } else {document.getElementById("heute").innerHTML = "komisch";}
+    if (modus == 1){
+        if (typeof(Storage) !== "undefined") {
+        if (localStorage.KBSPEICH) {localStorage.KBSPEICH= Number(localStorage.KBSPEICH)+1;} 
+        else {localStorage.KBSPEICH = 1;}
+        document.getElementById("heute").innerHTML =  localStorage.KBSPEICH;
+        } else {document.getElementById("heute").innerHTML = "komisch";}
 
+       if (typeof(Storage) !== "undefined") {
+       if (localStorage.KBSPEICHneu) {localStorage.KBSPEICHneu= Number(localStorage.KBSPEICHneu)+1;} 
+       else {localStorage.KBSPEICHneu = 1;}
+       } else {console.log("komisch")}
+
+       if (typeof(Storage) !== "undefined") {
+       if (localStorage.KBSPEICHmonat) {localStorage.KBSPEICHmonat= Number(localStorage.KBSPEICHmonat)+1;} 
+       else {localStorage.KBSPEICHmonat = 1;}
+     } else {console.log("komisch")}
+   }
+    
+if (modus == 2){
     if (typeof(Storage) !== "undefined") {
-     if (localStorage.KBSPEICHneu) {localStorage.KBSPEICHneu= Number(localStorage.KBSPEICHneu)+1;} 
-     else {localStorage.KBSPEICHneu = 1;}
+    if (localStorage.KZSPEICH) {localStorage.KZSPEICH= Number(localStorage.KZSPEICH)+1;} 
+    else {localStorage.KZSPEICH = 1;}
+    document.getElementById("heuteKZ").innerHTML =  localStorage.KZSPEICH;
+    } else {document.getElementById("heuteKZ").innerHTML = "komisch";}
+
+   if (typeof(Storage) !== "undefined") {
+   if (localStorage.KZSPEICHneu) {localStorage.KZSPEICHneu= Number(localStorage.KZSPEICHneu)+1;} 
+   else {localStorage.KZSPEICHneu = 1;}
    } else {console.log("komisch")}
 
    if (typeof(Storage) !== "undefined") {
-     if (localStorage.KBSPEICHmonat) {localStorage.KBSPEICHmonat= Number(localStorage.KBSPEICHmonat)+1;} 
-     else {localStorage.KBSPEICHmonat = 1;}
-   } else {console.log("komisch")}
-
- if (AV == 2) {bildwechselKB ()}
-   
-    ss = ss - 1;console.log("ss00 "+ ss) // setzt den aktivierung zurück  SS
+   if (localStorage.KZSPEICHmonat) {localStorage.KZSPEICHmonat= Number(localStorage.KZSPEICHmonat)+1;} 
+   else {localStorage.KZSPEICHmonat = 1;}
+ } else {console.log("komisch")}
+}
 
    
    
-      if (audioV == 0) {synthleicht()}
-      else if (audioV == 1) {console.log("audiV1keinton" + audioV)}   
-  } else {console.log("ton komisch");}
+     
 
  
 }
