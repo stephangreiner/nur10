@@ -428,11 +428,12 @@ var milliseconds = date.getTime();
 if((milliseconds - firstExecution) > interval && ss ==1) // die Verzögerung ist wahrscheinlich unnötig
   { firstExecution = milliseconds;
     KB = KB + 1; 
-    if (audioV == 0) {synthleicht()} else if (audioV == 1) {console.log("audiV1keinton" + audioV)}} else {console.log("ton komisch");}
+    if (audioV == 0) {synthleicht()} else if (audioV == 1) {console.log("audiV1keinton" + audioV)}else {console.log("ton komisch");}
     if (AV == 2) {bildwechselKB ()}
     document.getElementById("KB").innerHTML = KB;
     document.getElementById("Anzahl").innerHTML = KB;
     if (modus == 1){
+
         if (typeof(Storage) !== "undefined") {
         if (localStorage.KBSPEICH) {localStorage.KBSPEICH= Number(localStorage.KBSPEICH)+1;} 
         else {localStorage.KBSPEICH = 1;}
@@ -490,7 +491,7 @@ if (modus == 3){
 }
 ss = ss - 1;console.log("ss00 "+ ss) // setzt den aktivierung zurück  SS
 }
-                    
+}                 
 
 
 
