@@ -448,7 +448,7 @@ if((milliseconds - firstExecution) > interval && ss ==1) // die Verzögerung ist
        if (localStorage.KBSPEICHmonat) {localStorage.KBSPEICHmonat= Number(localStorage.KBSPEICHmonat)+1;} 
        else {localStorage.KBSPEICHmonat = 1;}
      } else {console.log("komisch")}
-     ss = ss - 1;console.log("ss00 "+ ss) // setzt den aktivierung zurück  SS
+ 
    }
     
 if (modus == 2){
@@ -467,7 +467,7 @@ if (modus == 2){
    if (localStorage.KZSPEICHmonat) {localStorage.KZSPEICHmonat= Number(localStorage.KZSPEICHmonat)+1;} 
    else {localStorage.KZSPEICHmonat = 1;}
  } else {console.log("komisch")}
- ss = ss - 1;console.log("ss00 "+ ss) // setzt den aktivierung zurück  SS
+
 }
 
 if (modus == 3){
@@ -486,9 +486,9 @@ if (modus == 3){
  if (localStorage.RHSPEICHmonat) {localStorage.RHSPEICHmonat= Number(localStorage.RHSPEICHmonat)+1;} 
  else {localStorage.RHSPEICHmonat = 1;}
 } else {console.log("komisch")}
-ss = ss - 1;console.log("ss00 "+ ss) // setzt den aktivierung zurück  SS
-}
 
+}
+ss = ss - 1;console.log("ss00 "+ ss) // setzt den aktivierung zurück  SS
 }
                     
 
