@@ -346,9 +346,6 @@ if (modusV.value == "4"){modus = 4;
     if (document.getElementById('querbild') != null) { document.getElementById('querbild').remove();}  
     else{console.log("komisch4")} 
                                }
-
-
-
                                         })  
 
                                         
@@ -365,13 +362,17 @@ if      (gsw.value == "1"){GS = 12}
 else if (gsw.value == "2"){GS = 15}
 else if (gsw.value == "3"){GS = 20}
 })    
+                                                                                             
 
-                                                                                              
-var ach = document.getElementById("audioW") 
-ach.addEventListener("change", function() {
-    if      (ach.value == "0"){audioV = 0}
-    else if (ach.value == "1"){audioV = 1}
-          })  
+function ton(){
+  var b =document.getElementById('tonb') 
+    var a =document.getElementById('tona') ;
+    if (audioV === 0)     {audioV = 1; a.innerHTML ="🔇";b.style.backgroundColor = "rgb(115, 115, 115)"}
+    else if (audioV === 1){audioV = 0; a.innerHTML ="🔈";b.style.backgroundColor = "rgb(115, 115, 115)"}
+    else {console.log("ähhhhhhhh")}
+          }          
+
+
 
 
 //für die Darstellung in dr Detailansicht werden die Variablen auf eine Dezimalstelle gerundet
