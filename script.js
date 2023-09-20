@@ -9,6 +9,12 @@ var GL = 8;
 var GS = 12;
 var AV = 1;
 
+
+
+
+
+
+
 window.onload = function () {
 neuerTagTest();
 neuerMonatTest();
@@ -18,16 +24,32 @@ localStorage.removeItem("KBSPEICHneu");
 localStorage.removeItem("KZPEICHneu");
 localStorage.removeItem("RHSPEICHneu");
 
-document.getElementById("monat").innerHTML =  localStorage.KBSPEICHmonat;
-document.getElementById("monatKZ").innerHTML =  localStorage.KZSPEICHmonat;
-document.getElementById("monatRH").innerHTML =  localStorage.RHSPEICHmonat;
-document.getElementById("monatL").innerHTML =  localStorage.LSPEICHmonat;
-
 document.getElementById("aktivcanvasdiv").style.display="none";
 document.getElementById("Ldiv").style.display="none";
 document.getElementById("aktivdiv").style.display="none";
 document.getElementById("sta_div").style.display = "none";
+document.getElementById("table2").style.display = "none";
+document.getElementById("details").innerHTML = "Tage anzeigen"
 localStorage.setItem('KBzeitspeicher', +new Date);
+
+
+if (typeof localStorage.KBSPEICHmonat ==="undefined")
+{document.getElementById("monat").innerHTML = "0"}
+else { document.getElementById("monat").innerHTML =  localStorage.KBSPEICHmonat;}
+
+if (typeof localStorage.KZSPEICHmonat ==="undefined")
+{document.getElementById("monatKZ").innerHTML = "0"}
+else { document.getElementById("monatKZ").innerHTML =  localStorage.KZSPEICHmonat;}
+
+if (typeof localStorage.RHSPEICHmonat ==="undefined")
+{document.getElementById("monatRH").innerHTML = "0"}
+else { document.getElementById("monatRH").innerHTML =  localStorage.RHSPEICHmonat;}
+
+if (typeof localStorage.LSPEICHmonat ==="undefined")
+{document.getElementById("monatL").innerHTML = "0"}
+else { document.getElementById("monatL").innerHTML =  localStorage.LSPEICHmonat;}
+
+
 
 if (typeof localStorage.KBSPEICH ==="undefined") 
 {document.getElementById("heute").innerHTML =  "0"}
@@ -44,6 +66,9 @@ else {document.getElementById("heuteKZ").innerHTML =  localStorage.KZSPEICH};
 if (typeof localStorage.RHSPEICH ==="undefined") 
 {document.getElementById("heuteRH").innerHTML =  "0"}
 else {document.getElementById("heuteRH").innerHTML =  localStorage.RHSPEICH};
+
+
+
                             }
 
 
@@ -195,10 +220,15 @@ document.getElementById("t29RH").innerHTML = localStorage.getItem("RHtag29")
 document.getElementById("t30RH").innerHTML = localStorage.getItem("RHtag30") 
 document.getElementById("t31RH").innerHTML = localStorage.getItem("RHtag31") 
 
+}
 
-
-
-
+function tage_zeigen() {
+  var x = document.getElementById("table2");
+  if (x.style.display === "none") {
+    x.style.display = "block"; document.getElementById("details").innerHTML = "Tage ausblenden"
+  } else {
+    x.style.display = "none";document.getElementById("details").innerHTML = "Tage anzeigen"
+  }
 }
 
 function neuerTagTest(){
