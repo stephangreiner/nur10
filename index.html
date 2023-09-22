@@ -19,90 +19,76 @@
               });
           }
           
-              </script>  
- 
-
+</script>  
 </head>
-
-
 <body>
 <div id="startdiv">
-<button id="startb" onclick="start()"></button>    
-<div id ="rangediv">
-<input id='mod' type="range" min ="1" max="4" step="1" list="steplist">
-<datalist id="steplist">
-  <option value="1" id="o1" label ="|"></option>
-  <option value="2" id="o2" label ="|"></option>
-  <option value="3" id="o3" label ="|"></option>
-  <option value="4" id="o4" label ="|"></option>
+    <button id="startb" onclick="start()"></button>    
+    <div id ="rangediv">
+    <input id='mod' type="range" min ="1" max="4" step="1" list="steplist">
+    <datalist id="steplist">
+       <option value="1" id="o1" label ="|"></option>
+       <option value="2" id="o2" label ="|"></option>
+       <option value="3" id="o3" label ="|"></option>
+       <option value="4" id="o4" label ="|"></option>
  
 </datalist>
 </div>
 
 <div id="wdiv">
- 
-            
-     <select id="ansichtw"> 
-      <option value="1"> kreis</option>
-      <option value="2"> kreisbild</option>  
-      <option value="3"> canvas</option>  
-   </select> 
-     
-
-<button id ="tonb" onclick ="ton()"><a id ="tona">🔈</a></button>
-
+      <select id="ansichtw"> 
+         <option value="1"> kreis</option>
+         <option value="2"> kreisbild</option>  
+        <option value="3"> canvas</option>  
+      </select> 
+      <button id ="tonb" onclick ="ton()"><a id ="tona">🔈</a></button>
 </div>
-
-
 <button id="sta_b" onclick="sta_zeigen()"><img src="./media/statistikicon.png" alt="Statistik" width="24" height="24"></button>
 </div>
+ 
+
  <div id="sta_div">
-  <div id="datum"></div>
-
-  <table id="tabel">
-<tr></tr>
-<td></td>
-<th> KB</th> 
-<th> KZ</th> 
-<th> RH</th> 
-<th> LS</th>   
-
+  <a id="datum"></a>
+<div id = table1div>
+     <table id="tabel">
+         <tr>
+         <td></td>
+         <th> KB</th> 
+         <th> KZ</th> 
+         <th> RH</th> 
+         <th> LS</th>   
+</tr>
 
  <tr>
-    <td>Heute:</td>
+    <td></td>
     <td> <a id="heute"></a></td>   
     <td> <a id="heuteKZ"></a></td>  
     <td> <a id="heuteRH"></a></td>  
     <td> <a id="heuteL"></a></td> 
  </tr>
  <tr>
-   <td><a id="monatname"></a>:</td>
-   <td><a id="monat"></a></td>
-   <td><a id="monatKZ"></a></td>
-   <td><a id="monatRH"></a></td>
-   <td><a id="monatL"></a></td>
-  
+   <td><a id="monatname"></a> (&empty;)</td>
+   <td><a id="monat"></a> (<a id="mittelwert"></a>)</td>
+   <td><a id="monatKZ"></a> (<a id="mittelwertKZ"></a>)</td>
+   <td><a id="monatRH"></a> (<a id="mittelwertRH"></a>)</td>
+   <td><a id="monatL"></a> (<a id="mittelwertL"></a>)</td>
  </tr>
- <tr>
-   <td>&empty; - <a id="monatname2"></a>:</td>
-   <td><a id="mittelwert"></td>
-   <td><a id="mittelwertKZ"></td> 
-   <td><a id="mittelwertRH"></td> 
-   <td><a id="mittelwertL"></td>
-    
- </tr>
+
+ 
 </table>
+</div>
+<div id="sta_div2">
 
 <button onclick="tage_zeigen()"><a id ="details"></a></button>
-<div id="table2">
-<table >
-  <tr></tr>
+
+<table id="table2">
+  <tr>
   <td></td>
   <th> KB</th> 
   <th> KZ</th> 
   <th> RH</th> 
   <th> LS</th>   
-  
+</tr>  
   <tr>
      <td><a class="monats"></a></td>
      <td> <a id="t1"></a></td>
@@ -322,24 +308,19 @@
 <td><a id="t31L"></td>
 </tr>
 
-
-
  </table>
-</div>
 
-  <button class="zurueck" onclick="neu()">x</button>   
+  <button class="zurueck" onclick="neu()">x</button> 
+
 </div> 
 
 
 <div id="aktivdiv">
-  <button id= "oneb"><a id="Anzahl">0</a></button>
-
+     <button id= "oneb"><a id="Anzahl">0</a></button>
 </div>
-
 
 <div id="Ldiv">
   <button id= "LieB" onclick= "nasedrauf()"><a id="LieA">0</a></button>
-
 </div>
 
 
@@ -363,13 +344,13 @@
           <option value="3"> 0</option> 
        </select> 
        <select id="GSW"> 
-        <option value="1"> 12</option>
-        <option value="2"> 15</option>  
-        <option value="3"> 20</option> 
-     </select> 
-untere <a id="A1">0</a><br>
-        </div>
- <button class="zurueck" onclick="neu()">x</button>       
+           <option value="1"> 12</option>
+           <option value="2"> 15</option>  
+           <option value="3"> 20</option> 
+       </select> 
+           untere <a id="A1">0</a><br>
+           </div>
+           <button class="zurueck" onclick="neu()">x</button>       
 </div>
 
 

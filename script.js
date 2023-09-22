@@ -91,7 +91,6 @@ document.getElementById("aktivcanvasdiv").style.display="none";
 document.getElementById("aktivdiv").style.display="none";
 document.getElementById("startdiv").style.display="none";
 document.getElementById("monatname").innerHTML = name;
-document.getElementById("monatname2").innerHTML = name;
 
 document.getElementById("t1").innerHTML = localStorage.getItem("Ktag1")
 document.getElementById("t2").innerHTML = localStorage.getItem("Ktag2") 
@@ -536,7 +535,10 @@ function bildwechselKB () {
 
 const ONEK = document.getElementById("oneb") 
 function bildKB(){
-mediaV = Math.floor(Math.random() * 26) + 1
+
+mediaV = Math.floor(Math.random() * 29) + 1
+console.log("BildzufallV =" + mediaV)
+
 if      (mediaV==1){ONEK.style.background = "url('media/bm1.jpg') no-repeat center";}
 else if (mediaV==2){ONEK.style.background = "url('media/bm2.jpg') no-repeat center";}
 else if (mediaV==3){ONEK.style.background = "url('media/bm3.jpg') no-repeat center";}
@@ -563,7 +565,13 @@ else if (mediaV==23){ONEK.style.background = "url('media/bm23.jpg') no-repeat ce
 else if (mediaV==24){ONEK.style.background = "url('media/bm24.jpg') no-repeat center";}
 else if (mediaV==25){ONEK.style.background = "url('media/bm25.jpg') no-repeat center";}  
 else if (mediaV==26){ONEK.style.background = "url('media/bm26.jpg') no-repeat center";}
-else if (mediaV==27){ONEK.style.background = "url('media/bm27.jpg') no-repeat center";}           
+else if (mediaV==27){ONEK.style.background = "url('media/bm27.jpg') no-repeat center";}  
+else if (mediaV==28){ONEK.style.background = "url('media/bm25.jpg') no-repeat center";}  
+else if (mediaV==29){ONEK.style.background = "url('media/bm26.jpg') no-repeat center";}
+else if (mediaV==30){ONEK.style.background = "url('media/bm27.jpg') no-repeat center";}  
+
+
+
 }  
 
 
@@ -682,6 +690,7 @@ function uhrlos() {i =setInterval(tock, 1000); }
 function neu(){location.reload()}
 
 
+// Liegestützen:
 
 var  L = 0
 function nasedrauf(){
@@ -731,7 +740,8 @@ let p = Synth.createInstrument('piano');
   
   const ONE = document.getElementById("LieB") 
   function bild(){
-    mediaV = Math.floor(Math.random() * 26) + 1
+    mediaV = Math.floor(Math.random() * 29) + 1
+    console.log("BildzufallV =" + mediaV)
     if      (mediaV==1){ONE.style.background = "url('media/bm1.jpg') no-repeat center";}
     else if (mediaV==2){ONE.style.background = "url('media/bm2.jpg') no-repeat center";}
     else if (mediaV==3){ONE.style.background = "url('media/bm3.jpg') no-repeat center";}
@@ -758,5 +768,8 @@ let p = Synth.createInstrument('piano');
     else if (mediaV==24){ONE.style.background = "url('media/bm24.jpg') no-repeat center";}
     else if (mediaV==25){ONE.style.background = "url('media/bm25.jpg') no-repeat center";}  
     else if (mediaV==26){ONE.style.background = "url('media/bm26.jpg') no-repeat center";}
-    else if (mediaV==27){ONE.style.background = "url('media/bm27.jpg') no-repeat center";}           
-    }  
+    else if (mediaV==27){ONE.style.background = "url('media/bm27.jpg') no-repeat center";} 
+    else if (mediaV==28){ONEK.style.background = "url('media/bm25.jpg') no-repeat center";}  
+    else if (mediaV==29){ONEK.style.background = "url('media/bm26.jpg') no-repeat center";}
+    else if (mediaV==30){ONEK.style.background = "url('media/bm27.jpg') no-repeat center";} }           
+     
