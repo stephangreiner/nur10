@@ -280,8 +280,10 @@ else if (as.value == "3"){AV = 3}
 })      
 
 function start() {
-document.getElementById("startdiv").style.display ="none"  
-if  (AV == 1){document.getElementById("aktivdiv").style.display = ""; document.getElementById("aktivcanvasdiv").style.display = "none"; }
+  console.log("startja")
+document.getElementById("startdiv").style.display ="none";  
+if  (AV == 1){document.getElementById("aktivdiv").style.display = "";
+     document.getElementById("aktivcanvasdiv").style.display = "none"; }
   else if (AV == 2){ document.getElementById("aktivdiv").style.display = ""}
   else if (AV == 3){document.getElementById("aktivcanvasdiv").style.display = ""; document.getElementById("aktivdiv").style.display = "none"; }
   else {console.log("canvasanzeige")}
@@ -566,9 +568,9 @@ else if (mediaV==24){ONEK.style.background = "url('media/bm24.jpg') no-repeat ce
 else if (mediaV==25){ONEK.style.background = "url('media/bm25.jpg') no-repeat center";}  
 else if (mediaV==26){ONEK.style.background = "url('media/bm26.jpg') no-repeat center";}
 else if (mediaV==27){ONEK.style.background = "url('media/bm27.jpg') no-repeat center";}  
-else if (mediaV==28){ONEK.style.background = "url('media/bm25.jpg') no-repeat center";}  
-else if (mediaV==29){ONEK.style.background = "url('media/bm26.jpg') no-repeat center";}
-else if (mediaV==30){ONEK.style.background = "url('media/bm27.jpg') no-repeat center";}  
+else if (mediaV==28){ONEK.style.background = "url('media/bm28.jpg') no-repeat center";}  
+else if (mediaV==29){ONEK.style.background = "url('media/bm29.jpg') no-repeat center";}
+else if (mediaV==30){ONEK.style.background = "url('media/bm30.jpg') no-repeat center";}  
 
 
 
@@ -769,7 +771,7 @@ let p = Synth.createInstrument('piano');
     else if (mediaV==25){ONE.style.background = "url('media/bm25.jpg') no-repeat center";}  
     else if (mediaV==26){ONE.style.background = "url('media/bm26.jpg') no-repeat center";}
     else if (mediaV==27){ONE.style.background = "url('media/bm27.jpg') no-repeat center";} 
-    else if (mediaV==28){ONEK.style.background = "url('media/bm25.jpg') no-repeat center";}  
-    else if (mediaV==29){ONEK.style.background = "url('media/bm26.jpg') no-repeat center";}
-    else if (mediaV==30){ONEK.style.background = "url('media/bm27.jpg') no-repeat center";} }           
+    else if (mediaV==28){ONEK.style.background = "url('media/bm28.jpg') no-repeat center";}  
+    else if (mediaV==29){ONEK.style.background = "url('media/bm29.jpg') no-repeat center";}
+    else if (mediaV==30){ONEK.style.background = "url('media/bm30.jpg') no-repeat center";} }           
      
