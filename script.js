@@ -538,7 +538,7 @@ function bildwechselKB () {
 const ONEK = document.getElementById("oneb") 
 function bildKB(){
 
-mediaV = Math.floor(Math.random() * 29) + 1
+mediaV = Math.floor(Math.random() * 32) + 1
 console.log("BildzufallV =" + mediaV)
 
 if      (mediaV==1){ONEK.style.background = "url('media/bm1.jpg') no-repeat center";}
@@ -571,7 +571,9 @@ else if (mediaV==27){ONEK.style.background = "url('media/bm27.jpg') no-repeat ce
 else if (mediaV==28){ONEK.style.background = "url('media/bm28.jpg') no-repeat center";}  
 else if (mediaV==29){ONEK.style.background = "url('media/bm29.jpg') no-repeat center";}
 else if (mediaV==30){ONEK.style.background = "url('media/bm30.jpg') no-repeat center";}  
-
+else if (mediaV==31){ONEK.style.background = "url('media/bm31.jpg') no-repeat center";}  
+else if (mediaV==32){ONEK.style.background = "url('media/bm32.jpg') no-repeat center";}
+else if (mediaV==33){ONEK.style.background = "url('media/bm33.jpg') no-repeat center";} 
 
 
 }  
@@ -742,7 +744,7 @@ let p = Synth.createInstrument('piano');
   
   const ONE = document.getElementById("LieB") 
   function bild(){
-    mediaV = Math.floor(Math.random() * 29) + 1
+    mediaV = Math.floor(Math.random() * 32) + 1
     console.log("BildzufallV =" + mediaV)
     if      (mediaV==1){ONE.style.background = "url('media/bm1.jpg') no-repeat center";}
     else if (mediaV==2){ONE.style.background = "url('media/bm2.jpg') no-repeat center";}
@@ -771,7 +773,10 @@ let p = Synth.createInstrument('piano');
     else if (mediaV==25){ONE.style.background = "url('media/bm25.jpg') no-repeat center";}  
     else if (mediaV==26){ONE.style.background = "url('media/bm26.jpg') no-repeat center";}
     else if (mediaV==27){ONE.style.background = "url('media/bm27.jpg') no-repeat center";} 
-    else if (mediaV==28){ONEK.style.background = "url('media/bm28.jpg') no-repeat center";}  
-    else if (mediaV==29){ONEK.style.background = "url('media/bm29.jpg') no-repeat center";}
-    else if (mediaV==30){ONEK.style.background = "url('media/bm30.jpg') no-repeat center";} }           
+    else if (mediaV==28){ONE.style.background = "url('media/bm28.jpg') no-repeat center";}  
+    else if (mediaV==29){ONE.style.background = "url('media/bm29.jpg') no-repeat center";}
+    else if (mediaV==30){ONE.style.background = "url('media/bm30.jpg') no-repeat center";} 
+    else if (mediaV==31){ONE.style.background = "url('media/bm31.jpg') no-repeat center";}  
+    else if (mediaV==32){ONE.style.background = "url('media/bm32.jpg') no-repeat center";}
+    else if (mediaV==33){ONE.style.background = "url('media/bm33.jpg') no-repeat center";} }           
      
