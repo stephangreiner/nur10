@@ -222,11 +222,15 @@ document.getElementById("t31RH").innerHTML = localStorage.getItem("RHtag31")
 }
 
 function tage_zeigen() {
-  var x = document.getElementById("table2");
-  if (x.style.display === "none") {
-    x.style.display = "block"; document.getElementById("details").innerHTML = "Tage ausblenden"
-  } else {
-    x.style.display = "none";document.getElementById("details").innerHTML = "Tage anzeigen"
+  if (document.getElementById("table2").style.display === "none") 
+       {
+          document.getElementById("table1div").style.display = "none";
+          document.getElementById("table2").style.display = "block";
+          document.getElementById("details").innerHTML = "Monatsansicht"
+  } 
+else {
+document.getElementById("table1div").style.display = "block";
+document.getElementById("table2").style.display = "none";document.getElementById("details").innerHTML = "Tagesansicht"
   }
 }
 
@@ -285,7 +289,8 @@ document.getElementById("startdiv").style.display ="none";
 if  (AV == 1){document.getElementById("aktivdiv").style.display = "";
      document.getElementById("aktivcanvasdiv").style.display = "none"; }
   else if (AV == 2){ document.getElementById("aktivdiv").style.display = ""}
-  else if (AV == 3){document.getElementById("aktivcanvasdiv").style.display = ""; document.getElementById("aktivdiv").style.display = "none"; }
+  else if (AV == 3){document.getElementById("aktivcanvasdiv").style.display = "";
+  document.getElementById("aktivdiv").style.display = "none"; }
   else {console.log("canvasanzeige")}
 
 if (modus == 1 || 2 || 3 ){

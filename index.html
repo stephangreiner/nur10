@@ -25,25 +25,26 @@
 <div id="startdiv">
     <button id="startb" onclick="start()"></button>    
     <div id ="rangediv">
-    <input id='mod' type="range" min ="1" max="4" step="1" list="steplist">
-    <datalist id="steplist">
-       <option value="1" id="o1" label ="|"></option>
-       <option value="2" id="o2" label ="|"></option>
-       <option value="3" id="o3" label ="|"></option>
-       <option value="4" id="o4" label ="|"></option>
- 
-</datalist>
-</div>
+       <input id='mod' type="range" min ="1" max="4" step="1" list="steplist">
+       <datalist id="steplist">
+          <option value="1" id="o1" label ="|"></option>
+          <option value="2" id="o2" label ="|"></option>
+          <option value="3" id="o3" label ="|"></option>
+          <option value="4" id="o4" label ="|"></option>
+    </datalist>
+    </div>
 
-<div id="wdiv">
+  <div id="wdiv">
       <select id="ansichtw"> 
-         <option value="1"> - </option>
-         <option value="2"> Bild</option>  
-        <option value="3"> can</option>  
+         <option value="1"> &Omicron; </option>
+         <option value="2"> </option>  
+         <option value="3"> can</option>  
       </select> 
       <button id ="tonb" onclick ="ton()"><a id ="tona">🔈</a></button>
-</div>
-<button id="sta_b" onclick="sta_zeigen()"><img src="./media/statistikicon.png" alt="Statistik" width="24" height="24"></button>
+  </div>
+  
+  
+  <button id="sta_b" onclick="sta_zeigen()"><img src="./media/statistikicon.png" alt="Statistik" width="30" height="30"></button>
 </div>
  
 
@@ -54,29 +55,26 @@
            <tr>
             <td></td>
               <th><img src="media/flach.png"  alt="Liegestützen" style="width:20px;height:20px; background-color: rgb(255, 0, 0); border-radius: 50%;"></th> 
-              <th> <img src="media/hoch.png"  alt="Liegestützen" style="width:20px;height:20px; background-color: rgb(149, 216, 32); border-radius: 50%;"> </th> 
+              <th> <img src="media/hoch.png"  alt="Liegestützen" style="width:20px;height:20px; background-color: rgb(149, 216, 32); border-radius: 50%;"></th> 
               <th> <img src="media/quer.png"  alt="Liegestützen" style="width:20px;height:20px; background-color: rgb(55, 229, 229); border-radius: 50%;"></th> 
-              <th> <img src="media/LiegeS.png"  alt="Liegestützen" style="width:20px;height:20px; background-color: yellow; border-radius: 50%;"></th>   
+              <th> <img src="media/LiegeS.png" alt="Liegestützen" style="width:20px;height:20px; background-color: yellow; border-radius: 50%;"></th>   
            </tr>
-
- <tr>
-    <td></td>
-    <td> <a id="heute"></a></td>   
-    <td> <a id="heuteKZ"></a></td>  
-    <td> <a id="heuteRH"></a></td>  
-    <td> <a id="heuteL"></a></td> 
- </tr>
- <tr>
-   <td><a id="monatname"></a> (&empty;)</td>
-   <td><a id="monat"></a> (<a id="mittelwert"></a>)</td>
-   <td><a id="monatKZ"></a> (<a id="mittelwertKZ"></a>)</td>
-   <td><a id="monatRH"></a> (<a id="mittelwertRH"></a>)</td>
-   <td><a id="monatL"></a> (<a id="mittelwertL"></a>)</td>
- </tr>
-
- 
-</table>
-</div>
+           <tr>
+             <td> H </td>
+             <td> <a id="heute"></a></td>   
+             <td> <a id="heuteKZ"></a></td>  
+             <td> <a id="heuteRH"></a></td>  
+             <td> <a id="heuteL"></a></td> 
+          </tr>
+           <tr>
+              <td><a id="monatname"></a> (&empty;)</td>
+              <td><a id="monat"></a> (<a id="mittelwert"></a>)</td>
+              <td><a id="monatKZ"></a> (<a id="mittelwertKZ"></a>)</td>
+              <td><a id="monatRH"></a> (<a id="mittelwertRH"></a>)</td>
+              <td><a id="monatL"></a> (<a id="mittelwertL"></a>)</td>
+          </tr>
+         </table>
+       </div>
 
 
 <div id="sta_div2">
@@ -314,7 +312,7 @@
 
   <button class="zurueck" onclick="neu()">x</button> 
 
-</div> 
+         </div> 
 </div>
 
 <div id="aktivdiv">

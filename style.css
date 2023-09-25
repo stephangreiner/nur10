@@ -112,17 +112,11 @@ input[type="range"] {
   color: white;
    }
 
-#table1div{width: auto;}
-#sta_div2{
-  width: 40%;
-  display: flex;
-flex-direction: row;
-justify-content:space-around;
 
-}
 
          #datum {border: none;text-align: center;}
-         #tabel,#table2{background-color:  rgb(19, 21, 21);text-align: center;}
+         #tabel{background-color:  rgb(19, 21, 21);font-size: small;text-align: center;}
+         #table2{background-color:  rgb(19, 21, 21);text-align: center;font-size: small}
          tbody {width: 100%}
          td:nth-child(1) {width: 15%}  
          td:nth-child(2) {background-color: red;color: #000000}  
