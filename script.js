@@ -543,7 +543,7 @@ function bildwechselKB () {
 const ONEK = document.getElementById("oneb") 
 function bildKB(){
 
-mediaV = Math.floor(Math.random() * 32) + 1
+mediaV = Math.floor(Math.random() * 41) + 1
 console.log("BildzufallV =" + mediaV)
 
 if      (mediaV==1){ONEK.style.background = "url('media/bm1.jpg') no-repeat center";}
@@ -579,8 +579,15 @@ else if (mediaV==30){ONEK.style.background = "url('media/bm30.jpg') no-repeat ce
 else if (mediaV==31){ONEK.style.background = "url('media/bm31.jpg') no-repeat center";}  
 else if (mediaV==32){ONEK.style.background = "url('media/bm32.jpg') no-repeat center";}
 else if (mediaV==33){ONEK.style.background = "url('media/bm33.jpg') no-repeat center";} 
-
-
+else if (mediaV==34){ONEK.style.background = "url('media/bm34.jpg') no-repeat center";}
+else if (mediaV==35){ONEK.style.background = "url('media/bm35.jpg') no-repeat center";}  
+else if (mediaV==36){ONEK.style.background = "url('media/bm36.jpg') no-repeat center";}  
+else if (mediaV==37){ONEK.style.background = "url('media/bm37.jpg') no-repeat center";}
+else if (mediaV==38){ONEK.style.background = "url('media/bm38.jpg') no-repeat center";}  
+else if (mediaV==39){ONEK.style.background = "url('media/bm39.jpg') no-repeat center";}  
+else if (mediaV==40){ONEK.style.background = "url('media/bm40.jpg') no-repeat center";}
+else if (mediaV==41){ONEK.style.background = "url('media/bm41.jpg') no-repeat center";} 
+else if (mediaV==42){ONEK.style.background = "url('media/bm42.jpg') no-repeat center";} 
 }  
 
 
@@ -590,8 +597,8 @@ function synthleicht(){
     KB === 60 ||KB === 70 || KB ===80 || KB ===90 || KB ===100 || KB ===110 || KB ===120
     ||KB === 130 || KB ===140 || KB ===150 || KB ===160 || KB ===170 
     || KB ===180 || KB ===190 || KB ===200 ||KB === 210 || KB ===220 || KB ===230 || KB ===240 || KB ===250 
-    || KB ===260 || KB ===270 || KB ===280 ){p.play("C",5,0.5)}
-  else (p.play("C",4,0.5))
+    || KB ===260 || KB ===270 || KB ===280 ){p.play("C",4,0.5)}
+  else (p.play("E",4,0.5))
    }
 
 
@@ -739,8 +746,8 @@ let p = Synth.createInstrument('piano');
                           if  (L === 10 || L === 20 ||L === 30 || L ===40 ||L === 50 ||
                             L === 60 ||L === 70 || L ===80 || L ===90 || L ===100 || L ===110 || L ===120
                             ||L === 130 || L ===140 || L ===150 || L ===160 || L ===170 
-                            || L ===180 || L ===190 || L ===200 || L ===210|| L ===220|| L ===230|| L ===240 || L ===250){p.play("D",5,0.5)}
-                          else (p.play("D",4,0.5))
+                            || L ===180 || L ===190 || L ===200 || L ===210|| L ===220|| L ===230|| L ===240 || L ===250){p.play("E",4,0.5)}
+                          else (p.play("C",4,0.5))
                            }
                         
 
@@ -749,7 +756,7 @@ let p = Synth.createInstrument('piano');
   
   const ONE = document.getElementById("LieB") 
   function bild(){
-    mediaV = Math.floor(Math.random() * 32) + 1
+    mediaV = Math.floor(Math.random() * 41) + 1
     console.log("BildzufallV =" + mediaV)
     if      (mediaV==1){ONE.style.background = "url('media/bm1.jpg') no-repeat center";}
     else if (mediaV==2){ONE.style.background = "url('media/bm2.jpg') no-repeat center";}
@@ -783,5 +790,23 @@ let p = Synth.createInstrument('piano');
     else if (mediaV==30){ONE.style.background = "url('media/bm30.jpg') no-repeat center";} 
     else if (mediaV==31){ONE.style.background = "url('media/bm31.jpg') no-repeat center";}  
     else if (mediaV==32){ONE.style.background = "url('media/bm32.jpg') no-repeat center";}
-    else if (mediaV==33){ONE.style.background = "url('media/bm33.jpg') no-repeat center";} }           
+    else if (mediaV==33){ONE.style.background = "url('media/bm33.jpg') no-repeat center";} 
+    else if (mediaV==34){ONE.style.background = "url('media/bm34.jpg') no-repeat center";}
+    else if (mediaV==35){ONE.style.background = "url('media/bm35.jpg') no-repeat center";}  
+    else if (mediaV==36){ONE.style.background = "url('media/bm36.jpg') no-repeat center";}  
+    else if (mediaV==37){ONE.style.background = "url('media/bm37.jpg') no-repeat center";}
+    else if (mediaV==38){ONE.style.background = "url('media/bm38.jpg') no-repeat center";}  
+    else if (mediaV==39){ONE.style.background = "url('media/bm39.jpg') no-repeat center";}  
+    else if (mediaV==40){ONE.style.background = "url('media/bm40.jpg') no-repeat center";}
+    else if (mediaV==41){ONE.style.background = "url('media/bm41.jpg') no-repeat center";} 
+    else if (mediaV==42){ONE.style.background = "url('media/bm42.jpg') no-repeat center";} 
+  
+  
+  
+  
+  
+  
+  
+  
+  }           
      
