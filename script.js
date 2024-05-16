@@ -19,7 +19,7 @@ window.onload = function () {
 neuerTagTest();
 neuerMonatTest();
 standartbild();
-localStorage.removeItem("LSPEICHneu");
+localStorage.removeItem("LSPEICHneu",);
 localStorage.removeItem("KBSPEICHneu");
 localStorage.removeItem("KZPEICHneu");
 localStorage.removeItem("RHSPEICHneu");
@@ -92,132 +92,51 @@ document.getElementById("aktivdiv").style.display="none";
 document.getElementById("startdiv").style.display="none";
 document.getElementById("monatname").innerHTML = name;
 
-document.getElementById("t1").innerHTML = localStorage.getItem("Ktag1")
-document.getElementById("t2").innerHTML = localStorage.getItem("Ktag2") 
-document.getElementById("t3").innerHTML = localStorage.getItem("Ktag3")
-document.getElementById("t4").innerHTML = localStorage.getItem("Ktag4") 
-document.getElementById("t5").innerHTML = localStorage.getItem("Ktag5")
-document.getElementById("t6").innerHTML = localStorage.getItem("Ktag6") 
-document.getElementById("t7").innerHTML = localStorage.getItem("Ktag7")
-document.getElementById("t8").innerHTML = localStorage.getItem("Ktag8") 
-document.getElementById("t9").innerHTML = localStorage.getItem("Ktag9")
-document.getElementById("t10").innerHTML = localStorage.getItem("Ktag10") 
-document.getElementById("t11").innerHTML = localStorage.getItem("Ktag11")
-document.getElementById("t12").innerHTML = localStorage.getItem("Ktag12") 
-document.getElementById("t13").innerHTML = localStorage.getItem("Ktag13")
-document.getElementById("t14").innerHTML = localStorage.getItem("Ktag14") 
-document.getElementById("t15").innerHTML = localStorage.getItem("Ktag15")
-document.getElementById("t16").innerHTML = localStorage.getItem("Ktag16") 
-document.getElementById("t17").innerHTML = localStorage.getItem("Ktag17")
-document.getElementById("t18").innerHTML = localStorage.getItem("Ktag18") 
-document.getElementById("t19").innerHTML = localStorage.getItem("Ktag19")
-document.getElementById("t20").innerHTML = localStorage.getItem("Ktag20") 
-document.getElementById("t21").innerHTML = localStorage.getItem("Ktag21")
-document.getElementById("t22").innerHTML = localStorage.getItem("Ktag22") 
-document.getElementById("t23").innerHTML = localStorage.getItem("Ktag23")
-document.getElementById("t24").innerHTML = localStorage.getItem("Ktag24") 
-document.getElementById("t25").innerHTML = localStorage.getItem("Ktag25")
-document.getElementById("t26").innerHTML = localStorage.getItem("Ktag26") 
-document.getElementById("t27").innerHTML = localStorage.getItem("Ktag27")
-document.getElementById("t28").innerHTML = localStorage.getItem("Ktag28") 
-document.getElementById("t29").innerHTML = localStorage.getItem("Ktag29")
-document.getElementById("t30").innerHTML = localStorage.getItem("Ktag30") 
 
-document.getElementById("t1L").innerHTML = localStorage.getItem("tag1")
-document.getElementById("t2L").innerHTML = localStorage.getItem("tag2") 
-document.getElementById("t3L").innerHTML = localStorage.getItem("tag3")
-document.getElementById("t4L").innerHTML = localStorage.getItem("tag4") 
-document.getElementById("t5L").innerHTML = localStorage.getItem("tag5")
-document.getElementById("t6L").innerHTML = localStorage.getItem("tag6") 
-document.getElementById("t7L").innerHTML = localStorage.getItem("tag7")
-document.getElementById("t8L").innerHTML = localStorage.getItem("tag8") 
-document.getElementById("t9L").innerHTML = localStorage.getItem("tag9")
-document.getElementById("t10L").innerHTML = localStorage.getItem("tag10") 
-document.getElementById("t11L").innerHTML = localStorage.getItem("tag11")
-document.getElementById("t12L").innerHTML = localStorage.getItem("tag12") 
-document.getElementById("t13L").innerHTML = localStorage.getItem("tag13")
-document.getElementById("t14L").innerHTML = localStorage.getItem("tag14") 
-document.getElementById("t15L").innerHTML = localStorage.getItem("tag15")
-document.getElementById("t16L").innerHTML = localStorage.getItem("tag16") 
-document.getElementById("t17L").innerHTML = localStorage.getItem("tag17")
-document.getElementById("t18L").innerHTML = localStorage.getItem("tag18") 
-document.getElementById("t19L").innerHTML = localStorage.getItem("tag19")
-document.getElementById("t20L").innerHTML = localStorage.getItem("tag20") 
-document.getElementById("t21L").innerHTML = localStorage.getItem("tag21")
-document.getElementById("t22L").innerHTML = localStorage.getItem("tag22") 
-document.getElementById("t23L").innerHTML = localStorage.getItem("tag23")
-document.getElementById("t24L").innerHTML = localStorage.getItem("tag24") 
-document.getElementById("t25L").innerHTML = localStorage.getItem("tag25")
-document.getElementById("t26L").innerHTML = localStorage.getItem("tag26") 
-document.getElementById("t27L").innerHTML = localStorage.getItem("tag27")
-document.getElementById("t28L").innerHTML = localStorage.getItem("tag28") 
-document.getElementById("t29L").innerHTML = localStorage.getItem("tag29")
-document.getElementById("t30L").innerHTML = localStorage.getItem("tag30") 
-document.getElementById("t31L").innerHTML = localStorage.getItem("tag31") 
-  
-document.getElementById("t1KZ").innerHTML = localStorage.getItem("KZtag1")
-document.getElementById("t2KZ").innerHTML = localStorage.getItem("KZtag2") 
-document.getElementById("t3KZ").innerHTML = localStorage.getItem("KZtag3")
-document.getElementById("t4KZ").innerHTML = localStorage.getItem("KZtag4") 
-document.getElementById("t5KZ").innerHTML = localStorage.getItem("KZtag5")
-document.getElementById("t6KZ").innerHTML = localStorage.getItem("KZtag6") 
-document.getElementById("t7KZ").innerHTML = localStorage.getItem("KZtag7")
-document.getElementById("t8KZ").innerHTML = localStorage.getItem("KZtag8") 
-document.getElementById("t9KZ").innerHTML = localStorage.getItem("KZtag9")
-document.getElementById("t10KZ").innerHTML = localStorage.getItem("KZtag10") 
-document.getElementById("t11KZ").innerHTML = localStorage.getItem("KZtag11")
-document.getElementById("t12KZ").innerHTML = localStorage.getItem("KZtag12") 
-document.getElementById("t13KZ").innerHTML = localStorage.getItem("KZtag13")
-document.getElementById("t14KZ").innerHTML = localStorage.getItem("KZtag14") 
-document.getElementById("t15KZ").innerHTML = localStorage.getItem("KZtag15")
-document.getElementById("t16KZ").innerHTML = localStorage.getItem("KZtag16") 
-document.getElementById("t17KZ").innerHTML = localStorage.getItem("KZtag17")
-document.getElementById("t18KZ").innerHTML = localStorage.getItem("KZtag18") 
-document.getElementById("t19KZ").innerHTML = localStorage.getItem("KZtag19")
-document.getElementById("t20KZ").innerHTML = localStorage.getItem("KZtag20") 
-document.getElementById("t21KZ").innerHTML = localStorage.getItem("KZtag21")
-document.getElementById("t22KZ").innerHTML = localStorage.getItem("KZtag22") 
-document.getElementById("t23KZ").innerHTML = localStorage.getItem("KZtag23")
-document.getElementById("t24KZ").innerHTML = localStorage.getItem("KZtag24") 
-document.getElementById("t25KZ").innerHTML = localStorage.getItem("KZtag25")
-document.getElementById("t26KZ").innerHTML = localStorage.getItem("KZtag26") 
-document.getElementById("t27KZ").innerHTML = localStorage.getItem("KZtag27")
-document.getElementById("t28KZ").innerHTML = localStorage.getItem("KZtag28") 
-document.getElementById("t29KZ").innerHTML = localStorage.getItem("KZtag29")
-document.getElementById("t30KZ").innerHTML = localStorage.getItem("KZtag30") 
-document.getElementById("t31KZ").innerHTML = localStorage.getItem("tag31") 
+// Liegestützentabelle
 
-document.getElementById("t1RH").innerHTML = localStorage.getItem("RHtag1")
-document.getElementById("t2RH").innerHTML = localStorage.getItem("RHtag2") 
-document.getElementById("t3RH").innerHTML = localStorage.getItem("RHtag3")
-document.getElementById("t4RH").innerHTML = localStorage.getItem("RHtag4") 
-document.getElementById("t5RH").innerHTML = localStorage.getItem("RHtag5")
-document.getElementById("t6RH").innerHTML = localStorage.getItem("RHtag6") 
-document.getElementById("t7RH").innerHTML = localStorage.getItem("RHtag7")
-document.getElementById("t8RH").innerHTML = localStorage.getItem("RHtag8") 
-document.getElementById("t9RH").innerHTML = localStorage.getItem("RHtag9")
-document.getElementById("t10RH").innerHTML = localStorage.getItem("RHtag10") 
-document.getElementById("t11RH").innerHTML = localStorage.getItem("RHtag11")
-document.getElementById("t12RH").innerHTML = localStorage.getItem("RHtag12") 
-document.getElementById("t13RH").innerHTML = localStorage.getItem("RHtag13")
-document.getElementById("t14RH").innerHTML = localStorage.getItem("RHtag14") 
-document.getElementById("t15RH").innerHTML = localStorage.getItem("RHtag15")
-document.getElementById("t16RH").innerHTML = localStorage.getItem("RHtag16") 
-document.getElementById("t17RH").innerHTML = localStorage.getItem("RHtag17")
-document.getElementById("t18RH").innerHTML = localStorage.getItem("RHtag18") 
-document.getElementById("t19RH").innerHTML = localStorage.getItem("RHtag19")
-document.getElementById("t20RH").innerHTML = localStorage.getItem("RHtag20") 
-document.getElementById("t21RH").innerHTML = localStorage.getItem("RHtag21")
-document.getElementById("t22RH").innerHTML = localStorage.getItem("RHtag22") 
-document.getElementById("t23RH").innerHTML = localStorage.getItem("RHtag23")
-document.getElementById("t24RH").innerHTML = localStorage.getItem("RHtag24") 
-document.getElementById("t25RH").innerHTML = localStorage.getItem("RHtag25")
-document.getElementById("t26RH").innerHTML = localStorage.getItem("RHtag26") 
-document.getElementById("t27RH").innerHTML = localStorage.getItem("RHtag27")
-document.getElementById("t28RH").innerHTML = localStorage.getItem("RHtag28") 
-document.getElementById("t29RH").innerHTML = localStorage.getItem("RHtag29")
-document.getElementById("t30RH").innerHTML = localStorage.getItem("RHtag30") 
-document.getElementById("t31RH").innerHTML = localStorage.getItem("RHtag31") 
+// Kniebeugentabelle
+for (let i = 1; i <= 31; i++) {
+  const tabel_reihe = "t" + i; 
+  const k_tag = "Ktag" + i; 
+  const wert = localStorage.getItem(k_tag) || "0"; // Get value from localStorage, default to "0" if null
+  document.getElementById(tabel_reihe).innerHTML = wert;
+}
+
+
+
+// Klimmzügetabelle
+for (let i = 1; i <= 31; i++) {
+  const y = "KZtag" + i; // Construct the localStorage key
+  const r = "t" + i + "KZ"; // Construct the element ID
+  const v = localStorage.getItem(y) || "0"; // Get value from localStorage, default to "0" if null
+  document.getElementById(r).innerHTML = v;
+}
+
+//Rückenhebertabelle
+for (let i = 1; i <= 31; i++) {
+  const key = "RHtag" + i; 
+  const elementId = "t" + i + "RH"; 
+  const value = localStorage.getItem(key) || "0"; 
+  document.getElementById(elementId).innerHTML = value;
+}
+
+//Rückenhebertabelle
+for (let i = 1; i <= 31; i++) {
+  const key = "tag" + i; 
+  const elementId = "t" + i + "L"; 
+  const value = localStorage.getItem(key) || "0"; 
+  document.getElementById(elementId).innerHTML = value;
+}
+
+//Liegestützentabelle 
+for (let i = 1; i <= 31; i++) {
+  const tabel_reihe_l = "tag" + i; 
+  const l_tag = "t" + i + "L"; 
+  const wert_l = localStorage.getItem(l_tag) || "0"; // Get value from localStorage, default to "0" if null
+  document.getElementById(tabel_reihe_l).innerHTML = wert_l;
+}
+ 
 
 }
 
@@ -758,48 +677,21 @@ let p = Synth.createInstrument('piano');
   function bild(){
     mediaV = Math.floor(Math.random() * 41) + 1
     console.log("BildzufallV =" + mediaV)
-    if      (mediaV==1){ONE.style.background = "url('media/bm1.jpg') no-repeat center";}
-    else if (mediaV==2){ONE.style.background = "url('media/bm2.jpg') no-repeat center";}
-    else if (mediaV==3){ONE.style.background = "url('media/bm3.jpg') no-repeat center";}
-    else if (mediaV==4){ONE.style.background = "url('media/bm4.jpg') no-repeat center";}
-    else if (mediaV==5){ONE.style.background = "url('media/bm5.jpg') no-repeat center";}
-    else if (mediaV==6){ONE.style.background = "url('media/bm6.jpg') no-repeat center";}
-    else if (mediaV==7){ONE.style.background = "url('media/bm7.jpg') no-repeat center";}
-    else if (mediaV==8){ONE.style.background = "url('media/bm8.jpg') no-repeat center";}
-    else if (mediaV==9){ONE.style.background = "url('media/bm9.jpg') no-repeat center";}
-    else if (mediaV==10){ONE.style.background = "url('media/bm10.jpg') no-repeat center";}
-    else if (mediaV==11){ONE.style.background = "url('media/bm11.jpg') no-repeat center";}
-    else if (mediaV==12){ONE.style.background = "url('media/bm12.jpg') no-repeat center";}
-    else if (mediaV==13){ONE.style.background = "url('media/bm13.jpg') no-repeat center";}
-    else if (mediaV==14){ONE.style.background = "url('media/bm14.jpg') no-repeat center";}
-    else if (mediaV==15){ONE.style.background = "url('media/bm15.jpg') no-repeat center";}
-    else if (mediaV==16){ONE.style.background = "url('media/bm16.jpg') no-repeat center";}
-    else if (mediaV==17){ONE.style.background = "url('media/bm17.jpg') no-repeat center";}
-    else if (mediaV==18){ONE.style.background = "url('media/bm18.jpg') no-repeat center";}
-    else if (mediaV==19){ONE.style.background = "url('media/bm19.jpg') no-repeat center";}        
-    else if (mediaV==20){ONE.style.background = "url('media/bm20.jpg') no-repeat center";}
-    else if (mediaV==21){ONE.style.background = "url('media/bm21.jpg') no-repeat center";}
-    else if (mediaV==22){ONE.style.background = "url('media/bm22.jpg') no-repeat center";}
-    else if (mediaV==23){ONE.style.background = "url('media/bm23.jpg') no-repeat center";}
-    else if (mediaV==24){ONE.style.background = "url('media/bm24.jpg') no-repeat center";}
-    else if (mediaV==25){ONE.style.background = "url('media/bm25.jpg') no-repeat center";}  
-    else if (mediaV==26){ONE.style.background = "url('media/bm26.jpg') no-repeat center";}
-    else if (mediaV==27){ONE.style.background = "url('media/bm27.jpg') no-repeat center";} 
-    else if (mediaV==28){ONE.style.background = "url('media/bm28.jpg') no-repeat center";}  
-    else if (mediaV==29){ONE.style.background = "url('media/bm29.jpg') no-repeat center";}
-    else if (mediaV==30){ONE.style.background = "url('media/bm30.jpg') no-repeat center";} 
-    else if (mediaV==31){ONE.style.background = "url('media/bm31.jpg') no-repeat center";}  
-    else if (mediaV==32){ONE.style.background = "url('media/bm32.jpg') no-repeat center";}
-    else if (mediaV==33){ONE.style.background = "url('media/bm33.jpg') no-repeat center";} 
-    else if (mediaV==34){ONE.style.background = "url('media/bm34.jpg') no-repeat center";}
-    else if (mediaV==35){ONE.style.background = "url('media/bm35.jpg') no-repeat center";}  
-    else if (mediaV==36){ONE.style.background = "url('media/bm36.jpg') no-repeat center";}  
-    else if (mediaV==37){ONE.style.background = "url('media/bm37.jpg') no-repeat center";}
-    else if (mediaV==38){ONE.style.background = "url('media/bm38.jpg') no-repeat center";}  
-    else if (mediaV==39){ONE.style.background = "url('media/bm39.jpg') no-repeat center";}  
-    else if (mediaV==40){ONE.style.background = "url('media/bm40.jpg') no-repeat center";}
-    else if (mediaV==41){ONE.style.background = "url('media/bm41.jpg') no-repeat center";} 
-    else if (mediaV==42){ONE.style.background = "url('media/bm42.jpg') no-repeat center";} 
+    const bilder = [
+      'media/bm1.jpg', 'media/bm2.jpg', 'media/bm3.jpg', 'media/bm4.jpg', 'media/bm5.jpg',
+      'media/bm6.jpg', 'media/bm7.jpg', 'media/bm8.jpg', 'media/bm9.jpg', 'media/bm10.jpg',
+      'media/bm11.jpg', 'media/bm12.jpg', 'media/bm13.jpg', 'media/bm14.jpg', 'media/bm15.jpg',
+      'media/bm16.jpg', 'media/bm17.jpg', 'media/bm18.jpg', 'media/bm19.jpg', 'media/bm20.jpg',
+      'media/bm21.jpg', 'media/bm22.jpg', 'media/bm23.jpg', 'media/bm24.jpg', 'media/bm25.jpg',
+      'media/bm26.jpg', 'media/bm27.jpg', 'media/bm28.jpg', 'media/bm29.jpg', 'media/bm30.jpg',
+      'media/bm31.jpg', 'media/bm32.jpg', 'media/bm33.jpg', 'media/bm34.jpg', 'media/bm35.jpg',
+      'media/bm36.jpg', 'media/bm37.jpg', 'media/bm38.jpg', 'media/bm39.jpg', 'media/bm40.jpg',
+      'media/bm41.jpg', 'media/bm42.jpg'
+  ];
+  
+  if (mediaV >= 1 && mediaV <= bilder.length) {
+      ONE.style.background = `url('${bilder[mediaV - 1]}') no-repeat center`;
+  }
   
   
   
