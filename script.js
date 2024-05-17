@@ -10,11 +10,6 @@ var GS = 12;
 var AV = 1;
 
 
-
-
-
-
-
 window.onload = function () {
 neuerTagTest();
 neuerMonatTest();
@@ -203,25 +198,40 @@ else if (as.value == "3"){AV = 3}
 })      
 
 function start() {
-  console.log("startja")
-document.getElementById("startdiv").style.display ="none";  
-if  (AV == 1){document.getElementById("aktivdiv").style.display = "";
-     document.getElementById("aktivcanvasdiv").style.display = "none"; }
-  else if (AV == 2){ document.getElementById("aktivdiv").style.display = ""}
-  else if (AV == 3){document.getElementById("aktivcanvasdiv").style.display = "";
-  document.getElementById("aktivdiv").style.display = "none"; }
-  else {console.log("canvasanzeige")}
+  console.log("startja");
+  document.getElementById("startdiv").style.display = "none";
 
-if (modus == 1 || 2 || 3 ){
-  document.getElementById ("Ldiv").style.display ="none"
-  uhrlos()
-  addEventListener("devicemotion", handleMotionEvent);
-  addEventListener("devicemotion", doSample);
-  tick();  
+  const aktivDiv = document.getElementById("aktivdiv");
+  const aktivCanvasDiv = document.getElementById("aktivcanvasdiv");
+  const lDiv = document.getElementById("Ldiv");
+
+  switch (AV) {
+    case 1:
+      aktivDiv.style.display = "";
+      aktivCanvasDiv.style.display = "none";
+      break;
+    case 2:
+      aktivDiv.style.display = "";
+      break;
+    case 3:
+      aktivDiv.style.display = "none";
+      aktivCanvasDiv.style.display = "";
+      break;
+    default:
+      console.log("canvasanzeige");
+  }
+
+  if ([1, 2, 3].includes(modus)) {
+    lDiv.style.display = "none";
+    uhrlos();
+    addEventListener("devicemotion", handleMotionEvent);
+    addEventListener("devicemotion", doSample);
+    tick();
+  } else if (modus == 4) {
+    aktivDiv.style.display = "none";
+    lDiv.style.display = "";
+  }
 }
-  if (modus == 4){document.getElementById ("aktivdiv").style.display ="none"; document.getElementById ("Ldiv").style.display ="";
-           }
-                      }
 
 
 function standartbild(){
@@ -453,67 +463,30 @@ ss = ss - 1;console.log("ss00 "+ ss) // setzt den aktivierung zurück  SS
 
 function bildwechselKB () {if  (KB % 10 === 0 && KB >= 10 ) {bildKB ()} }  
 
+const ONEK = document.getElementById("oneb");
 
-const ONEK = document.getElementById("oneb") 
-function bildKB(){
+function bildKB() {
+    let mediaV = Math.floor(Math.random() * 41) + 1;
+    console.log("BildzufallV =" + mediaV);
 
-mediaV = Math.floor(Math.random() * 41) + 1
-console.log("BildzufallV =" + mediaV)
-
-if      (mediaV==1){ONEK.style.background = "url('media/bm1.jpg') no-repeat center";}
-else if (mediaV==2){ONEK.style.background = "url('media/bm2.jpg') no-repeat center";}
-else if (mediaV==3){ONEK.style.background = "url('media/bm3.jpg') no-repeat center";}
-else if (mediaV==4){ONEK.style.background = "url('media/bm4.jpg') no-repeat center";}
-else if (mediaV==5){ONEK.style.background = "url('media/bm5.jpg') no-repeat center";}
-else if (mediaV==6){ONEK.style.background = "url('media/bm6.jpg') no-repeat center";}
-else if (mediaV==7){ONEK.style.background = "url('media/bm7.jpg') no-repeat center";}
-else if (mediaV==8){ONEK.style.background = "url('media/bm8.jpg') no-repeat center";}
-else if (mediaV==9){ONEK.style.background = "url('media/bm9.jpg') no-repeat center";}
-else if (mediaV==10){ONEK.style.background = "url('media/bm10.jpg') no-repeat center";}
-else if (mediaV==11){ONEK.style.background = "url('media/bm11.jpg') no-repeat center";}
-else if (mediaV==12){ONEK.style.background = "url('media/bm12.jpg') no-repeat center";}
-else if (mediaV==13){ONEK.style.background = "url('media/bm13.jpg') no-repeat center";}
-else if (mediaV==14){ONEK.style.background = "url('media/bm14.jpg') no-repeat center";}
-else if (mediaV==15){ONEK.style.background = "url('media/bm15.jpg') no-repeat center";}
-else if (mediaV==16){ONEK.style.background = "url('media/bm16.jpg') no-repeat center";}
-else if (mediaV==17){ONEK.style.background = "url('media/bm17.jpg') no-repeat center";}
-else if (mediaV==18){ONEK.style.background = "url('media/bm18.jpg') no-repeat center";}
-else if (mediaV==19){ONEK.style.background = "url('media/bm19.jpg') no-repeat center";}        
-else if (mediaV==20){ONEK.style.background = "url('media/bm20.jpg') no-repeat center";}
-else if (mediaV==21){ONEK.style.background = "url('media/bm21.jpg') no-repeat center";}
-else if (mediaV==22){ONEK.style.background = "url('media/bm22.jpg') no-repeat center";}
-else if (mediaV==23){ONEK.style.background = "url('media/bm23.jpg') no-repeat center";}
-else if (mediaV==24){ONEK.style.background = "url('media/bm24.jpg') no-repeat center";}
-else if (mediaV==25){ONEK.style.background = "url('media/bm25.jpg') no-repeat center";}  
-else if (mediaV==26){ONEK.style.background = "url('media/bm26.jpg') no-repeat center";}
-else if (mediaV==27){ONEK.style.background = "url('media/bm27.jpg') no-repeat center";}  
-else if (mediaV==28){ONEK.style.background = "url('media/bm28.jpg') no-repeat center";}  
-else if (mediaV==29){ONEK.style.background = "url('media/bm29.jpg') no-repeat center";}
-else if (mediaV==30){ONEK.style.background = "url('media/bm30.jpg') no-repeat center";}  
-else if (mediaV==31){ONEK.style.background = "url('media/bm31.jpg') no-repeat center";}  
-else if (mediaV==32){ONEK.style.background = "url('media/bm32.jpg') no-repeat center";}
-else if (mediaV==33){ONEK.style.background = "url('media/bm33.jpg') no-repeat center";} 
-else if (mediaV==34){ONEK.style.background = "url('media/bm34.jpg') no-repeat center";}
-else if (mediaV==35){ONEK.style.background = "url('media/bm35.jpg') no-repeat center";}  
-else if (mediaV==36){ONEK.style.background = "url('media/bm36.jpg') no-repeat center";}  
-else if (mediaV==37){ONEK.style.background = "url('media/bm37.jpg') no-repeat center";}
-else if (mediaV==38){ONEK.style.background = "url('media/bm38.jpg') no-repeat center";}  
-else if (mediaV==39){ONEK.style.background = "url('media/bm39.jpg') no-repeat center";}  
-else if (mediaV==40){ONEK.style.background = "url('media/bm40.jpg') no-repeat center";}
-else if (mediaV==41){ONEK.style.background = "url('media/bm41.jpg') no-repeat center";} 
-else if (mediaV==42){ONEK.style.background = "url('media/bm42.jpg') no-repeat center";} 
-}  
+    if (ONEK) {
+        ONEK.style.background = `url('media/bm${mediaV}.jpg') no-repeat center`;
+    } else {
+        console.log("Element 'oneb' not found in the document.");
+    }
+}
 
 
-function synthleicht(){
+function synthleicht() {
   let p = Synth.createInstrument('piano');
-  if (KB === 10 || KB === 20 ||KB === 30 || KB ===40 ||KB === 50 ||
-    KB === 60 ||KB === 70 || KB ===80 || KB ===90 || KB ===100 || KB ===110 || KB ===120
-    ||KB === 130 || KB ===140 || KB ===150 || KB ===160 || KB ===170 
-    || KB ===180 || KB ===190 || KB ===200 ||KB === 210 || KB ===220 || KB ===230 || KB ===240 || KB ===250 
-    || KB ===260 || KB ===270 || KB ===280 ){p.play("C",4,0.5)}
-  else (p.play("E",4,0.5))
-   }
+ 
+  if (KB % 10 === 0) {
+    p.play("C", 4, 0.5);
+  } else {
+    p.play("E", 4, 0.5);
+  }
+}
+
 
 
                  
@@ -538,14 +511,26 @@ if (modus==2){ shift(linien.y, event.accelerationIncludingGravity.y);}
 if (modus==3){ shift(linien.x, event.accelerationIncludingGravity.x);}
 }
 
+
+
+function calculateDynamicScaleY(dataArrays) {
+  let maxVal = 0;
+  dataArrays.forEach(arr => {
+      const localMax = Math.max(...arr.map(Math.abs));
+      if (localMax > maxVal) maxVal = localMax;
+  });
+  return maxVal > 0 ? (H / 2) / maxVal : 5; // Prevent division by zero
+}
+
 function tick() {
   requestAnimationFrame(tick);
   ctx.fillStyle = 'black';
   ctx.fillRect(0, 0, W, H);
-  zehnGlinie(),zehnleichtlinie();zehnschwerlinie()
-  if (modus ==1) {drawGraph(linien.z, scaleX, scaleY);}
-  if (modus ==2) {drawGraph(linien.y, scaleX, scaleY);}
-  if (modus ==3) {drawGraph(linien.x, scaleX, scaleY);}
+  const dynamicScaleY = calculateDynamicScaleY([linien.x, linien.y, linien.z]);
+  zehnGlinie(), zehnleichtlinie(), zehnschwerlinie();
+  if (modus == 1) { drawGraph(linien.z, scaleX, dynamicScaleY); }
+  if (modus == 2) { drawGraph(linien.y, scaleX, dynamicScaleY); }
+  if (modus == 3) { drawGraph(linien.x, scaleX, dynamicScaleY); }
 }
 
 //die Zahlen sind entsprechend der oben angegeben Scale = 5 alle x *5
