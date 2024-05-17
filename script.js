@@ -94,7 +94,7 @@ document.getElementById("monatname").innerHTML = name;
 for (let i = 1; i <= 31; i++) {
   const tabel_reihe = "t" + i; 
   const k_tag = "Ktag" + i; 
-  const wert = localStorage.getItem(k_tag) || "0"; // Get value from localStorage, default to "0" if null
+  const wert = localStorage.getItem(k_tag)
   document.getElementById(tabel_reihe).innerHTML = wert;
 }
 
@@ -104,7 +104,7 @@ for (let i = 1; i <= 31; i++) {
 for (let i = 1; i <= 31; i++) {
   const tabel_reihe = "KZtag" + i; // Construct the localStorage key
   const tag = "t" + i + "KZ"; // Construct the element ID
-  const wert = localStorage.getItem(tabel_reihe)  // Get value from localStorage, default to "0" if null
+  const wert = localStorage.getItem(tabel_reihe) 
   document.getElementById(tag).innerHTML = wert;
 }
 
@@ -128,7 +128,7 @@ for (let i = 1; i <= 31; i++) {
 for (let i = 1; i <= 31; i++) {
   const tabel_reihe_l = "tag" + i; 
   const l_tag = "t" + i + "L"; 
-  const wert_l = localStorage.getItem(l_tag)  // Get value from localStorage, default to "0" if null
+  const wert_l = localStorage.getItem(l_tag)  
   document.getElementById(tabel_reihe_l).innerHTML = wert_l;
 }
  
