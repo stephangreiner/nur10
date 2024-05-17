@@ -10,11 +10,6 @@ var GS = 12;
 var AV = 1;
 
 
-
-
-
-
-
 window.onload = function () {
 neuerTagTest();
 neuerMonatTest();
@@ -93,7 +88,7 @@ document.getElementById("startdiv").style.display="none";
 document.getElementById("monatname").innerHTML = name;
 
 
-// Liegestützentabelle
+
 
 // Kniebeugentabelle
 for (let i = 1; i <= 31; i++) {
@@ -107,17 +102,17 @@ for (let i = 1; i <= 31; i++) {
 
 // Klimmzügetabelle
 for (let i = 1; i <= 31; i++) {
-  const y = "KZtag" + i; // Construct the localStorage key
-  const r = "t" + i + "KZ"; // Construct the element ID
-  const v = localStorage.getItem(y) || "0"; // Get value from localStorage, default to "0" if null
-  document.getElementById(r).innerHTML = v;
+  const tabel_reihe = "KZtag" + i; // Construct the localStorage key
+  const tag = "t" + i + "KZ"; // Construct the element ID
+  const wert = localStorage.getItem(tabel_reihe)  // Get value from localStorage, default to "0" if null
+  document.getElementById(tag).innerHTML = wert;
 }
 
 //Rückenhebertabelle
 for (let i = 1; i <= 31; i++) {
   const key = "RHtag" + i; 
   const elementId = "t" + i + "RH"; 
-  const value = localStorage.getItem(key) || "0"; 
+  const value = localStorage.getItem(key)
   document.getElementById(elementId).innerHTML = value;
 }
 
@@ -125,7 +120,7 @@ for (let i = 1; i <= 31; i++) {
 for (let i = 1; i <= 31; i++) {
   const key = "tag" + i; 
   const elementId = "t" + i + "L"; 
-  const value = localStorage.getItem(key) || "0"; 
+  const value = localStorage.getItem(key)  
   document.getElementById(elementId).innerHTML = value;
 }
 
@@ -133,7 +128,7 @@ for (let i = 1; i <= 31; i++) {
 for (let i = 1; i <= 31; i++) {
   const tabel_reihe_l = "tag" + i; 
   const l_tag = "t" + i + "L"; 
-  const wert_l = localStorage.getItem(l_tag) || "0"; // Get value from localStorage, default to "0" if null
+  const wert_l = localStorage.getItem(l_tag)  // Get value from localStorage, default to "0" if null
   document.getElementById(tabel_reihe_l).innerHTML = wert_l;
 }
  
@@ -451,12 +446,12 @@ ss = ss - 1;console.log("ss00 "+ ss) // setzt den aktivierung zurück  SS
 
 
 
-function bildwechselKB () {
-  if      (KB === 10 || KB === 20 ||KB === 30 || KB ===40 ||KB === 50 ||
-    KB === 60 ||KB === 70 || KB ===80 || KB ===90 || KB ===100 || KB ===110 || KB ===120
-    ||KB === 130 || KB ===140 || KB ===150 || KB ===160 || KB ===170 
-    || KB ===180 || KB ===190 || KB ===200 ) {bildKB ()}      
-                           }  
+function bildwechselKB() {
+  if (KB % 10 === 0 && KB !== 0) { //he expression KB % 10 === 0 checks if KB is a multiple of 10.The condition KB !== 0 ensures that the bildKB function is not called when KB is zero, which would also satisfy the modulo condition
+      bildKB();
+  }
+}
+
 
 
 const ONEK = document.getElementById("oneb") 
@@ -465,60 +460,33 @@ function bildKB(){
 mediaV = Math.floor(Math.random() * 41) + 1
 console.log("BildzufallV =" + mediaV)
 
-if      (mediaV==1){ONEK.style.background = "url('media/bm1.jpg') no-repeat center";}
-else if (mediaV==2){ONEK.style.background = "url('media/bm2.jpg') no-repeat center";}
-else if (mediaV==3){ONEK.style.background = "url('media/bm3.jpg') no-repeat center";}
-else if (mediaV==4){ONEK.style.background = "url('media/bm4.jpg') no-repeat center";}
-else if (mediaV==5){ONEK.style.background = "url('media/bm5.jpg') no-repeat center";}
-else if (mediaV==6){ONEK.style.background = "url('media/bm6.jpg') no-repeat center";}
-else if (mediaV==7){ONEK.style.background = "url('media/bm7.jpg') no-repeat center";}
-else if (mediaV==8){ONEK.style.background = "url('media/bm8.jpg') no-repeat center";}
-else if (mediaV==9){ONEK.style.background = "url('media/bm9.jpg') no-repeat center";}
-else if (mediaV==10){ONEK.style.background = "url('media/bm10.jpg') no-repeat center";}
-else if (mediaV==11){ONEK.style.background = "url('media/bm11.jpg') no-repeat center";}
-else if (mediaV==12){ONEK.style.background = "url('media/bm12.jpg') no-repeat center";}
-else if (mediaV==13){ONEK.style.background = "url('media/bm13.jpg') no-repeat center";}
-else if (mediaV==14){ONEK.style.background = "url('media/bm14.jpg') no-repeat center";}
-else if (mediaV==15){ONEK.style.background = "url('media/bm15.jpg') no-repeat center";}
-else if (mediaV==16){ONEK.style.background = "url('media/bm16.jpg') no-repeat center";}
-else if (mediaV==17){ONEK.style.background = "url('media/bm17.jpg') no-repeat center";}
-else if (mediaV==18){ONEK.style.background = "url('media/bm18.jpg') no-repeat center";}
-else if (mediaV==19){ONEK.style.background = "url('media/bm19.jpg') no-repeat center";}        
-else if (mediaV==20){ONEK.style.background = "url('media/bm20.jpg') no-repeat center";}
-else if (mediaV==21){ONEK.style.background = "url('media/bm21.jpg') no-repeat center";}
-else if (mediaV==22){ONEK.style.background = "url('media/bm22.jpg') no-repeat center";}
-else if (mediaV==23){ONEK.style.background = "url('media/bm23.jpg') no-repeat center";}
-else if (mediaV==24){ONEK.style.background = "url('media/bm24.jpg') no-repeat center";}
-else if (mediaV==25){ONEK.style.background = "url('media/bm25.jpg') no-repeat center";}  
-else if (mediaV==26){ONEK.style.background = "url('media/bm26.jpg') no-repeat center";}
-else if (mediaV==27){ONEK.style.background = "url('media/bm27.jpg') no-repeat center";}  
-else if (mediaV==28){ONEK.style.background = "url('media/bm28.jpg') no-repeat center";}  
-else if (mediaV==29){ONEK.style.background = "url('media/bm29.jpg') no-repeat center";}
-else if (mediaV==30){ONEK.style.background = "url('media/bm30.jpg') no-repeat center";}  
-else if (mediaV==31){ONEK.style.background = "url('media/bm31.jpg') no-repeat center";}  
-else if (mediaV==32){ONEK.style.background = "url('media/bm32.jpg') no-repeat center";}
-else if (mediaV==33){ONEK.style.background = "url('media/bm33.jpg') no-repeat center";} 
-else if (mediaV==34){ONEK.style.background = "url('media/bm34.jpg') no-repeat center";}
-else if (mediaV==35){ONEK.style.background = "url('media/bm35.jpg') no-repeat center";}  
-else if (mediaV==36){ONEK.style.background = "url('media/bm36.jpg') no-repeat center";}  
-else if (mediaV==37){ONEK.style.background = "url('media/bm37.jpg') no-repeat center";}
-else if (mediaV==38){ONEK.style.background = "url('media/bm38.jpg') no-repeat center";}  
-else if (mediaV==39){ONEK.style.background = "url('media/bm39.jpg') no-repeat center";}  
-else if (mediaV==40){ONEK.style.background = "url('media/bm40.jpg') no-repeat center";}
-else if (mediaV==41){ONEK.style.background = "url('media/bm41.jpg') no-repeat center";} 
-else if (mediaV==42){ONEK.style.background = "url('media/bm42.jpg') no-repeat center";} 
+const bilder = [
+  'media/bm1.jpg', 'media/bm2.jpg', 'media/bm3.jpg', 'media/bm4.jpg', 'media/bm5.jpg',
+  'media/bm6.jpg', 'media/bm7.jpg', 'media/bm8.jpg', 'media/bm9.jpg', 'media/bm10.jpg',
+  'media/bm11.jpg', 'media/bm12.jpg', 'media/bm13.jpg', 'media/bm14.jpg', 'media/bm15.jpg',
+  'media/bm16.jpg', 'media/bm17.jpg', 'media/bm18.jpg', 'media/bm19.jpg', 'media/bm20.jpg',
+  'media/bm21.jpg', 'media/bm22.jpg', 'media/bm23.jpg', 'media/bm24.jpg', 'media/bm25.jpg',
+  'media/bm26.jpg', 'media/bm27.jpg', 'media/bm28.jpg', 'media/bm29.jpg', 'media/bm30.jpg',
+  'media/bm31.jpg', 'media/bm32.jpg', 'media/bm33.jpg', 'media/bm34.jpg', 'media/bm35.jpg',
+  'media/bm36.jpg', 'media/bm37.jpg', 'media/bm38.jpg', 'media/bm39.jpg', 'media/bm40.jpg',
+  'media/bm41.jpg', 'media/bm42.jpg'
+];
+
+if (mediaV >= 1 && mediaV <= bilder.length) {
+  ONEK.style.background = `url('${bilder[mediaV - 1]}') no-repeat center`;
+}
+
 }  
 
 
-function synthleicht(){
+function synthleicht(KB) {
   let p = Synth.createInstrument('piano');
-  if (KB === 10 || KB === 20 ||KB === 30 || KB ===40 ||KB === 50 ||
-    KB === 60 ||KB === 70 || KB ===80 || KB ===90 || KB ===100 || KB ===110 || KB ===120
-    ||KB === 130 || KB ===140 || KB ===150 || KB ===160 || KB ===170 
-    || KB ===180 || KB ===190 || KB ===200 ||KB === 210 || KB ===220 || KB ===230 || KB ===240 || KB ===250 
-    || KB ===260 || KB ===270 || KB ===280 ){p.play("C",4,0.5)}
-  else (p.play("E",4,0.5))
-   }
+  if (KB % 10 === 0 && KB > 0 ) {
+      p.play("C", 4, 0.5);
+  } else {
+      p.play("E", 4, 0.5);
+  }
+}
 
 
                  
@@ -653,26 +621,18 @@ function nasedrauf(){
 
                    }
 
- function bildwechsel () {
-      if      (L === 10 || L === 20 ||L === 30 || L ===40 ||L === 50 ||
-        L === 60 ||L === 70 || L ===80 || L ===90 || L ===100 || L ===110 || L ===120
-        ||L === 130 || L ===140 || L ===150 || L ===160 || L ===170 
-        || L ===180 || L ===190 || L ===200 ) {bild ()}      
-                        }  
+function bildwechsel(L) { if (L % 10 === 0 && L > 0) {bild();}}
+                
 
-function synth_Lieg(){
+
+
+function synth_Lieg(L) {
 let p = Synth.createInstrument('piano');
-                          if  (L === 10 || L === 20 ||L === 30 || L ===40 ||L === 50 ||
-                            L === 60 ||L === 70 || L ===80 || L ===90 || L ===100 || L ===110 || L ===120
-                            ||L === 130 || L ===140 || L ===150 || L ===160 || L ===170 
-                            || L ===180 || L ===190 || L ===200 || L ===210|| L ===220|| L ===230|| L ===240 || L ===250){p.play("E",4,0.5)}
-                          else (p.play("C",4,0.5))
-                           }
+if (L % 10 === 0 && L > 0) {p.play("E", 4, 0.5);} 
+else { p.play("C", 4, 0.5);}
+                      }
+                      
                         
-
-
-
-  
   const ONE = document.getElementById("LieB") 
   function bild(){
     mediaV = Math.floor(Math.random() * 41) + 1
@@ -693,12 +653,6 @@ let p = Synth.createInstrument('piano');
       ONE.style.background = `url('${bilder[mediaV - 1]}') no-repeat center`;
   }
   
-  
-  
-  
-  
-  
-  
-  
+
   }           
      
