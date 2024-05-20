@@ -273,7 +273,7 @@ if (modusV.value == "2"){modus = 2;
       hochbild.src = "media/hoch.png";
       hochbild.id ="hochbild";
       hochbild.style.width = "200px";
-      hochbild.style.hight = "200px";
+      hochbild.style.height = "200px";
       startb.appendChild(hochbild);
       document.getElementById( "startb").style.backgroundColor = "rgb(149, 216, 32)"
       if (document.getElementById('hochbild') != null) { console.log("gibts schon");}
@@ -287,7 +287,7 @@ if (modusV.value == "3"){modus = 3;
     querbild.id ="querbild";
    querbild.src = "media/quer.png";
     querbild.style.width = "200px";
-    querbild.style.hight = "200px";
+    querbild.style.height = "200px";
     startb.appendChild(querbild); 
     document.getElementById( "startb").style.backgroundColor = "rgb(55, 229, 229)"
     if (document.getElementById('querbild') != null) { console.log("querbild  gibts schon");}
@@ -302,7 +302,7 @@ if (modusV.value == "4"){modus = 4;
     liegesbild.id ="liegesbild";
     liegesbild.src = "media/LiegeS.png";
     liegesbild.style.width = "200px";
-    liegesbild.style.hight = "200px";
+    liegesbild.style.height = "200px";
     startb.appendChild(liegesbild);                 
     document.getElementById( "startb").style.backgroundColor = "rgb(247, 255, 29)";
     if (document.getElementById('liegesbild')!= null) { console.log(" liegesbild gibts schon");}
@@ -662,13 +662,60 @@ if  (L % 10 === 0 && L >= 10 ){p.play("E",4,0.5)}
   if (mediaV >= 1 && mediaV <= bilder.length) {
       ONE.style.background = `url('${bilder[mediaV - 1]}') no-repeat center`;
   }
-  
-  
-  
-  
-  
-  
-  
-  
   }           
      
+  if ('Notification' in window) {
+    Notification.requestPermission().then(permission => {
+      if (permission === 'granted') {
+        console.log('Notification permission granted.');
+      } else {
+        console.log('Notification permission denied.');
+      }
+    });
+  }
+  
+  function scheduleDailyNotification() {
+    const now = new Date();
+    const sevenAM = new Date();
+    sevenAM.setHours(7, 0, 0, 0); // Set to 7:00 AM
+  
+    if (now.getTime() > sevenAM.getTime()) {
+      sevenAM.setDate(sevenAM.getDate() + 1); // Schedule for the next day
+    }
+  
+    const timeout = sevenAM.getTime() - now.getTime();
+  
+    setTimeout(() => {
+      sendNotification();
+      setInterval(sendNotification, 24 * 60 * 60 * 1000); // Repeat every 24 hours
+    }, timeout);
+  }
+  
+  function sendNotification() {
+    if ('serviceWorker' in navigator && 'PushManager' in window) {
+      navigator.serviceWorker.ready.then(registration => {
+        registration.showNotification('Daily Notification', {
+          body: 'This is your daily reminder!',
+          icon: 'icon.png',
+          badge: 'badge.png'
+        });
+      });
+    }
+  }
+  
+  scheduleDailyNotification();
+  
+  if ('serviceWorker' in navigator && 'PushManager' in window) {
+    navigator.serviceWorker.ready.then(registration => {
+      registration.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: '<Your VAPID Public Key>'
+      }).then(subscription => {
+        console.log('User is subscribed:', subscription);
+        // Send subscription to your server
+      }).catch(error => {
+        console.log('Failed to subscribe the user:', error);
+      });
+    });
+  }
+  
