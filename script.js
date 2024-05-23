@@ -304,7 +304,7 @@ if (modusV.value == "4"){modus = 4;
     liegesbild.style.width = "200px";
     liegesbild.style.height = "200px";
     startb.appendChild(liegesbild);                 
-    document.getElementById( "startb").style.backgroundColor = "rgb(247, 255, 29)";
+    document.getElementById( "startb").style.backgroundColor = "rgb(255, 86, 241)";
     if (document.getElementById('liegesbild')!= null) { console.log(" liegesbild gibts schon");}
     if (document.getElementById('flachbild')!= null) { document.getElementById('flachbild').remove();}
     if (document.getElementById('hochbild') != null) { document.getElementById('hochbild').remove();}
@@ -695,9 +695,9 @@ if  (L % 10 === 0 && L >= 10 ){p.play("E",4,0.5)}
     if ('serviceWorker' in navigator && 'PushManager' in window) {
       navigator.serviceWorker.ready.then(registration => {
         registration.showNotification('Daily Notification', {
-          body: 'This is your daily reminder!',
-          icon: 'icon.png',
-          badge: 'badge.png'
+          body: 'nur 10!',
+          icon: 'favicon-16x16.png',
+          badge: 'favicon-16x16.png'
         });
       });
     }

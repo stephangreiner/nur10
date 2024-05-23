@@ -108,7 +108,7 @@ datalist {
   background-color: #a99c9c7c;
   opacity: 0.5;
 }
-
+/* State Division */
 /* State Division */
 #sta_div {
   display: flex;
@@ -126,30 +126,70 @@ datalist {
 #datum {
   border: none;
   text-align: center;
+  font-size: 1.5rem;
+  padding: 0.5rem;
+}
+
+/* Table Wrapper for Scrolling */
+.table-wrapper {
+  overflow-x: auto;
+  width: 100%;
+  margin: 5%;
 }
 
 /* Tables */
 #tabel, #table2 {
   background-color: rgb(19, 21, 21);
   text-align: center;
-  font-size: small;
-  margin: 20%;
+  font-size: medium;
+  width: 100%;
+  max-width: 100%;
+  border-collapse: collapse;
 }
 
 tbody {
   width: 100%;
 }
 
-td:nth-child(1) { width: 15%; }
-td:nth-child(2) { background-color: var(--kfarbe); color: #000000; }
-td:nth-child(3) { background-color: var(--kzfarbe); color: #000000; }
-td:nth-child(4) { background-color: var(--rhfarbe);; color: #000000; }
-td:nth-child(5) { background-color:  var(--lfarbe); ; color: #000000; }
+td, th {
+  padding: 1rem;
+  border: 1px solid #333;
+}
+
+td:nth-child(1) {
+  width: 15%;
+}
+
+td:nth-child(2) {
+  background-color: var(--kfarbe);
+  color: #000000;
+}
+
+td:nth-child(3) {
+  background-color: var(--kzfarbe);
+  color: #000000;
+}
+
+td:nth-child(4) {
+  background-color: var(--rhfarbe);
+  color: #000000;
+}
+
+td:nth-child(5) {
+  background-color: var(--lfarbe);
+  color: #000000;
+}
 
 #tabel tr:nth-child(2) {
   font-size: xx-large;
   padding: 2%;
 }
+
+#tabel tr:nth-child(1) img {
+  width: 30px;
+  height: 30px;
+}
+
 
 /* View Button */
 #ansichtw {
@@ -252,3 +292,27 @@ td:nth-child(5) { background-color:  var(--lfarbe); ; color: #000000; }
   color: black;
   font-size: 300%;
 }
+
+#symbol_KB {
+width:20px;
+height:20px; 
+background-color: var(--kfarbe);
+border-radius: 50%;}
+
+#symbol_KZ {
+  width:20px;
+  height:20px; 
+  background-color: var(--kzfarbe);
+  border-radius: 50%;}
+
+#symbol_RH {
+    width:20px;
+    height:20px; 
+    background-color: var(--rhfarbe);
+    border-radius: 50%;}
+    
+#symbol_L {
+      width:20px;
+      height:20px; 
+      background-color: var(--lfarbe);
+      border-radius: 50%;}
