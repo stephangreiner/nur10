@@ -259,7 +259,7 @@ if(modusV.value == "1"){ modus = 1;
       flachbild.style.width = "200px";
       flachbild.style.hight = "200px";
       startb.appendChild(flachbild);
-      document.getElementById( "startb").style.backgroundColor = "rgb(255, 29, 29)"
+      document.getElementById( "startb").style.backgroundColor = "var(--kfarbe)"
       if (document.getElementById('flachbild') != null) { console.log("gibts schon");}
       if (document.getElementById('hochbild') != null) { document.getElementById('hochbild').remove();}
       if (document.getElementById('querbild') != null) { document.getElementById('querbild').remove();}
@@ -275,7 +275,7 @@ if (modusV.value == "2"){modus = 2;
       hochbild.style.width = "200px";
       hochbild.style.height = "200px";
       startb.appendChild(hochbild);
-      document.getElementById( "startb").style.backgroundColor = "rgb(149, 216, 32)"
+      document.getElementById( "startb").style.backgroundColor = "var(--kzfarbe)"
       if (document.getElementById('hochbild') != null) { console.log("gibts schon");}
       if (document.getElementById('flachbild') != null) { document.getElementById('flachbild').remove()}
       if (document.getElementById('querbild') != null) { document.getElementById('querbild').remove()}
@@ -289,7 +289,7 @@ if (modusV.value == "3"){modus = 3;
     querbild.style.width = "200px";
     querbild.style.height = "200px";
     startb.appendChild(querbild); 
-    document.getElementById( "startb").style.backgroundColor = "rgb(55, 229, 229)"
+    document.getElementById( "startb").style.backgroundColor = "var(--rhfarbe)"
     if (document.getElementById('querbild') != null) { console.log("querbild  gibts schon");}
     if (document.getElementById('flachbild') != null) { document.getElementById('flachbild').remove();}
     if (document.getElementById('hochbild') != null) { document.getElementById('hochbild').remove();}
@@ -304,7 +304,7 @@ if (modusV.value == "4"){modus = 4;
     liegesbild.style.width = "200px";
     liegesbild.style.height = "200px";
     startb.appendChild(liegesbild);                 
-    document.getElementById( "startb").style.backgroundColor = "rgb(255, 86, 241)";
+    document.getElementById( "startb").style.backgroundColor = "var(--lfarbe)";
     if (document.getElementById('liegesbild')!= null) { console.log(" liegesbild gibts schon");}
     if (document.getElementById('flachbild')!= null) { document.getElementById('flachbild').remove();}
     if (document.getElementById('hochbild') != null) { document.getElementById('hochbild').remove();}
@@ -676,46 +676,32 @@ if  (L % 10 === 0 && L >= 10 ){p.play("E",4,0.5)}
   
   function scheduleDailyNotification() {
     const now = new Date();
-    const sevenAM = new Date();
-    sevenAM.setHours(7, 0, 0, 0); // Set to 7:00 AM
-  
-    if (now.getTime() > sevenAM.getTime()) {
-      sevenAM.setDate(sevenAM.getDate() + 1); // Schedule for the next day
+    let next7AM = new Date();
+    next7AM.setHours(7, 0, 0, 0);
+
+    if (now > next7AM) {
+        // If it's already past 7 AM today, schedule for tomorrow
+        next7AM.setDate(next7AM.getDate() + 1);
     }
-  
-    const timeout = sevenAM.getTime() - now.getTime();
-  
+
+    const timeUntilNext7AM = next7AM - now;
+
     setTimeout(() => {
-      sendNotification();
-      setInterval(sendNotification, 24 * 60 * 60 * 1000); // Repeat every 24 hours
-    }, timeout);
-  }
-  
-  function sendNotification() {
-    if ('serviceWorker' in navigator && 'PushManager' in window) {
-      navigator.serviceWorker.ready.then(registration => {
-        registration.showNotification('Daily Notification', {
-          body: 'nur 10!',
-          icon: 'favicon-16x16.png',
-          badge: 'favicon-16x16.png'
+        showNotification();
+        // Set interval to recheck and show notification every 24 hours
+        setInterval(showNotification, 24 * 60 * 60 * 1000);
+    }, timeUntilNext7AM);
+}
+
+function showNotification() {
+    navigator.serviceWorker.ready.then(function(registration) {
+        registration.showNotification('Daily Reminder', {
+            body: 'This is your daily notification at 7 AM!',
+            icon: 'media/kugel.png',
+            tag: 'daily-notification'
         });
-      });
-    }
-  }
-  
-  scheduleDailyNotification();
-  
-  if ('serviceWorker' in navigator && 'PushManager' in window) {
-    navigator.serviceWorker.ready.then(registration => {
-      registration.pushManager.subscribe({
-        userVisibleOnly: true,
-        applicationServerKey: '<Your VAPID Public Key>'
-      }).then(subscription => {
-        console.log('User is subscribed:', subscription);
-        // Send subscription to your server
-      }).catch(error => {
-        console.log('Failed to subscribe the user:', error);
-      });
     });
-  }
+}
+
+
   

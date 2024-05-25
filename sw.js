@@ -71,14 +71,11 @@ self.addEventListener('fetch', e => {
 	);
 });
 
-self.addEventListener('push', event => {
-	const options = {
-	  body: event.data ? event.data.text() : 'Default body',
-	  icon: 'favicon-16x16.png',
-	  badge: 'favicon-16x16.png'
-	};
-	event.waitUntil(
-	  self.registration.showNotification('Push Notification', options)
-	);
-  });
-  
+
+
+  self.addEventListener('notificationclick', function(event) {
+    event.notification.close();
+    event.waitUntil(
+        clients.openWindow('https://anwaltgreiner.de')
+    );
+});
