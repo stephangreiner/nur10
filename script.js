@@ -664,44 +664,6 @@ if  (L % 10 === 0 && L >= 10 ){p.play("E",4,0.5)}
   }
   }           
      
-  if ('Notification' in window) {
-    Notification.requestPermission().then(permission => {
-      if (permission === 'granted') {
-        console.log('Notification permission granted.');
-      } else {
-        console.log('Notification permission denied.');
-      }
-    });
-  }
-  
-  function scheduleDailyNotification() {
-    const now = new Date();
-    let next7AM = new Date();
-    next7AM.setHours(7, 0, 0, 0);
-
-    if (now > next7AM) {
-        // If it's already past 7 AM today, schedule for tomorrow
-        next7AM.setDate(next7AM.getDate() + 1);
-    }
-
-    const timeUntilNext7AM = next7AM - now;
-
-    setTimeout(() => {
-        showNotification();
-        // Set interval to recheck and show notification every 24 hours
-        setInterval(showNotification, 24 * 60 * 60 * 1000);
-    }, timeUntilNext7AM);
-}
-
-function showNotification() {
-    navigator.serviceWorker.ready.then(function(registration) {
-        registration.showNotification('Daily Reminder', {
-            body: 'This is your daily notification at 7 AM!',
-            icon: 'media/kugel.png',
-            tag: 'daily-notification'
-        });
-    });
-}
 
 
   
