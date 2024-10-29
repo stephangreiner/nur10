@@ -290,9 +290,11 @@ function start() {
   if (AV === 1) {
     aktivDiv.style.display = "";
     aktivCanvasDiv.style.display = "none";
-  } else if (AV === 2 || AV === 3) {
+  } else if (AV === 2) {
     aktivDiv.style.display = "";
-    aktivCanvasDiv.style.display = AV === 3 ? "" : "none";
+  }else if (AV === 3) {
+    aktivDiv.style.display = "none";
+    aktivCanvasDiv.style.display = "" ;
   }
 
   if ([1, 2, 3].includes(modus)) {
