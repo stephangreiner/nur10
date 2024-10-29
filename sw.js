@@ -1,81 +1,64 @@
-
-
-// Set a name for the current cache
-
-var cacheName = 'Kniebv1';
-var cacheAssets = [
-
+const CACHE_VERSION = 'v1';
+const CACHE_NAME = `Knieb-${CACHE_VERSION}`;
+const CACHE_ASSETS = [
+    '/',                    // Root URL
+    '/index.html',          // Main HTML
+    '/manifest.json',       // Manifest
+    '/script.js',           // Main JavaScript
+    '/style.css',           // CSS (if applicable)
+    '/media/favicon.ico',   // Favicon
+    '/media/flach.png',     // Image for Squats
+    '/media/hoch.png',      // Image for Pull-Ups
+    '/media/quer.png',      // Image for Back Extensions
+    '/media/LiegeS.png'     // Image for Push-Ups
 ];
 
-// Call install Event
-	// Wait until promise is finished
-	// When everything is set
-self.addEventListener('install', e => {
-	e.waitUntil(
-		caches.open(cacheName)
-		.then(cache => {
-			console.log(`Service Worker: Caching Files: ${cache}`);
-			cache.addAll(cacheAssets)			
-				.then(() => self.skipWaiting())
-		})
-	);
-})
-
-// Call Activate Event
-// Clean up old caches by looping through all of the
-	// caches and deleting any old caches or caches that
-	// are not defined in the list
-self.addEventListener('activate', e => {
-	console.log('Service Worker: Activated');
-	e.waitUntil(
-		caches.keys().then(cacheNames => {
-			return Promise.all(
-				cacheNames.map(
-					cache => {
-						if (cache !== cacheName) {
-							console.log('Service Worker: Clearing Old Cache');
-							return caches.delete(cache);
-						}
-					}
-				)
-			)
-		})
-	);
-})
-
-var cacheName = 'Kniebv1';
-
-// Call Fetch Event
-	// The response is a stream and in order the browser
-			// to consume the response and in the same time the
-			// cache consuming the response it needs to be
-			// cloned in order to have two streams.
-// Open cache
-	// Add response to cache
-
-self.addEventListener('fetch', e => {
-	console.log('Service Worker: Fetching');
-	e.respondWith(
-		fetch(e.request)
-		.then(res => {	
-			const resClone = res.clone();	
-			caches.open(cacheName)
-				.then(cache => {		
-					cache.put(e.request, resClone);
-				});
-			return res;
-		}).catch(
-			err => caches.match(e.request)
-			.then(res => res)
-		)
-	);
+// Install Event: Caches specified assets
+self.addEventListener('install', async (event) => {
+    console.log(`Service Worker: Installing, caching assets`);
+    event.waitUntil(
+        (async () => {
+            const cache = await caches.open(CACHE_NAME);
+            await cache.addAll(CACHE_ASSETS);
+            await self.skipWaiting();
+            console.log('Service Worker: Cached all assets');
+        })().catch(error => console.error('Install failed:', error))
+    );
 });
 
-
-
-  self.addEventListener('notificationclick', function(event) {
-    event.notification.close();
+// Activate Event: Deletes old caches
+self.addEventListener('activate', async (event) => {
+    console.log('Service Worker: Activated');
     event.waitUntil(
-        clients.openWindow('https://anwaltgreiner.de')
+        (async () => {
+            const cacheNames = await caches.keys();
+            await Promise.all(
+                cacheNames.map(name => {
+                    if (name !== CACHE_NAME) {
+                        console.log(`Service Worker: Clearing old cache: ${name}`);
+                        return caches.delete(name);
+                    }
+                })
+            );
+            await self.clients.claim(); // Immediately activate the new cache
+        })().catch(error => console.error('Activate failed:', error))
+    );
+});
+
+// Fetch Event: Serves from cache first, then network if unavailable
+self.addEventListener('fetch', async (event) => {
+    console.log(`Service Worker: Fetching ${event.request.url}`);
+    event.respondWith(
+        (async () => {
+            try {
+                const response = await fetch(event.request);
+                const cache = await caches.open(CACHE_NAME);
+                cache.put(event.request, response.clone());
+                return response;
+            } catch (error) {
+                const cachedResponse = await caches.match(event.request);
+                return cachedResponse || new Response("Offline", { status: 503 });
+            }
+        })()
     );
 });
