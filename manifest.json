@@ -20,5 +20,5 @@
   "start_url": "/nur10/?source=pwa",
   "scope": "/nur10/",
   "display": "standalone",
-  "orientation": "portrait"
+  "orientation": "any"
 }

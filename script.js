@@ -575,102 +575,125 @@ function bildKB() {
     oneb.style.background = `url('media/bm${mediaV}.jpg') no-repeat center`;
   }
 }
-
 // Canvas and graph variables
 const canvas = document.getElementById("canvas");
 const W = canvas.width;
 const H = canvas.height;
 const ctx = canvas.getContext("2d");
+
 const linien = {
-  z: getInitArr(Probenanzahl),
-  y: getInitArr(Probenanzahl),
-  x: getInitArr(Probenanzahl),
+    z: getInitArr(Probenanzahl),
+    y: getInitArr(Probenanzahl),
+    x: getInitArr(Probenanzahl),
 };
 const scaleX = W / Probenanzahl;
 let scaleY = 5;
 
+
 // Function to sample device motion data
 function doSample(event) {
-  if (modus === 1) {
-    shift(linien.z, event.accelerationIncludingGravity.z);
-  } else if (modus === 2) {
-    shift(linien.y, event.accelerationIncludingGravity.y);
-  } else if (modus === 3) {
-    shift(linien.x, event.accelerationIncludingGravity.x);
-  }
+    if (modus === 1) {
+        shiftAndCrunch(linien.z, event.accelerationIncludingGravity.z);
+    } else if (modus === 2) {
+        shiftAndCrunch(linien.y, event.accelerationIncludingGravity.y);
+    } else if (modus === 3) {
+        shiftAndCrunch(linien.x, event.accelerationIncludingGravity.x);
+    }
 }
 
 // Function to calculate dynamic scale for Y-axis
 function calculateDynamicScaleY(dataArrays) {
-  let maxVal = 0;
-  dataArrays.forEach((arr) => {
-    const localMax = Math.max(...arr.map(Math.abs));
-    if (localMax > maxVal) maxVal = localMax;
-  });
-  return maxVal > 0 ? H / (2 * maxVal) : 5; // Prevent division by zero
+    let maxVal = 0;
+    dataArrays.forEach((arr) => {
+        const localMax = Math.max(...arr.map(Math.abs));
+        if (localMax > maxVal) maxVal = localMax;
+    });
+    return maxVal > 0 ? H / (2 * maxVal) : 5; // Prevent division by zero
 }
 
 // Function to update the canvas
 function tick() {
-  requestAnimationFrame(tick);
-  ctx.fillStyle = "black";
-  ctx.fillRect(0, 0, W, H);
-  const dynamicScaleY = calculateDynamicScaleY([
-    linien.x,
-    linien.y,
-    linien.z,
-  ]);
-  drawReferenceLines();
-  if (modus === 1) {
-    drawGraph(linien.z, scaleX, dynamicScaleY);
-  } else if (modus === 2) {
-    drawGraph(linien.y, scaleX, dynamicScaleY);
-  } else if (modus === 3) {
-    drawGraph(linien.x, scaleX, dynamicScaleY);
-  }
+    requestAnimationFrame(tick);
+    ctx.fillStyle = "#1c1c1c"; // Darker background for better contrast
+    ctx.fillRect(0, 0, W, H);
+
+    // Draw grid lines
+    drawGrid();
+
+    const dynamicScaleY = calculateDynamicScaleY([linien.x, linien.y, linien.z]);
+    drawReferenceLines();
+
+    if (modus === 1) {
+        drawGraph(linien.z, scaleX, dynamicScaleY, "#32CD32"); // Lime green
+    } else if (modus === 2) {
+        drawGraph(linien.y, scaleX, dynamicScaleY, "#FFD700"); // Gold
+    } else if (modus === 3) {
+        drawGraph(linien.x, scaleX, dynamicScaleY, "#1E90FF"); // Dodger blue
+    }
 }
 
 // Function to draw reference lines on the canvas
 function drawReferenceLines() {
-  drawLine(H / 2 + 50, "white");
-  drawLine(H / 2 + 100, "brown");
-  drawLine(H / 2, "blue");
+    drawLine(H / 2, "lightgray");
 }
 
 // Helper function to draw a line
 function drawLine(yPosition, color) {
-  ctx.lineWidth = 1;
-  ctx.strokeStyle = color;
-  ctx.beginPath();
-  ctx.moveTo(0, yPosition);
-  ctx.lineTo(W, yPosition);
-  ctx.stroke();
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = color;
+    ctx.beginPath();
+    ctx.moveTo(0, yPosition);
+    ctx.lineTo(W, yPosition);
+    ctx.stroke();
+}
+
+// Function to draw a grid on the canvas
+function drawGrid() {
+    ctx.strokeStyle = "#2f2f2f"; // Subtle grid color
+    ctx.lineWidth = 0.5;
+    for (let x = 0; x < W; x += 30) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, H);
+        ctx.stroke();
+    }
+    for (let y = 0; y < H; y += 30) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(W, y);
+        ctx.stroke();
+    }
 }
 
 // Function to draw the graph
-function drawGraph(dataArray, scaleX, scaleY) {
-  ctx.save();
-  ctx.translate(0, H / 2);
-  ctx.lineWidth = 4;
-  ctx.strokeStyle = "green";
-  ctx.beginPath();
-  ctx.moveTo(0, dataArray[0] * scaleY);
-  for (let i = 1; i < dataArray.length; i++) {
-    ctx.lineTo(i * scaleX, dataArray[i] * scaleY);
-  }
-  ctx.stroke();
-  ctx.restore();
+function drawGraph(dataArray, scaleX, scaleY, color) {
+    ctx.save();
+    ctx.translate(0, H / 2);
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = color;
+    ctx.beginPath();
+    ctx.moveTo(0, dataArray[0] * scaleY);
+    for (let i = 1; i < dataArray.length; i++) {
+        ctx.lineTo(i * scaleX, dataArray[i] * scaleY);
+    }
+    ctx.stroke();
+    ctx.restore();
 }
 
 // Function to initialize an array with zeros
 function getInitArr(length) {
-  return new Float32Array(length);
+    return new Float32Array(length);
 }
 
-// Function to shift data in the array
-function shift(arr, datum) {
-  arr.copyWithin(0, 1);
-  arr[arr.length - 1] = datum;
+// Function to shift data and compress older data
+function shiftAndCrunch(arr, datum) {
+    arr.copyWithin(0, 1);
+    arr[arr.length - 1] = datum;
+
+    // Simple compression: average every 2 adjacent points for the first half
+    for (let i = 0; i < arr.length / 2; i += 2) {
+        arr[i] = (arr[i] + arr[i + 1]) / 2;
+    }
 }
 
 // Variables for the stopwatch
