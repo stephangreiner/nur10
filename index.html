@@ -46,7 +46,31 @@
   
   <button id="sta_b" onclick="sta_zeigen()"><img src="./media/statistikicon.png" alt="Statistik" width="30" height="30"></button>
 </div>
- 
+
+ <div id= "aktivcanvasdiv">
+        <div id = "canvasdiv">
+              <canvas id="canvas" width="360" height="300"></canvas>
+        </div>
+         
+        <span id="minAn"></span>: <span id="sekAn"></span>
+        <div id =KniebA> 
+        Anzahl: <a id="KB">0</a><br>
+       
+        <br>
+        <select id="GLW"> 
+          <option value="1"> 8</option>
+          <option value="2"> 5</option>  
+          <option value="3"> 0</option> 
+       </select> 
+       <select id="GSW"> 
+           <option value="1"> 12</option>
+           <option value="2"> 15</option>  
+           <option value="3"> 20</option> 
+       </select> 
+           untere <a id="A1">0</a><br>
+           </div>
+           <button class="zurueck" onclick="neu()">x</button>       
+</div>       
 
  <div id="sta_div">
    <a id="datum"></a>
@@ -328,33 +352,7 @@
 
 
 
-<div id= "aktivcanvasdiv">
-        <div id = "canvasdiv">
-              <canvas id="canvas" width="360" height="300"></canvas>
-        </div>
-        <div id="sekAn"></div> 
-        <div id="minAn"></div>
-        <div id =KniebA> 
-        KB : <a id="KB">0</a><br>
-       
 
-        <button id ="GLW_B" onclick="hochg()">+</button>
-        <button id ="GSW_B" onclick="niedrigg()">+</button>
-        <br>
-        <select id="GLW"> 
-          <option value="1"> 8</option>
-          <option value="2"> 5</option>  
-          <option value="3"> 0</option> 
-       </select> 
-       <select id="GSW"> 
-           <option value="1"> 12</option>
-           <option value="2"> 15</option>  
-           <option value="3"> 20</option> 
-       </select> 
-           untere <a id="A1">0</a><br>
-           </div>
-           <button class="zurueck" onclick="neu()">x</button>       
-</div>
 
 
 <script src="audiosynth.js"></script>
