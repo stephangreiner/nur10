@@ -577,6 +577,8 @@ function bildKB() {
 }
 // Canvas and graph variables
 const canvas = document.getElementById("canvas");
+canvas.width = canvas.offsetWidth;
+canvas.height = canvas.offsetHeight;
 const W = canvas.width;
 const H = canvas.height;
 const ctx = canvas.getContext("2d");
