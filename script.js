@@ -427,13 +427,13 @@ function handleMotionEvent(event) {
 
   if (modus === 1) {
     processZVar(z);
-    document.getElementById("oneb").style.backgroundColor = "rgb(255, 29, 29)";
+    document.getElementById("oneb").style.backgroundColor = "var(--kfarbe)";
   } else if (modus === 2) {
     processYVar(y);
-    document.getElementById("oneb").style.backgroundColor = "rgb(149, 216, 32)";
+    document.getElementById("oneb").style.backgroundColor = "var(--kzfarbe)";
   } else if (modus === 3) {
     processXVar(x);
-    document.getElementById("oneb").style.backgroundColor = "rgb(55, 229, 229)";
+    document.getElementById("oneb").style.backgroundColor = "var(--kzfarbe)";
   }
 }
 
@@ -630,18 +630,18 @@ function tick() {
 
     // Draw grid lines
     drawGrid();
-    drawLine(-9.81, "brown");  
-    drawLine(0, "blue");  
+    drawLine(H-9.81, "brown");  
     const dynamicScaleY = calculateDynamicScaleY([linien.x, linien.y, linien.z]);
     drawReferenceLines();
 
     if (modus === 1) {
-        drawGraph(linien.z, scaleX, dynamicScaleY, "red"); // Lime green
+        drawGraph(linien.z, scaleX, dynamicScaleY, "var(--kfarbe)"); 
     } else if (modus === 2) {
         drawGraph(linien.y, scaleX, dynamicScaleY, "green"); // Gold
     } else if (modus === 3) {
         drawGraph(linien.x, scaleX, dynamicScaleY, "blue"); // Dodger blue
     }
+document.getElementById("SK").innerHTML = linien.x
 }
 
 // Function to draw reference lines on the canvas
