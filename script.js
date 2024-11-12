@@ -602,6 +602,15 @@ function doSample(event) {
         shiftAndCrunch(linien.x, event.accelerationIncludingGravity.x);
     }
 }
+// Function to shift data and compress older data
+function shiftAndCrunch(arr, datum) {
+  arr.copyWithin(0, 1);
+  arr[arr.length - 1] = datum;
+  // Simple compression: average every 2 adjacent points for the first half
+  for (let i = 0; i < arr.length / 2; i += 2) {
+      arr[i] = (arr[i] + arr[i + 1]) / 2;
+  }
+}
 
 // Function to calculate dynamic scale for Y-axis
 function calculateDynamicScaleY(dataArrays) {
