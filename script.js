@@ -635,13 +635,12 @@ function tick() {
     drawReferenceLines();
 
     if (modus === 1) {
-        drawGraph(linien.z, scaleX, dynamicScaleY, "var(--kfarbe)"); 
+        drawGraph(linien.z, scaleX, dynamicScaleY, "red"); 
     } else if (modus === 2) {
         drawGraph(linien.y, scaleX, dynamicScaleY, "var(--kzarbe)"); // Gold
     } else if (modus === 3) {
-        drawGraph(linien.x, scaleX, dynamicScaleY, "var(--kzarbe)"); // Dodger blue
+        drawGraph(linien.x, scaleX, dynamicScaleY, "var(--rharbe)"); // Dodger blue
     }
-document.getElementById("SK").innerHTML = linien.x
 }
 
 // Function to draw reference lines on the canvas
