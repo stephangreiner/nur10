@@ -433,7 +433,7 @@ function handleMotionEvent(event) {
     document.getElementById("oneb").style.backgroundColor = "var(--kzfarbe)";
   } else if (modus === 3) {
     processXVar(x);
-    document.getElementById("oneb").style.backgroundColor = "var(--kzfarbe)";
+    document.getElementById("oneb").style.backgroundColor = "var(--rhfarbe)";
   }
 }
 
@@ -637,9 +637,9 @@ function tick() {
     if (modus === 1) {
         drawGraph(linien.z, scaleX, dynamicScaleY, "var(--kfarbe)"); 
     } else if (modus === 2) {
-        drawGraph(linien.y, scaleX, dynamicScaleY, "green"); // Gold
+        drawGraph(linien.y, scaleX, dynamicScaleY, "var(--kzarbe)"); // Gold
     } else if (modus === 3) {
-        drawGraph(linien.x, scaleX, dynamicScaleY, "blue"); // Dodger blue
+        drawGraph(linien.x, scaleX, dynamicScaleY, "var(--kzarbe)"); // Dodger blue
     }
 document.getElementById("SK").innerHTML = linien.x
 }
