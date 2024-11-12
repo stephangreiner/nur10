@@ -630,16 +630,17 @@ function tick() {
 
     // Draw grid lines
     drawGrid();
-    drawLine(9.81, "brown");  
+    drawLine(-9.81, "brown");  
+    drawLine(0, "blue");  
     const dynamicScaleY = calculateDynamicScaleY([linien.x, linien.y, linien.z]);
     drawReferenceLines();
 
     if (modus === 1) {
-        drawGraph(linien.z, scaleX, dynamicScaleY, "#32CD32"); // Lime green
+        drawGraph(linien.z, scaleX, dynamicScaleY, "red"); // Lime green
     } else if (modus === 2) {
-        drawGraph(linien.y, scaleX, dynamicScaleY, "#FFD700"); // Gold
+        drawGraph(linien.y, scaleX, dynamicScaleY, "green"); // Gold
     } else if (modus === 3) {
-        drawGraph(linien.x, scaleX, dynamicScaleY, "#1E90FF"); // Dodger blue
+        drawGraph(linien.x, scaleX, dynamicScaleY, "blue"); // Dodger blue
     }
 }
 
@@ -682,7 +683,7 @@ function drawGrid() {
 function drawGraph(dataArray, scaleX, scaleY, color) {
     ctx.save();
     ctx.translate(0, H / 2);
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 5;
     ctx.strokeStyle = color;
     ctx.beginPath();
     ctx.moveTo(0, dataArray[0] * scaleY);
