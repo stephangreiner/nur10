@@ -577,6 +577,8 @@ function bildKB() {
 }
 // Canvas and graph variables
 const canvas = document.getElementById("canvas");
+canvas.width = canvas.offsetWidth;
+canvas.height = canvas.offsetHeight;
 const W = canvas.width;
 const H = canvas.height;
 const ctx = canvas.getContext("2d");
@@ -619,7 +621,7 @@ function tick() {
 
     // Draw grid lines
     drawGrid();
-
+    drawLine(9.81, "brown");  
     const dynamicScaleY = calculateDynamicScaleY([linien.x, linien.y, linien.z]);
     drawReferenceLines();
 
@@ -638,32 +640,34 @@ function drawReferenceLines() {
 }
 
 // Helper function to draw a line
+// Function to draw a line at a specified y position with a specified color
 function drawLine(yPosition, color) {
-    ctx.lineWidth = 1;
-    ctx.strokeStyle = color;
-    ctx.beginPath();
-    ctx.moveTo(0, yPosition);
-    ctx.lineTo(W, yPosition);
-    ctx.stroke();
+  ctx.lineWidth = 1;
+  ctx.strokeStyle = color;
+  ctx.beginPath();
+  ctx.moveTo(0, yPosition);
+  ctx.lineTo(W, yPosition);
+  ctx.stroke();
 }
 
 // Function to draw a grid on the canvas
 function drawGrid() {
-    ctx.strokeStyle = "#2f2f2f"; // Subtle grid color
-    ctx.lineWidth = 0.5;
-    for (let x = 0; x < W; x += 30) {
-        ctx.beginPath();
-        ctx.moveTo(x, 0);
-        ctx.lineTo(x, H);
-        ctx.stroke();
-    }
-    for (let y = 0; y < H; y += 30) {
-        ctx.beginPath();
-        ctx.moveTo(0, y);
-        ctx.lineTo(W, y);
-        ctx.stroke();
-    }
+  ctx.strokeStyle = "#2f2f2f"; // Subtle grid color
+  ctx.lineWidth = 0.5;
+  for (let x = 0; x < W; x += 30) {
+      ctx.beginPath();
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, H);
+      ctx.stroke();
+  }
+  for (let y = 0; y < H; y += 30) {
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(W, y);
+      ctx.stroke();
+  }
 }
+
 
 // Function to draw the graph
 function drawGraph(dataArray, scaleX, scaleY, color) {
@@ -685,16 +689,6 @@ function getInitArr(length) {
     return new Float32Array(length);
 }
 
-// Function to shift data and compress older data
-function shiftAndCrunch(arr, datum) {
-    arr.copyWithin(0, 1);
-    arr[arr.length - 1] = datum;
-
-    // Simple compression: average every 2 adjacent points for the first half
-    for (let i = 0; i < arr.length / 2; i += 2) {
-        arr[i] = (arr[i] + arr[i + 1]) / 2;
-    }
-}
 
 // Variables for the stopwatch
 let sec = 0;
