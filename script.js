@@ -590,7 +590,7 @@ const linien = {
 };
 
 const scaleX = W / Probenanzahl;
-const maxDeviation = 10; // Maximum expected deviation from -9.81
+const maxDeviation = 20; 
 const scaleY = (H / 2) / maxDeviation; // Fixed scaleY
 
 // Function to sample device motion data
@@ -614,30 +614,36 @@ function shiftAndCrunch(arr, datum) {
     }
 }
 
-// Function to update the canvas
+
 function tick() {
-    requestAnimationFrame(tick);
-    ctx.fillStyle = "#1c1c1c"; // Darker background for better contrast
-    ctx.fillRect(0, 0, W, H);
+  requestAnimationFrame(tick);
+  ctx.fillStyle = "#1c1c1c"; // Background color
+  ctx.fillRect(0, 0, W, H);
 
-    // Draw grid lines
-    drawGrid();
+  // Draw grid lines and reference lines
+  drawGrid();
+  drawLine(H / 2, "brown"); // Reference line at -9.81 (center)
+  drawReferenceLines();
 
-    // Draw reference line at -9.81 (center of the canvas)
-    drawLine(H / 2, "brown");
+  // Get the latest value from the appropriate array
+  let currentValue;
+  if (modus === 1) {
+      currentValue = linien.z[linien.z.length - 1];
+      drawGraph(linien.z, scaleX, scaleY, "red");
+  } else if (modus === 2) {
+      currentValue = linien.y[linien.y.length - 1];
+      drawGraph(linien.y, scaleX, scaleY, "green"); // Gold
+  } else if (modus === 3) {
+      currentValue = linien.x[linien.x.length - 1];
+      drawGraph(linien.x, scaleX, scaleY, "blue"); // Dodger blue
+  }
 
-    // Draw other reference lines if needed
-    drawReferenceLines();
-
-    // Draw the graph
-    if (modus === 1) {
-        drawGraph(linien.z, scaleX, scaleY, "red");
-    } else if (modus === 2) {
-        drawGraph(linien.y, scaleX, scaleY, "green"); // Gold
-    } else if (modus === 3) {
-        drawGraph(linien.x, scaleX, scaleY, "blue"); // Dodger blue
-    }
+  // Display the current value on the canvas
+  ctx.fillStyle = "white"; // Text color
+  ctx.font = "20px Arial"; // Font size and style
+  ctx.fillText("Current Value: " + currentValue.toFixed(2), 10, 30); // Position at (10, 30)
 }
+
 
 // Function to draw reference lines on the canvas
 function drawReferenceLines() {
@@ -676,14 +682,14 @@ function drawGrid() {
 function drawGraph(dataArray, scaleX, scaleY, color) {
     ctx.save();
     // Translate the canvas so that -9.81 is at the center
-    ctx.translate(0, H / 2 - (0) * scaleY);
+    ctx.translate(0, H / 2 - (-9.81) * scaleY);
     ctx.lineWidth = 5;
     ctx.strokeStyle = color;
     ctx.beginPath();
     // Start from the first data point adjusted by -9.81
-    ctx.moveTo(0, (dataArray[0] - (0)) * -scaleY);
+    ctx.moveTo(0, (dataArray[0] - (-9.81)) * -scaleY);
     for (let i = 1; i < dataArray.length; i++) {
-        ctx.lineTo(i * scaleX, (dataArray[i] - (0)) * -scaleY);
+        ctx.lineTo(i * scaleX, (dataArray[i] - (-9.81)) * -scaleY);
     }
     ctx.stroke();
     ctx.restore();
