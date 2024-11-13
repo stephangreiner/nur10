@@ -622,7 +622,7 @@ function tick() {
 
   // Draw grid lines and reference lines
   drawGrid();
-  drawLine(H / 2, "brown"); // Reference line at -9.81 (center)
+  drawLine(H / 2, "brown"); 
   drawReferenceLines();
 
   // Get the latest value from the appropriate array
@@ -682,7 +682,7 @@ function drawGrid() {
 function drawGraph(dataArray, scaleX, scaleY, color) {
     ctx.save();
     // Translate the canvas so that -9.81 is at the center
-    ctx.translate(0, H / 2 +9.81 * scaleY);
+    ctx.translate(0, H / 2 * scaleY);
     ctx.lineWidth = 5;
     ctx.strokeStyle = color;
     ctx.beginPath();
