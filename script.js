@@ -588,9 +588,10 @@ const linien = {
     y: getInitArr(Probenanzahl),
     x: getInitArr(Probenanzahl),
 };
-const scaleX = W / Probenanzahl;
-let scaleY = 5;
 
+const scaleX = W / Probenanzahl;
+const maxDeviation = 10; // Maximum expected deviation from -9.81
+const scaleY = (H / 2) / maxDeviation; // Fixed scaleY
 
 // Function to sample device motion data
 function doSample(event) {
@@ -602,24 +603,15 @@ function doSample(event) {
         shiftAndCrunch(linien.x, event.accelerationIncludingGravity.x);
     }
 }
+
 // Function to shift data and compress older data
 function shiftAndCrunch(arr, datum) {
-  arr.copyWithin(0, 1);
-  arr[arr.length - 1] = datum;
-  // Simple compression: average every 2 adjacent points for the first half
-  for (let i = 0; i < arr.length / 2; i += 2) {
-      arr[i] = (arr[i] + arr[i + 1]) / 2;
-  }
-}
-
-// Function to calculate dynamic scale for Y-axis
-function calculateDynamicScaleY(dataArrays) {
-    let maxVal = 0;
-    dataArrays.forEach((arr) => {
-        const localMax = Math.max(...arr.map(Math.abs));
-        if (localMax > maxVal) maxVal = localMax;
-    });
-    return maxVal > 0 ? H / (2 * maxVal) : 5; // Prevent division by zero
+    arr.copyWithin(0, 1);
+    arr[arr.length - 1] = datum;
+    // Simple compression: average every 2 adjacent points for the first half
+    for (let i = 0; i < arr.length / 2; i += 2) {
+        arr[i] = (arr[i] + arr[i + 1]) / 2;
+    }
 }
 
 // Function to update the canvas
@@ -630,64 +622,68 @@ function tick() {
 
     // Draw grid lines
     drawGrid();
-    drawLine(H-9.81, "brown");  
-    const dynamicScaleY = calculateDynamicScaleY([linien.x, linien.y, linien.z]);
+
+    // Draw reference line at -9.81 (center of the canvas)
+    drawLine(H / 2, "brown");
+
+    // Draw other reference lines if needed
     drawReferenceLines();
 
+    // Draw the graph
     if (modus === 1) {
-        drawGraph(linien.z, scaleX, dynamicScaleY, "red"); 
+        drawGraph(linien.z, scaleX, scaleY, "red");
     } else if (modus === 2) {
-        drawGraph(linien.y, scaleX, dynamicScaleY, "var(--kzarbe)"); // Gold
+        drawGraph(linien.y, scaleX, scaleY, "green"); // Gold
     } else if (modus === 3) {
-        drawGraph(linien.x, scaleX, dynamicScaleY, "var(--rharbe)"); // Dodger blue
+        drawGraph(linien.x, scaleX, scaleY, "blue"); // Dodger blue
     }
 }
 
 // Function to draw reference lines on the canvas
 function drawReferenceLines() {
-    drawLine(H / 2, "lightgray");
+    // Add any additional reference lines if needed
 }
 
-// Helper function to draw a line
-// Function to draw a line at a specified y position with a specified color
+// Helper function to draw a line at a specified y position with a specified color
 function drawLine(yPosition, color) {
-  ctx.lineWidth = 1;
-  ctx.strokeStyle = color;
-  ctx.beginPath();
-  ctx.moveTo(0, yPosition);
-  ctx.lineTo(W, yPosition);
-  ctx.stroke();
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = color;
+    ctx.beginPath();
+    ctx.moveTo(0, yPosition);
+    ctx.lineTo(W, yPosition);
+    ctx.stroke();
 }
 
 // Function to draw a grid on the canvas
 function drawGrid() {
-  ctx.strokeStyle = "#2f2f2f"; // Subtle grid color
-  ctx.lineWidth = 0.5;
-  for (let x = 0; x < W; x += 30) {
-      ctx.beginPath();
-      ctx.moveTo(x, 0);
-      ctx.lineTo(x, H);
-      ctx.stroke();
-  }
-  for (let y = 0; y < H; y += 30) {
-      ctx.beginPath();
-      ctx.moveTo(0, y);
-      ctx.lineTo(W, y);
-      ctx.stroke();
-  }
+    ctx.strokeStyle = "#2f2f2f"; // Subtle grid color
+    ctx.lineWidth = 0.5;
+    for (let x = 0; x < W; x += 30) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, H);
+        ctx.stroke();
+    }
+    for (let y = 0; y < H; y += 30) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(W, y);
+        ctx.stroke();
+    }
 }
-
 
 // Function to draw the graph
 function drawGraph(dataArray, scaleX, scaleY, color) {
     ctx.save();
-    ctx.translate(0, H / 2);
+    // Translate the canvas so that -9.81 is at the center
+    ctx.translate(0, H / 2 - (-9.81) * scaleY);
     ctx.lineWidth = 5;
     ctx.strokeStyle = color;
     ctx.beginPath();
-    ctx.moveTo(0, dataArray[0] * scaleY);
+    // Start from the first data point adjusted by -9.81
+    ctx.moveTo(0, (dataArray[0] - (-9.81)) * -scaleY);
     for (let i = 1; i < dataArray.length; i++) {
-        ctx.lineTo(i * scaleX, dataArray[i] * scaleY);
+        ctx.lineTo(i * scaleX, (dataArray[i] - (-9.81)) * -scaleY);
     }
     ctx.stroke();
     ctx.restore();
@@ -697,6 +693,7 @@ function drawGraph(dataArray, scaleX, scaleY, color) {
 function getInitArr(length) {
     return new Float32Array(length);
 }
+
 
 
 // Variables for the stopwatch
