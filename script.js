@@ -575,6 +575,7 @@ function bildKB() {
     oneb.style.background = `url('media/bm${mediaV}.jpg') no-repeat center`;
   }
 }
+// Canvas and graph variables
 const canvas = document.getElementById("canvas");
 canvas.width = canvas.offsetWidth;
 canvas.height = canvas.offsetHeight;
@@ -595,30 +596,34 @@ const scaleY = (H / 2) / maxDeviation; // Fixed scaleY
 // Function to sample device motion data
 function doSample(event) {
     if (modus === 1) {
-        addData(linien.z, event.accelerationIncludingGravity.z);
+        shiftAndCrunch(linien.z, event.accelerationIncludingGravity.z);
     } else if (modus === 2) {
-        addData(linien.y, event.accelerationIncludingGravity.y);
+        shiftAndCrunch(linien.y, event.accelerationIncludingGravity.y);
     } else if (modus === 3) {
-        addData(linien.x, event.accelerationIncludingGravity.x);
+        shiftAndCrunch(linien.x, event.accelerationIncludingGravity.x);
     }
 }
 
-// Function to add new data without shifting or compressing
-function addData(arr, datum) {
-    arr.push(datum);
-    if (arr.length > Probenanzahl) {
-        arr.shift(); // Remove the oldest data point to maintain the array length
+// Function to shift data and compress older data
+function shiftAndCrunch(arr, datum) {
+    arr.copyWithin(0, 1);
+    arr[arr.length - 1] = datum;
+    // Simple compression: average every 2 adjacent points for the first half
+    for (let i = 0; i < arr.length / 2; i += 2) {
+        arr[i] = (arr[i] + arr[i + 1]) / 2;
     }
 }
+
 
 function tick() {
   requestAnimationFrame(tick);
   ctx.fillStyle = "#1c1c1c"; // Background color
   ctx.fillRect(0, 0, W, H);
 
-  // Draw grid lines and the 9.81 reference line in brown
+  // Draw grid lines and reference lines
   drawGrid();
-  drawLine(H / 2, "brown"); // Draw the 9.81 reference line at the center
+  drawLine(H / 2, "brown"); // Reference line at -9.81 (center)
+  drawReferenceLines();
 
   // Get the latest value from the appropriate array
   let currentValue;
@@ -627,16 +632,22 @@ function tick() {
       drawGraph(linien.z, scaleX, scaleY, "red");
   } else if (modus === 2) {
       currentValue = linien.y[linien.y.length - 1];
-      drawGraph(linien.y, scaleX, scaleY, "green");
+      drawGraph(linien.y, scaleX, scaleY, "green"); // Gold
   } else if (modus === 3) {
       currentValue = linien.x[linien.x.length - 1];
-      drawGraph(linien.x, scaleX, scaleY, "blue");
+      drawGraph(linien.x, scaleX, scaleY, "blue"); // Dodger blue
   }
 
   // Display the current value on the canvas
   ctx.fillStyle = "white"; // Text color
   ctx.font = "20px Arial"; // Font size and style
   ctx.fillText("Current Value: " + currentValue.toFixed(2), 10, 30); // Position at (10, 30)
+}
+
+
+// Function to draw reference lines on the canvas
+function drawReferenceLines() {
+    // Add any additional reference lines if needed
 }
 
 // Helper function to draw a line at a specified y position with a specified color
@@ -669,23 +680,26 @@ function drawGrid() {
 
 // Function to draw the graph
 function drawGraph(dataArray, scaleX, scaleY, color) {
+    ctx.save();
+    ctx.translate(0, H / 2 +9.81 * scaleY);
     ctx.lineWidth = 5;
     ctx.strokeStyle = color;
     ctx.beginPath();
-    // Start from the first data point
-    let yPosition = H / 2 - (dataArray[0] - 9.81) * scaleY;
-    ctx.moveTo(0, yPosition);
-    for (let i = 1; i < dataArray.length; i++) {
-        yPosition = H / 2 - (dataArray[i] - 9.81) * scaleY;
-        ctx.lineTo(i * scaleX, yPosition);
-    }
+  
+  ctx.moveTo(0, dataArray[0] * -scaleY);
+for (let i = 1; i < dataArray.length; i++) {
+    ctx.lineTo(i * scaleX, dataArray[i] * -scaleY);
+}
     ctx.stroke();
+    ctx.restore();
 }
 
 // Function to initialize an array with zeros
 function getInitArr(length) {
-    return [];
+    return new Float32Array(length);
 }
+
+
 
 // Variables for the stopwatch
 let sec = 0;
