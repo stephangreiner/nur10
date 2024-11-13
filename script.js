@@ -676,12 +676,12 @@ function drawGrid() {
 function drawGraph(dataArray, scaleX, scaleY, color) {
     ctx.save();
     // Translate the canvas so that -9.81 is at the center
-    ctx.translate(0, H / 2 - (-9.81) * scaleY);
+    ctx.translate(0, H / 2 - (9.81) * scaleY);
     ctx.lineWidth = 5;
     ctx.strokeStyle = color;
     ctx.beginPath();
     // Start from the first data point adjusted by -9.81
-    ctx.moveTo(0, (dataArray[0] - (-9.81)) * -scaleY);
+    ctx.moveTo(0, (dataArray[0] - (9.81)) * -scaleY);
     for (let i = 1; i < dataArray.length; i++) {
         ctx.lineTo(i * scaleX, (dataArray[i] - (-9.81)) * -scaleY);
     }
