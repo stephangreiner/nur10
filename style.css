@@ -237,8 +237,9 @@ td:nth-child(5) {
 
 #canvasdiv{
   width: 100%;
-  max-width: 800px; /* Optional max width */
-  height: 400px;
+  height: 60%;
+  max-width: 900px; 
+  max-height: 5000px;
   border: 1px solid #000; /* Border for visibility */
 }
 
@@ -279,7 +280,6 @@ td:nth-child(5) {
 
 /* Fixed Back Button */
 .zurueck {
-  position: fixed;
   height: 2rem;
   width: 2rem;
 }

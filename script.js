@@ -16,6 +16,7 @@ const STORAGE_KEYS = {
 };
 
 // Global variables
+let bilderanzahl = 41 //Anzahl bm bilder ab 0 (+1)
 let modus = 1;
 let audioV = 0;
 let untenzahl = 0;
@@ -569,7 +570,7 @@ function synthleicht() {
 
 // Function to change background image
 function bildKB() {
-  const mediaV = Math.floor(Math.random() * 41) + 1;
+  const mediaV = Math.floor(Math.random() * bilderanzahl) + 1;
   const oneb = document.getElementById("oneb");
   if (oneb) {
     oneb.style.background = `url('media/bm${mediaV}.jpg') no-repeat center`;
@@ -595,13 +596,9 @@ const scaleY = (H / 2) / maxDeviation; // Fixed scaleY
 
 // Function to sample device motion data
 function doSample(event) {
-    if (modus === 1) {
-        shiftAndCrunch(linien.z, event.accelerationIncludingGravity.z);
-    } else if (modus === 2) {
-        shiftAndCrunch(linien.y, event.accelerationIncludingGravity.y);
-    } else if (modus === 3) {
-        shiftAndCrunch(linien.x, event.accelerationIncludingGravity.x);
-    }
+    if      (modus === 1) {shiftAndCrunch(linien.z, event.accelerationIncludingGravity.z);} 
+    else if (modus === 2) {shiftAndCrunch(linien.y, event.accelerationIncludingGravity.y);}
+    else if (modus === 3) {shiftAndCrunch(linien.x, event.accelerationIncludingGravity.x);}
 }
 
 // Function to shift data and compress older data
@@ -620,35 +617,24 @@ function tick() {
   ctx.fillStyle = "#1c1c1c"; // Background color
   ctx.fillRect(0, 0, W, H);
 
-  // Draw grid lines and reference lines
+ 
   drawGrid();
-  drawLine(H / 2, "brown"); // Reference line at -9.81 (center)
-  drawReferenceLines();
+  drawLine(H / 2, "brown"); 
+  drawLine(H / 2 + 9.81 * scaleY, "blue"); // kein Schwerkraft null linie die +9.81 aus ctx.translate werden ausgeglichen
 
   // Get the latest value from the appropriate array
   let currentValue;
-  if (modus === 1) {
-      currentValue = linien.z[linien.z.length - 1];
-      drawGraph(linien.z, scaleX, scaleY, "red");
-  } else if (modus === 2) {
-      currentValue = linien.y[linien.y.length - 1];
-      drawGraph(linien.y, scaleX, scaleY, "green"); // Gold
-  } else if (modus === 3) {
-      currentValue = linien.x[linien.x.length - 1];
-      drawGraph(linien.x, scaleX, scaleY, "blue"); // Dodger blue
-  }
+  if      (modus === 1) {currentValue = linien.z[linien.z.length - 1]; drawGraph(linien.z, scaleX, scaleY, "red");} 
+  else if (modus === 2) {currentValue = linien.y[linien.y.length - 1]; drawGraph(linien.y, scaleX, scaleY, "green"); } 
+  else if (modus === 3) {currentValue = linien.x[linien.x.length - 1]; drawGraph(linien.x, scaleX, scaleY, "blue"); }
 
   // Display the current value on the canvas
-  ctx.fillStyle = "white"; // Text color
+  ctx.fillStyle = "#2f2f2f"; // Text color
   ctx.font = "20px Arial"; // Font size and style
-  ctx.fillText("Current Value: " + currentValue.toFixed(2), 10, 30); // Position at (10, 30)
+  ctx.fillText(currentValue.toFixed(2), 10, 30); // Position at (10, 30)
 }
 
 
-// Function to draw reference lines on the canvas
-function drawReferenceLines() {
-    // Add any additional reference lines if needed
-}
 
 // Helper function to draw a line at a specified y position with a specified color
 function drawLine(yPosition, color) {
@@ -681,15 +667,16 @@ function drawGrid() {
 // Function to draw the graph
 function drawGraph(dataArray, scaleX, scaleY, color) {
     ctx.save();
-    ctx.translate(0, H / 2 +9.81 * scaleY);
+  
+    ctx.translate(0, H / 2 + 9.81 * scaleY); // zentriere y achse auf 9.81
     ctx.lineWidth = 5;
     ctx.strokeStyle = color;
     ctx.beginPath();
-  
-  ctx.moveTo(0, dataArray[0] * -scaleY);
-for (let i = 1; i < dataArray.length; i++) {
-    ctx.lineTo(i * scaleX, dataArray[i] * -scaleY);
-}
+   
+    ctx.moveTo(0, (dataArray[0] - (0)) * -scaleY);
+    for (let i = 1; i < dataArray.length; i++) {
+        ctx.lineTo(i * scaleX, (dataArray[i] - (0)) * -scaleY);
+    }
     ctx.stroke();
     ctx.restore();
 }
@@ -721,6 +708,15 @@ function tock() {
 function startTimer() {
   timerInterval = setInterval(tock, 1000);
 }
+
+
+
+
+
+
+
+
+
 
 // Function to reset the application
 function neu() {
@@ -772,7 +768,7 @@ function synth_Lieg() {
 
 // Function to change background image for push-ups
 function bild() {
-  const mediaV = Math.floor(Math.random() * 41) + 1;
+  const mediaV = Math.floor(Math.random() * bilderanzahl) + 1;
   const ONE = document.getElementById("LieB");
   if (ONE) {
     ONE.style.background = `url('media/bm${mediaV}.jpg') no-repeat center`;
