@@ -1,3 +1,20 @@
+
+// Global variables
+let bilderanzahl = 44 //Anzahl bm bilder ab 0 (+1)
+let modus = 1;
+let audioV = 0;
+let untenzahl = 0;
+let KB = 0;
+let Probenanzahl = 500;
+let ss = 0;
+let GL = 8;
+let GS = 12;
+let AV = 1;
+
+
+
+
+
 // Constants for localStorage keys
 const STORAGE_KEYS = {
   KBSPEICH: "KBSPEICH",
@@ -15,17 +32,6 @@ const STORAGE_KEYS = {
   KBzeitspeicher: "KBzeitspeicher",
 };
 
-// Global variables
-let bilderanzahl = 41 //Anzahl bm bilder ab 0 (+1)
-let modus = 1;
-let audioV = 0;
-let untenzahl = 0;
-let KB = 0;
-let Probenanzahl = 500;
-let ss = 0;
-let GL = 8;
-let GS = 12;
-let AV = 1;
 
 // Initialize the application on window load
 window.onload = function () {
