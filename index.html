@@ -47,14 +47,29 @@
   <button id="sta_b" onclick="sta_zeigen()"><img src="./media/statistikicon.png" alt="Statistik" width="30" height="30"></button>
 </div>
 
+<div id="aktivdiv">
+  <button id= "oneb"><a id="Anzahl">0</a></button>
+  <button class="zurueck" onclick="neu()">x</button> 
+</div>
+
+<div id="Ldiv">
+<button id= "LieB" onclick= "nasedrauf()"><a id="LieA">0</a></button>
+<button class="zurueck" onclick="neu()">x</button> 
+</div>
+
+
+
+
+
+
  <div id= "aktivcanvasdiv">
         <div id = "canvasdiv">
               <canvas id="canvas"></canvas>
         </div>
          <div id ="canvasuhr">
-        <span id="minAn">&nbsp;</span>&nbsp;<span id="sekAn"></span> </div>
+        <span id="minAn"></span>: <span id="sekAn"></span> </div>
         <div id =KniebA> 
-     <a id="KB">0</a><br>
+       Anzahl: <a id="KB">0</a><br>
       
        
         <br>
@@ -68,6 +83,7 @@
            <option value="2"> 15</option>  
            <option value="3"> 20</option> 
        </select> 
+           untere <a id="A1">0</a><br>
            </div>
            <button class="zurueck" onclick="neu()">x</button>       
 </div>       
@@ -339,17 +355,6 @@
 
          </div> 
 </div>
-
-<div id="aktivdiv">
-     <button id= "oneb"><a id="Anzahl">0</a></button>
-     <button class="zurueck" onclick="neu()">x</button> 
-</div>
-
-<div id="Ldiv">
-  <button id= "LieB" onclick= "nasedrauf()"><a id="LieA">0</a></button>
-  <button class="zurueck" onclick="neu()">x</button> 
-</div>
-
 
 
 
