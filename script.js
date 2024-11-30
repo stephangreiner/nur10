@@ -1,6 +1,6 @@
 
 // Global variables
-let bilderanzahl = 44 //Anzahl bm bilder ab 0 (+1)
+let bilderanzahl = 54; //Anzahl bm bilder ab 0 (+1)
 let modus = 1;
 let audioV = 0;
 let untenzahl = 0;
