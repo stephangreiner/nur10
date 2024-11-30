@@ -383,31 +383,6 @@ modusV.addEventListener("change", function () {
   }
 });
 
-// Event listener for 'GLW' dropdown
-const glw = document.getElementById("GLW");
-glw.addEventListener("change", function () {
-  const value = parseInt(glw.value);
-  if (value === 1) {
-    GL = 8;
-  } else if (value === 2) {
-    GL = 5;
-  } else if (value === 3) {
-    GL = 0;
-  }
-});
-
-// Event listener for 'GSW' dropdown
-const gsw = document.getElementById("GSW");
-gsw.addEventListener("change", function () {
-  const value = parseInt(gsw.value);
-  if (value === 1) {
-    GS = 12;
-  } else if (value === 2) {
-    GS = 15;
-  } else if (value === 3) {
-    GS = 20;
-  }
-});
 
 // Function to toggle sound
 function ton() {
