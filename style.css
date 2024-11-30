@@ -258,7 +258,7 @@ td:nth-child(5) {
 #GSW, #GSW_B { color: rgb(217, 114, 40); }
 
 /* Active Division */
-#aktivdiv {
+#aktivdiv,#Ldiv  {
   display: flex;
   width: 100%;
   height: 100%;
@@ -266,7 +266,7 @@ td:nth-child(5) {
   justify-content: flex-end;
 }
 
-/* One Button */
+/* Button der nicht gedrückt werden kann sondern 3 übungen mit gyrosensor zählt*/
 #oneb {
   width: 100%;
   height: 100%;
@@ -288,17 +288,6 @@ td:nth-child(5) {
   width: 2rem;
 }
 
-/* Push-up Section */
-#Ldiv {
-  display: flex;
-  justify-content: space-around;
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  background-color: var(--lfarbe);
-  align-items: flex-end;
-  justify-content: flex-end;
-}
 
 /* Push-up Button */
 #LieB {
