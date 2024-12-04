@@ -1,8 +1,8 @@
 :root {
-  --lfarbe: rgb(238, 255, 86);
-  --kfarbe: rgb(255, 0, 0);
-  --kzfarbe: rgb(55, 255, 0);
-  --rhfarbe: rgb(0, 255, 238);
+  --lfarbe: rgb(240, 255, 105);
+  --kfarbe: rgb(224, 30, 30);
+  --kzfarbe: rgb(166, 255, 142);
+  --rhfarbe: rgb(179, 255, 250);
 }
 
 
@@ -252,18 +252,14 @@ td:nth-child(5) {
 
 }
 
-/* Canvas Text Styles */
-#KB { font-size: xx-large; }
-#GLW, #GLW_B { color: rgb(42, 112, 165); }
-#GSW, #GSW_B { color: rgb(217, 114, 40); }
 
 /* Active Division */
 #aktivdiv,#Ldiv  {
   display: flex;
   width: 100%;
   height: 100%;
-  align-items: flex-end;
-  justify-content: flex-end;
+  position: relative;
+  justify-content: space-between;
 }
 
 /* Button der nicht gedrückt werden kann sondern 3 übungen mit gyrosensor zählt*/
@@ -283,9 +279,16 @@ td:nth-child(5) {
 }
 
 /* Fixed Back Button */
-.zurueck {
+.zurueck  {
   height: 2rem;
   width: 2rem;
+  background-color: #3f3f3f;
+}
+
+#notew {
+  height: 2rem;
+  width: 2rem;
+  background-color: #6d6d6d;
 }
 
 
@@ -297,7 +300,8 @@ td:nth-child(5) {
   text-align: center;
   border: none;
   border-radius: 50%;
-  align-items: center;
+  position: absolute;
+  
 }
 
 /* Push-up Text */

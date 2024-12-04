@@ -457,7 +457,6 @@ function hochg() {
   if (milliseconds - firstExecution > interval) {
     firstExecution = milliseconds;
     untenzahl += 1;
-    document.getElementById("A1").innerHTML = untenzahl;
     if (ss === 0) {
       ss += 1; // Activate counting
     }
@@ -738,12 +737,36 @@ function bildwechsel() {
 }
 
 // Function to play sound for push-ups
+
+
+var note ="C"
+var noteH = "D"
 function synth_Lieg() {
+
+  
+  const dropdown = document.getElementById("notew");
+
+
+  // Add an event listener to handle dropdown changes
+  dropdown.addEventListener("change", () => {
+      const selectedValue = dropdown.value; // Get the selected value
+
+      // Conditional handling of selected values
+      if (selectedValue === "eins") { note = "C", noteH = "D"}
+       else if (selectedValue === "zwei") {note = "D" , noteH = "E"} 
+       else if (selectedValue === "drei") {note = "E", noteH = "F"} 
+       else if (selectedValue === "vier") {note ="F", noteH = "G"}
+       else if (selectedValue === "fuenf") {note = "G" , noteH = "H"} 
+       else if (selectedValue === "sechs") {note = "A", noteH = "A"} 
+       else if (selectedValue === "sieben") {note ="B", noteH = "C"}
+       else {x = "A"}
+  });
+
   const p = Synth.createInstrument("piano");
   if (L % 10 === 0 && L >= 10) {
-    p.play("E", 4, 0.5);
+    p.play(noteH, 4, 1);
   } else {
-    p.play("C", 4, 0.5);
+    p.play(note, 4, 1); // nomrmalfall
   }
 }
 
