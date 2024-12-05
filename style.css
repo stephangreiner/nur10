@@ -285,7 +285,7 @@ td:nth-child(5) {
   background-color: #3f3f3f;
 }
 
-#notewLieg,#notewAktiv{
+#notew {
   height: 2rem;
   width: 2rem;
   background-color: #6d6d6d;
