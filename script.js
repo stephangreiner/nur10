@@ -469,7 +469,7 @@ function niedrigg() {
   if (milliseconds - firstExecution > interval && ss === 1) {
     firstExecution = milliseconds;
     KB += 1;
-    playSound();
+    if (audioV === 0) {playSound() };
     if (AV === 2) {
       bildwechselKB();
     }
@@ -535,43 +535,39 @@ function bildwechselKB() {
 
 // Function to play sound
 function playSound() {
-  if (audioV === 0) {
+
     const dropdown = document.getElementById("notewAktiv");
     dropdown.addEventListener("change", () => {
-        const selectedValue = dropdown.value; // Get the selected value
-        if (selectedValue === "eins") {synthleicht(); }
-         else if (selectedValue === "zwei") {synthtonl()} 
+        const selectedValue = dropdown.value; 
+        if (selectedValue === "eins") {synthleicht(),console.log("Notefunkteeins")}
+        else if (selectedValue === "zwei") {synthtonl(),console.log("Notefunktezwei")} 
        
-         else {console.log("errorsynth")}
+         else {synthleicht(),console.log("NoteAktivelse")}
     });
 
-  }
+ 
 }
+
+
 function synthleicht() {
   const p = Synth.createInstrument("piano");
-  if (KB % 10 === 0) {
-    p.play("C", 4, 0.5);
-  } else {
-    p.play("D", 4, 0.5);
+  p.play("D", 4, 0.5);
   }
-}
+
 function synthtonl() {
   const p = Synth.createInstrument("piano");
   if (KB === 10) {p.play("D", 4, 0.5);} 
-  else if (KB ===20){p.play("E", 4, 0.5);}
-  else if (KB ===30){p.play("F", 4, 0.5);}
-  else if (KB ===40){p.play("G", 4, 0.5);}
-  else if (KB ===50){p.play("A", 5, 0.5);}
-  else if (KB ===60){p.play("B", 5, 0.5);}
-  else if (KB ===70){p.play("C", 5, 0.5);}
-  else if (KB ===80){p.play("D", 5, 0.5);}
-  else if (KB ===90){p.play("E", 5, 0.5);}
-  else if (KB ===100){p.play("F", 5, 0.5);}
+  else if (KB === 20){p.play("E", 4, 0.5);}
+  else if (KB === 30){p.play("F", 4, 0.5);}
+  else if (KB === 40){p.play("G", 4, 0.5);}
+  else if (KB === 50){p.play("A", 5, 0.5);}
+  else if (KB === 60){p.play("B", 5, 0.5);}
+  else if (KB === 70){p.play("C", 5, 0.5);}
+  else if (KB ===  80){p.play("D", 5, 0.5);}
+  else if (KB === 90){p.play("E", 5, 0.5);}
+  else if (KB === 100){p.play("F", 5, 0.5);}
   else {p.play("C", 4, 0.5);}
 }
-
-
-// Function to play sound
 
 
 // Function to change background image
