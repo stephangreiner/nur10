@@ -269,7 +269,7 @@ td:nth-child(5) {
   text-align: center;
   border: none;
   border-radius: 50%;
-  align-items: center;
+  position: absolute;
 }
 
 /* Number Display */
@@ -285,7 +285,7 @@ td:nth-child(5) {
   background-color: #3f3f3f;
 }
 
-#notew {
+#notewLieg,#notewAktiv{
   height: 2rem;
   width: 2rem;
   background-color: #6d6d6d;
