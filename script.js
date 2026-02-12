@@ -739,28 +739,46 @@ function bildwechsel() {
 // Function to play sound for push-ups
 
 
-var note ="C"
-var noteH = "D"
-function synth_Lieg() {
+var note = "C";
+var noteH = "D";
 
-  
-  const dropdown = document.getElementById("notew");
+function updatePushupSoundNotes(selectedValue) {
+  if (selectedValue === "eins") {
+    note = "C";
+    noteH = "D";
+  } else if (selectedValue === "zwei") {
+    note = "D";
+    noteH = "E";
+  } else if (selectedValue === "drei") {
+    note = "E";
+    noteH = "F";
+  } else if (selectedValue === "vier") {
+    note = "F";
+    noteH = "G";
+  } else if (selectedValue === "fuenf") {
+    note = "G";
+    noteH = "A";
+  } else if (selectedValue === "sechs") {
+    note = "A";
+    noteH = "B";
+  } else if (selectedValue === "sieben") {
+    note = "B";
+    noteH = "C";
+  } else {
+    note = "C";
+    noteH = "D";
+  }
+}
 
-
-  // Add an event listener to handle dropdown changes
-  dropdown.addEventListener("change", () => {
-      const selectedValue = dropdown.value; // Get the selected value
-
-      // Conditional handling of selected values
-      if (selectedValue === "eins") { note = "C", noteH = "D"}
-       else if (selectedValue === "zwei") {note = "D" , noteH = "E"} 
-       else if (selectedValue === "drei") {note = "E", noteH = "F"} 
-       else if (selectedValue === "vier") {note ="F", noteH = "G"}
-       else if (selectedValue === "fuenf") {note = "G" , noteH = "H"} 
-       else if (selectedValue === "sechs") {note = "A", noteH = "A"} 
-       else if (selectedValue === "sieben") {note ="B", noteH = "C"}
-       else {x = "A"}
+const pushupNoteDropdown = document.getElementById("notew");
+if (pushupNoteDropdown) {
+  updatePushupSoundNotes(pushupNoteDropdown.value);
+  pushupNoteDropdown.addEventListener("change", () => {
+    updatePushupSoundNotes(pushupNoteDropdown.value);
   });
+}
+
+function synth_Lieg() {
 
   const p = Synth.createInstrument("piano");
   if (L % 10 === 0 && L >= 10) {
