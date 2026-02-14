@@ -12,7 +12,7 @@
           if (navigator.serviceWorker) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker
-                    .register('/Kniebeugentracker/sw.js')
+                    .register('./sw.js')
                     .then(reg => console.log('Service Worker registriert'))
                     .catch(swErr => console.log(
                           `Service Worker Installationsfehler: ${swErr}}`));

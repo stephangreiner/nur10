@@ -222,25 +222,22 @@ function tage_zeigen() {
 
 // Function to check if a new day has started
 function neuerTagTest() {
-  const lastDate = new Date(
-    parseInt(localStorage.getItem(STORAGE_KEYS.KBzeitspeicher)) || Date.now()
-  );
+  const lastDate = getLastActiveDate();
   const currentDate = new Date();
-  if (lastDate.getDate() !== currentDate.getDate()) {
-    neuer_tag();
+  if (!isSameCalendarDay(lastDate, currentDate)) {
+    neuer_tag(lastDate);
   }
 }
 
 // Function to handle new day logic
-function neuer_tag() {
-  const d = new Date();
-  const dayIndex = d.getDate() - 1;
+function neuer_tag(lastActiveDate) {
+  const previousDayIndex = lastActiveDate.getDate();
 
   // Store the counts for the previous day
-  storeDailyCount("Ktag" + dayIndex, STORAGE_KEYS.KBSPEICH);
-  storeDailyCount("tag" + dayIndex, STORAGE_KEYS.LSPEICH);
-  storeDailyCount("KZtag" + dayIndex, STORAGE_KEYS.KZSPEICH);
-  storeDailyCount("RHtag" + dayIndex, STORAGE_KEYS.RHSPEICH);
+  storeDailyCount("Ktag" + previousDayIndex, STORAGE_KEYS.KBSPEICH);
+  storeDailyCount("tag" + previousDayIndex, STORAGE_KEYS.LSPEICH);
+  storeDailyCount("KZtag" + previousDayIndex, STORAGE_KEYS.KZSPEICH);
+  storeDailyCount("RHtag" + previousDayIndex, STORAGE_KEYS.RHSPEICH);
 
   // Remove daily counts
   localStorage.removeItem(STORAGE_KEYS.KBSPEICH);
@@ -259,13 +256,30 @@ function storeDailyCount(dayKey, storageKey) {
 
 // Function to check if a new month has started
 function neuerMonatTest() {
-  const lastDate = new Date(
-    parseInt(localStorage.getItem(STORAGE_KEYS.KBzeitspeicher)) || Date.now()
-  );
+  const lastDate = getLastActiveDate();
   const currentDate = new Date();
-  if (lastDate.getMonth() !== currentDate.getMonth()) {
+  if (
+    lastDate.getMonth() !== currentDate.getMonth() ||
+    lastDate.getFullYear() !== currentDate.getFullYear()
+  ) {
     monatneu();
   }
+}
+
+function getLastActiveDate() {
+  const rawTimestamp = parseInt(localStorage.getItem(STORAGE_KEYS.KBzeitspeicher));
+  if (Number.isNaN(rawTimestamp)) {
+    return new Date();
+  }
+  return new Date(rawTimestamp);
+}
+
+function isSameCalendarDay(a, b) {
+  return (
+    a.getDate() === b.getDate() &&
+    a.getMonth() === b.getMonth() &&
+    a.getFullYear() === b.getFullYear()
+  );
 }
 
 // Function to reset monthly statistics
