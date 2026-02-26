@@ -1,6 +1,6 @@
 
 // Global variables
-let bilderanzahl = 54; //Anzahl bm bilder ab 0 (+1)
+let bilderanzahl = 55; //Anzahl bm bilder ab 0 (+1)
 let modus = 1;
 let audioV = 0;
 let untenzahl = 0;
@@ -43,10 +43,21 @@ window.onload = function () {
   updateStatistics();
 };
 
+window.addEventListener("beforeunload", updateLastActiveTimestamp);
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "hidden") {
+    updateLastActiveTimestamp();
+  }
+});
+
+function updateLastActiveTimestamp() {
+  localStorage.setItem(STORAGE_KEYS.KBzeitspeicher, Date.now());
+}
+
 // Function to set up the initial view
 function setUpInitialView() {
   standardImage();
-  localStorage.setItem(STORAGE_KEYS.KBzeitspeicher, Date.now());
+  updateLastActiveTimestamp();
 }
 
 // Function to clear temporary storage
@@ -417,6 +428,10 @@ function ton() {
 
 // Event handler for device motion
 function handleMotionEvent(event) {
+  if (!event.accelerationIncludingGravity) {
+    return;
+  }
+
   const x = event.accelerationIncludingGravity.x;
   const y = event.accelerationIncludingGravity.y;
   const z = event.accelerationIncludingGravity.z;
@@ -590,6 +605,10 @@ const scaleY = (H / 2) / maxDeviation; // Fixed scaleY
 
 // Function to sample device motion data
 function doSample(event) {
+    if (!event.accelerationIncludingGravity) {
+      return;
+    }
+
     if      (modus === 1) {shiftAndCrunch(linien.z, event.accelerationIncludingGravity.z);} 
     else if (modus === 2) {shiftAndCrunch(linien.y, event.accelerationIncludingGravity.y);}
     else if (modus === 3) {shiftAndCrunch(linien.x, event.accelerationIncludingGravity.x);}
