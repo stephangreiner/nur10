@@ -40,7 +40,12 @@
          <option value="2"> &#128247;</option>  
          <option value="3"> can</option>  
       </select> 
-      <button id ="tonb" onclick ="ton()"><a id ="tona">🔈</a></button>
+      <select id="audioMode">
+        <option value="none">Kein Ton</option>
+        <option value="synth">Standard-Ton</option>
+        <option value="file">Eigene Audio-Datei</option>
+      </select>
+      <input id="audioFileInput" type="file" accept="audio/*">
   </div>
   
   

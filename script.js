@@ -2,7 +2,10 @@
 // Global variables
 let bilderanzahl = 55; //Anzahl bm bilder ab 0 (+1)
 let modus = 1;
-let audioV = 0;
+let audioMode = "none";
+let customAudio = null;
+let customAudioObjectUrl = "";
+let customAudioPauseTimeout = null;
 let untenzahl = 0;
 let KB = 0;
 let Probenanzahl = 500;
@@ -409,21 +412,43 @@ modusV.addEventListener("change", function () {
 });
 
 
-// Function to toggle sound
-function ton() {
-  const b = document.getElementById("tonb");
-  const a = document.getElementById("tona");
-  if (audioV === 0) {
-    audioV = 1;
-    a.innerHTML = "🔇";
-    b.style.backgroundColor = "rgb(115, 115, 115)";
-  } else if (audioV === 1) {
-    audioV = 0;
-    a.innerHTML = "🔈";
-    b.style.backgroundColor = "rgb(115, 115, 115)";
-  } else {
-    console.log("Unexpected audioV value");
-  }
+// Audio mode handling
+const audioModeSelect = document.getElementById("audioMode");
+const audioFileInput = document.getElementById("audioFileInput");
+
+if (audioModeSelect) {
+  audioModeSelect.value = audioMode;
+  audioModeSelect.addEventListener("change", () => {
+    audioMode = audioModeSelect.value;
+    handleCustomAudioPauseNow();
+  });
+}
+
+if (audioFileInput) {
+  audioFileInput.addEventListener("change", () => {
+    const file = audioFileInput.files && audioFileInput.files[0];
+    if (!file) {
+      return;
+    }
+
+    if (customAudioObjectUrl) {
+      URL.revokeObjectURL(customAudioObjectUrl);
+    }
+    customAudioObjectUrl = URL.createObjectURL(file);
+
+    if (!customAudio) {
+      customAudio = new Audio();
+    }
+
+    customAudio.src = customAudioObjectUrl;
+    customAudio.preload = "auto";
+    customAudio.loop = false;
+
+    if (audioModeSelect) {
+      audioModeSelect.value = "file";
+    }
+    audioMode = "file";
+  });
 }
 
 // Event handler for device motion
@@ -499,6 +524,7 @@ function niedrigg() {
     firstExecution = milliseconds;
     KB += 1;
     playSound();
+    maybeAdvanceCustomAudio();
     if (AV === 2) {
       bildwechselKB();
     }
@@ -513,7 +539,7 @@ function niedrigg() {
 
 // Function to play sound
 function playSound() {
-  if (audioV === 0) {
+  if (audioMode === "synth") {
     synthleicht();
   }
 }
@@ -585,6 +611,45 @@ function bildKB() {
     oneb.style.background = `url('media/bm${mediaV}.jpg') no-repeat center`;
   }
 }
+function maybeAdvanceCustomAudio() {
+  if (audioMode !== "file" || !customAudio) {
+    return;
+  }
+
+  const duration = Number.isFinite(customAudio.duration) ? customAudio.duration : null;
+  let nextTime = (customAudio.currentTime || 0) + 5;
+
+  if (duration !== null) {
+    nextTime = Math.min(nextTime, duration);
+  }
+
+  customAudio.currentTime = nextTime;
+  const playPromise = customAudio.play();
+  if (playPromise && typeof playPromise.catch === "function") {
+    playPromise.catch(() => {
+      // ignored: browsers may block autoplay until user interaction
+    });
+  }
+
+  if (customAudioPauseTimeout) {
+    clearTimeout(customAudioPauseTimeout);
+  }
+  customAudioPauseTimeout = setTimeout(() => {
+    handleCustomAudioPauseNow();
+  }, 1200);
+}
+
+function handleCustomAudioPauseNow() {
+  if (customAudioPauseTimeout) {
+    clearTimeout(customAudioPauseTimeout);
+    customAudioPauseTimeout = null;
+  }
+
+  if (customAudio && !customAudio.paused) {
+    customAudio.pause();
+  }
+}
+
 // Canvas and graph variables
 const canvas = document.getElementById("canvas");
 canvas.width = canvas.offsetWidth;
@@ -733,6 +798,7 @@ function startTimer() {
 
 // Function to reset the application
 function neu() {
+  handleCustomAudioPauseNow();
   location.reload();
 }
 
@@ -745,10 +811,11 @@ function nasedrauf() {
   document.getElementById("LieA").innerHTML = L;
   updatePushUpCounts();
 
+  maybeAdvanceCustomAudio();
   if (AV === 2) {
     bildwechsel();
   }
-  if (audioV === 0) {
+  if (audioMode === "synth") {
     synth_Lieg();
   }
 }
