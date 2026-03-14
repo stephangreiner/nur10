@@ -5,7 +5,8 @@ let modus = 1;
 let audioMode = "none";
 let customAudio = null;
 let customAudioObjectUrl = "";
-let customAudioPauseTimeout = null;
+let customAudioLastActivityAt = 0;
+let customAudioInactivityInterval = null;
 const AUDIO_DB_NAME = "nur10AudioDB";
 const AUDIO_STORE_NAME = "audioFiles";
 const AUDIO_FILE_KEY = "customAudioFile";
@@ -715,8 +716,24 @@ function openAudioDb() {
   });
 }
 
+function ensureCustomAudioInactivityWatcher() {
+  if (customAudioInactivityInterval) {
+    return;
+  }
+
+  customAudioInactivityInterval = setInterval(() => {
+    if (audioMode !== "file" || !customAudio) {
+      return;
+    }
+
+    if (customAudioLastActivityAt > 0 && Date.now() - customAudioLastActivityAt >= 5000) {
+      handleCustomAudioPauseNow();
+    }
+  }, 500);
+}
+
 function maybeAdvanceCustomAudio() {
-  if (audioMode !== "file" || !customAudio) {
+  if (audioMode !== "file" || !customAudio || !customAudio.paused) {
     return;
   }
 
@@ -740,10 +757,7 @@ function maybeAdvanceCustomAudio() {
 }
 
 function handleCustomAudioPauseNow() {
-  if (customAudioPauseTimeout) {
-    clearTimeout(customAudioPauseTimeout);
-    customAudioPauseTimeout = null;
-  }
+  customAudioLastActivityAt = 0;
 
   if (customAudio && !customAudio.paused) {
     customAudio.pause();
