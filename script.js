@@ -6,6 +6,9 @@ let audioMode = "none";
 let customAudio = null;
 let customAudioObjectUrl = "";
 let customAudioPauseTimeout = null;
+const AUDIO_DB_NAME = "nur10AudioDB";
+const AUDIO_STORE_NAME = "audioFiles";
+const AUDIO_FILE_KEY = "customAudioFile";
 let untenzahl = 0;
 let KB = 0;
 let Probenanzahl = 500;
@@ -33,6 +36,7 @@ const STORAGE_KEYS = {
   RHSPEICHmonat: "RHSPEICHmonat",
   LSPEICHmonat: "LSPEICHmonat",
   KBzeitspeicher: "KBzeitspeicher",
+  AudioMode: "AudioMode",
 };
 
 
@@ -44,9 +48,14 @@ window.onload = function () {
   clearTemporaryStorage();
   hideElementsOnLoad();
   updateStatistics();
+  restoreAudioModePreference();
+  initCustomAudioFromStorage();
 };
 
-window.addEventListener("beforeunload", updateLastActiveTimestamp);
+window.addEventListener("beforeunload", () => {
+  updateLastActiveTimestamp();
+  releaseCustomAudioObjectUrl();
+});
 document.addEventListener("visibilitychange", () => {
   if (document.visibilityState === "hidden") {
     updateLastActiveTimestamp();
@@ -415,39 +424,40 @@ modusV.addEventListener("change", function () {
 // Audio mode handling
 const audioModeSelect = document.getElementById("audioMode");
 const audioFileInput = document.getElementById("audioFileInput");
+const audioInfo = document.getElementById("audioInfo");
 
 if (audioModeSelect) {
   audioModeSelect.value = audioMode;
   audioModeSelect.addEventListener("change", () => {
     audioMode = audioModeSelect.value;
+    localStorage.setItem(STORAGE_KEYS.AudioMode, audioMode);
     handleCustomAudioPauseNow();
+
+    if (audioMode === "file" && !customAudio && audioInfo) {
+      audioInfo.innerHTML = "Bitte zuerst eine Audio-Datei wählen.";
+    }
   });
 }
 
 if (audioFileInput) {
-  audioFileInput.addEventListener("change", () => {
+  audioFileInput.addEventListener("change", async () => {
     const file = audioFileInput.files && audioFileInput.files[0];
     if (!file) {
       return;
     }
 
-    if (customAudioObjectUrl) {
-      URL.revokeObjectURL(customAudioObjectUrl);
-    }
-    customAudioObjectUrl = URL.createObjectURL(file);
-
-    if (!customAudio) {
-      customAudio = new Audio();
-    }
-
-    customAudio.src = customAudioObjectUrl;
-    customAudio.preload = "auto";
-    customAudio.loop = false;
+    setCustomAudioFromFile(file);
+    await saveCustomAudioFile(file);
 
     if (audioModeSelect) {
       audioModeSelect.value = "file";
     }
     audioMode = "file";
+    localStorage.setItem(STORAGE_KEYS.AudioMode, audioMode);
+
+    if (audioInfo) {
+      audioInfo.innerHTML = `Gespeichert im Browser: ${file.name}`;
+    }
   });
 }
 
@@ -611,6 +621,100 @@ function bildKB() {
     oneb.style.background = `url('media/bm${mediaV}.jpg') no-repeat center`;
   }
 }
+function restoreAudioModePreference() {
+  const storedMode = localStorage.getItem(STORAGE_KEYS.AudioMode);
+  if (["none", "synth", "file"].includes(storedMode)) {
+    audioMode = storedMode;
+  }
+
+  if (audioModeSelect) {
+    audioModeSelect.value = audioMode;
+  }
+}
+
+async function initCustomAudioFromStorage() {
+  try {
+    const storedFile = await loadCustomAudioFile();
+    if (!storedFile) {
+      if (audioMode === "file") {
+        audioMode = "none";
+        if (audioModeSelect) {
+          audioModeSelect.value = "none";
+        }
+      }
+      if (audioInfo) {
+        audioInfo.innerHTML = "Keine gespeicherte Audio-Datei im Browser.";
+      }
+      return;
+    }
+
+    setCustomAudioFromFile(storedFile);
+    if (audioInfo) {
+      audioInfo.innerHTML = `Aus Browser geladen: ${storedFile.name}`;
+    }
+  } catch {
+    if (audioInfo) {
+      audioInfo.innerHTML = "Audio-Datei konnte nicht aus dem Browser geladen werden.";
+    }
+  }
+}
+
+function setCustomAudioFromFile(file) {
+  releaseCustomAudioObjectUrl();
+  customAudioObjectUrl = URL.createObjectURL(file);
+
+  if (!customAudio) {
+    customAudio = new Audio();
+  }
+
+  customAudio.src = customAudioObjectUrl;
+  customAudio.preload = "auto";
+  customAudio.loop = false;
+}
+
+function releaseCustomAudioObjectUrl() {
+  if (customAudioObjectUrl) {
+    URL.revokeObjectURL(customAudioObjectUrl);
+    customAudioObjectUrl = "";
+  }
+}
+
+async function saveCustomAudioFile(file) {
+  const db = await openAudioDb();
+  await new Promise((resolve, reject) => {
+    const tx = db.transaction(AUDIO_STORE_NAME, "readwrite");
+    tx.objectStore(AUDIO_STORE_NAME).put(file, AUDIO_FILE_KEY);
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+  });
+}
+
+async function loadCustomAudioFile() {
+  const db = await openAudioDb();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(AUDIO_STORE_NAME, "readonly");
+    const request = tx.objectStore(AUDIO_STORE_NAME).get(AUDIO_FILE_KEY);
+    request.onsuccess = () => resolve(request.result || null);
+    request.onerror = () => reject(request.error);
+  });
+}
+
+function openAudioDb() {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open(AUDIO_DB_NAME, 1);
+
+    request.onupgradeneeded = () => {
+      const db = request.result;
+      if (!db.objectStoreNames.contains(AUDIO_STORE_NAME)) {
+        db.createObjectStore(AUDIO_STORE_NAME);
+      }
+    };
+
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+}
+
 function maybeAdvanceCustomAudio() {
   if (audioMode !== "file" || !customAudio) {
     return;
@@ -799,6 +903,7 @@ function startTimer() {
 // Function to reset the application
 function neu() {
   handleCustomAudioPauseNow();
+  releaseCustomAudioObjectUrl();
   location.reload();
 }
 

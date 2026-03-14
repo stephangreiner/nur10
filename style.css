@@ -229,6 +229,13 @@ td:nth-child(5) {
   padding: 0.3rem;
 }
 
+#audioInfo {
+  color: rgb(170, 170, 170);
+  font-size: 0.75rem;
+  width: 90%;
+  text-align: center;
+}
+
 /* Active Canvas Division */
 #aktivcanvasdiv {
   width: 100%;
