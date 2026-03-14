@@ -9,7 +9,6 @@ let customAudioPauseTimeout = null;
 const AUDIO_DB_NAME = "nur10AudioDB";
 const AUDIO_STORE_NAME = "audioFiles";
 const AUDIO_FILE_KEY = "customAudioFile";
-const CUSTOM_AUDIO_IDLE_TIMEOUT_MS = 5500;
 let untenzahl = 0;
 let KB = 0;
 let Probenanzahl = 500;
@@ -728,6 +727,19 @@ function maybeAdvanceCustomAudio() {
         // ignored: browsers may block autoplay until user interaction
       });
     }
+  const duration = Number.isFinite(customAudio.duration) ? customAudio.duration : null;
+  let nextTime = (customAudio.currentTime || 0) + 5;
+
+  if (duration !== null) {
+    nextTime = Math.min(nextTime, duration);
+  }
+
+  customAudio.currentTime = nextTime;
+  const playPromise = customAudio.play();
+  if (playPromise && typeof playPromise.catch === "function") {
+    playPromise.catch(() => {
+      // ignored: browsers may block autoplay until user interaction
+    });
   }
 
   if (customAudioPauseTimeout) {
@@ -735,7 +747,7 @@ function maybeAdvanceCustomAudio() {
   }
   customAudioPauseTimeout = setTimeout(() => {
     handleCustomAudioPauseNow();
-  }, CUSTOM_AUDIO_IDLE_TIMEOUT_MS);
+  }, 1200);
 }
 
 function handleCustomAudioPauseNow() {
