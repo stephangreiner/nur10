@@ -5,7 +5,6 @@ let modus = 1;
 let audioMode = "none";
 let customAudio = null;
 let customAudioObjectUrl = "";
-let customAudioPauseTimeout = null;
 const AUDIO_DB_NAME = "nur10AudioDB";
 const AUDIO_STORE_NAME = "audioFiles";
 const AUDIO_FILE_KEY = "customAudioFile";
@@ -669,7 +668,7 @@ function setCustomAudioFromFile(file) {
 
   customAudio.src = customAudioObjectUrl;
   customAudio.preload = "auto";
-  customAudio.loop = false;
+  customAudio.loop = true;
 }
 
 function releaseCustomAudioObjectUrl() {
@@ -716,46 +715,19 @@ function openAudioDb() {
 }
 
 function maybeAdvanceCustomAudio() {
-  if (audioMode !== "file" || !customAudio) {
+  if (audioMode !== "file" || !customAudio || !customAudio.paused) {
     return;
   }
 
-  if (customAudio.paused) {
-    const playPromise = customAudio.play();
-    if (playPromise && typeof playPromise.catch === "function") {
-      playPromise.catch(() => {
-        // ignored: browsers may block autoplay until user interaction
-      });
-    }
-  const duration = Number.isFinite(customAudio.duration) ? customAudio.duration : null;
-  let nextTime = (customAudio.currentTime || 0) + 5;
-
-  if (duration !== null) {
-    nextTime = Math.min(nextTime, duration);
-  }
-
-  customAudio.currentTime = nextTime;
   const playPromise = customAudio.play();
   if (playPromise && typeof playPromise.catch === "function") {
     playPromise.catch(() => {
       // ignored: browsers may block autoplay until user interaction
     });
   }
-
-  if (customAudioPauseTimeout) {
-    clearTimeout(customAudioPauseTimeout);
-  }
-  customAudioPauseTimeout = setTimeout(() => {
-    handleCustomAudioPauseNow();
-  }, 1200);
 }
 
 function handleCustomAudioPauseNow() {
-  if (customAudioPauseTimeout) {
-    clearTimeout(customAudioPauseTimeout);
-    customAudioPauseTimeout = null;
-  }
-
   if (customAudio && !customAudio.paused) {
     customAudio.pause();
   }
