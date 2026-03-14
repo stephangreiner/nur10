@@ -733,7 +733,7 @@ function ensureCustomAudioInactivityWatcher() {
 }
 
 function maybeAdvanceCustomAudio() {
-  if (audioMode !== "file" || !customAudio) {
+  if (audioMode !== "file" || !customAudio || !customAudio.paused) {
     return;
   }
 
