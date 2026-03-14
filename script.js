@@ -720,6 +720,13 @@ function maybeAdvanceCustomAudio() {
     return;
   }
 
+  if (customAudio.paused) {
+    const playPromise = customAudio.play();
+    if (playPromise && typeof playPromise.catch === "function") {
+      playPromise.catch(() => {
+        // ignored: browsers may block autoplay until user interaction
+      });
+    }
   const duration = Number.isFinite(customAudio.duration) ? customAudio.duration : null;
   let nextTime = (customAudio.currentTime || 0) + 5;
 
