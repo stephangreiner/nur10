@@ -210,17 +210,30 @@ td:nth-child(5) {
   margin: 3%;
 }
 
-/* Tone Button */
-#tonb {
+/* Audio Mode Controls */
+#audioMode,
+#audioFileInput {
   background-color: rgb(115, 115, 115);
-  width: 18%;
+  width: 28%;
   height: 90%;
   color: #000000;
   cursor: pointer;
   text-align: center;
   border: none;
-  border-radius: 50%;
+  border-radius: 5%;
   margin: 3%;
+}
+
+#audioFileInput {
+  width: 32%;
+  padding: 0.3rem;
+}
+
+#audioInfo {
+  color: rgb(170, 170, 170);
+  font-size: 0.75rem;
+  width: 90%;
+  text-align: center;
 }
 
 /* Active Canvas Division */
