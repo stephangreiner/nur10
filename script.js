@@ -2,7 +2,13 @@
 // Global variables
 let bilderanzahl = 55; //Anzahl bm bilder ab 0 (+1)
 let modus = 1;
-let audioV = 0;
+let audioMode = "none";
+let customAudio = null;
+let customAudioObjectUrl = "";
+let customAudioPauseTimeout = null;
+const AUDIO_DB_NAME = "nur10AudioDB";
+const AUDIO_STORE_NAME = "audioFiles";
+const AUDIO_FILE_KEY = "customAudioFile";
 let untenzahl = 0;
 let KB = 0;
 let Probenanzahl = 500;
@@ -30,6 +36,7 @@ const STORAGE_KEYS = {
   RHSPEICHmonat: "RHSPEICHmonat",
   LSPEICHmonat: "LSPEICHmonat",
   KBzeitspeicher: "KBzeitspeicher",
+  AudioMode: "AudioMode",
 };
 
 
@@ -41,9 +48,14 @@ window.onload = function () {
   clearTemporaryStorage();
   hideElementsOnLoad();
   updateStatistics();
+  restoreAudioModePreference();
+  initCustomAudioFromStorage();
 };
 
-window.addEventListener("beforeunload", updateLastActiveTimestamp);
+window.addEventListener("beforeunload", () => {
+  updateLastActiveTimestamp();
+  releaseCustomAudioObjectUrl();
+});
 document.addEventListener("visibilitychange", () => {
   if (document.visibilityState === "hidden") {
     updateLastActiveTimestamp();
@@ -409,21 +421,44 @@ modusV.addEventListener("change", function () {
 });
 
 
-// Function to toggle sound
-function ton() {
-  const b = document.getElementById("tonb");
-  const a = document.getElementById("tona");
-  if (audioV === 0) {
-    audioV = 1;
-    a.innerHTML = "🔇";
-    b.style.backgroundColor = "rgb(115, 115, 115)";
-  } else if (audioV === 1) {
-    audioV = 0;
-    a.innerHTML = "🔈";
-    b.style.backgroundColor = "rgb(115, 115, 115)";
-  } else {
-    console.log("Unexpected audioV value");
-  }
+// Audio mode handling
+const audioModeSelect = document.getElementById("audioMode");
+const audioFileInput = document.getElementById("audioFileInput");
+const audioInfo = document.getElementById("audioInfo");
+
+if (audioModeSelect) {
+  audioModeSelect.value = audioMode;
+  audioModeSelect.addEventListener("change", () => {
+    audioMode = audioModeSelect.value;
+    localStorage.setItem(STORAGE_KEYS.AudioMode, audioMode);
+    handleCustomAudioPauseNow();
+
+    if (audioMode === "file" && !customAudio && audioInfo) {
+      audioInfo.innerHTML = "Bitte zuerst eine Audio-Datei wählen.";
+    }
+  });
+}
+
+if (audioFileInput) {
+  audioFileInput.addEventListener("change", async () => {
+    const file = audioFileInput.files && audioFileInput.files[0];
+    if (!file) {
+      return;
+    }
+
+    setCustomAudioFromFile(file);
+    await saveCustomAudioFile(file);
+
+    if (audioModeSelect) {
+      audioModeSelect.value = "file";
+    }
+    audioMode = "file";
+    localStorage.setItem(STORAGE_KEYS.AudioMode, audioMode);
+
+    if (audioInfo) {
+      audioInfo.innerHTML = `Gespeichert im Browser: ${file.name}`;
+    }
+  });
 }
 
 // Event handler for device motion
@@ -499,6 +534,7 @@ function niedrigg() {
     firstExecution = milliseconds;
     KB += 1;
     playSound();
+    maybeAdvanceCustomAudio();
     if (AV === 2) {
       bildwechselKB();
     }
@@ -513,7 +549,7 @@ function niedrigg() {
 
 // Function to play sound
 function playSound() {
-  if (audioV === 0) {
+  if (audioMode === "synth") {
     synthleicht();
   }
 }
@@ -585,6 +621,139 @@ function bildKB() {
     oneb.style.background = `url('media/bm${mediaV}.jpg') no-repeat center`;
   }
 }
+function restoreAudioModePreference() {
+  const storedMode = localStorage.getItem(STORAGE_KEYS.AudioMode);
+  if (["none", "synth", "file"].includes(storedMode)) {
+    audioMode = storedMode;
+  }
+
+  if (audioModeSelect) {
+    audioModeSelect.value = audioMode;
+  }
+}
+
+async function initCustomAudioFromStorage() {
+  try {
+    const storedFile = await loadCustomAudioFile();
+    if (!storedFile) {
+      if (audioMode === "file") {
+        audioMode = "none";
+        if (audioModeSelect) {
+          audioModeSelect.value = "none";
+        }
+      }
+      if (audioInfo) {
+        audioInfo.innerHTML = "Keine gespeicherte Audio-Datei im Browser.";
+      }
+      return;
+    }
+
+    setCustomAudioFromFile(storedFile);
+    if (audioInfo) {
+      audioInfo.innerHTML = `Aus Browser geladen: ${storedFile.name}`;
+    }
+  } catch {
+    if (audioInfo) {
+      audioInfo.innerHTML = "Audio-Datei konnte nicht aus dem Browser geladen werden.";
+    }
+  }
+}
+
+function setCustomAudioFromFile(file) {
+  releaseCustomAudioObjectUrl();
+  customAudioObjectUrl = URL.createObjectURL(file);
+
+  if (!customAudio) {
+    customAudio = new Audio();
+  }
+
+  customAudio.src = customAudioObjectUrl;
+  customAudio.preload = "auto";
+  customAudio.loop = false;
+}
+
+function releaseCustomAudioObjectUrl() {
+  if (customAudioObjectUrl) {
+    URL.revokeObjectURL(customAudioObjectUrl);
+    customAudioObjectUrl = "";
+  }
+}
+
+async function saveCustomAudioFile(file) {
+  const db = await openAudioDb();
+  await new Promise((resolve, reject) => {
+    const tx = db.transaction(AUDIO_STORE_NAME, "readwrite");
+    tx.objectStore(AUDIO_STORE_NAME).put(file, AUDIO_FILE_KEY);
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+  });
+}
+
+async function loadCustomAudioFile() {
+  const db = await openAudioDb();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(AUDIO_STORE_NAME, "readonly");
+    const request = tx.objectStore(AUDIO_STORE_NAME).get(AUDIO_FILE_KEY);
+    request.onsuccess = () => resolve(request.result || null);
+    request.onerror = () => reject(request.error);
+  });
+}
+
+function openAudioDb() {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open(AUDIO_DB_NAME, 1);
+
+    request.onupgradeneeded = () => {
+      const db = request.result;
+      if (!db.objectStoreNames.contains(AUDIO_STORE_NAME)) {
+        db.createObjectStore(AUDIO_STORE_NAME);
+      }
+    };
+
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+}
+
+function maybeAdvanceCustomAudio() {
+  if (audioMode !== "file" || !customAudio) {
+    return;
+  }
+
+  const duration = Number.isFinite(customAudio.duration) ? customAudio.duration : null;
+  let nextTime = (customAudio.currentTime || 0) + 5;
+
+  if (duration !== null) {
+    nextTime = Math.min(nextTime, duration);
+  }
+
+  customAudio.currentTime = nextTime;
+  const playPromise = customAudio.play();
+  if (playPromise && typeof playPromise.catch === "function") {
+    playPromise.catch(() => {
+      // ignored: browsers may block autoplay until user interaction
+    });
+  }
+
+  if (customAudioPauseTimeout) {
+    clearTimeout(customAudioPauseTimeout);
+  }
+  customAudioPauseTimeout = setTimeout(() => {
+    handleCustomAudioPauseNow();
+  }, 1200);
+}
+
+function handleCustomAudioPauseNow() {
+  if (customAudioPauseTimeout) {
+    clearTimeout(customAudioPauseTimeout);
+    customAudioPauseTimeout = null;
+  }
+
+  if (customAudio && !customAudio.paused) {
+    customAudio.pause();
+  }
+}
+
 // Canvas and graph variables
 const canvas = document.getElementById("canvas");
 canvas.width = canvas.offsetWidth;
@@ -733,6 +902,8 @@ function startTimer() {
 
 // Function to reset the application
 function neu() {
+  handleCustomAudioPauseNow();
+  releaseCustomAudioObjectUrl();
   location.reload();
 }
 
@@ -745,10 +916,11 @@ function nasedrauf() {
   document.getElementById("LieA").innerHTML = L;
   updatePushUpCounts();
 
+  maybeAdvanceCustomAudio();
   if (AV === 2) {
     bildwechsel();
   }
-  if (audioV === 0) {
+  if (audioMode === "synth") {
     synth_Lieg();
   }
 }
