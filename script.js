@@ -733,12 +733,16 @@ function ensureCustomAudioInactivityWatcher() {
 }
 
 function maybeAdvanceCustomAudio() {
-  if (audioMode !== "file" || !customAudio || !customAudio.paused) {
+  if (audioMode !== "file" || !customAudio) {
     return;
   }
 
   customAudioLastActivityAt = Date.now();
   ensureCustomAudioInactivityWatcher();
+
+  if (!customAudio.paused) {
+    return;
+  }
 
   if (customAudio.paused) {
     const playPromise = customAudio.play();
