@@ -764,11 +764,31 @@ function handleCustomAudioPauseNow() {
 
 // Canvas and graph variables
 const canvas = document.getElementById("canvas");
-canvas.width = canvas.offsetWidth;
-canvas.height = canvas.offsetHeight;
-const W = canvas.width;
-const H = canvas.height;
 const ctx = canvas.getContext("2d");
+
+let W = 0;
+let H = 0;
+let scaleX = 1;
+let scaleY = 1;
+
+function resizeCanvas() {
+  const ratio = window.devicePixelRatio || 1;
+  const displayWidth = Math.max(1, canvas.clientWidth);
+  const displayHeight = Math.max(1, canvas.clientHeight);
+
+  canvas.width = Math.floor(displayWidth * ratio);
+  canvas.height = Math.floor(displayHeight * ratio);
+  canvas.style.width = `${displayWidth}px`;
+  canvas.style.height = `${displayHeight}px`;
+
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.scale(ratio, ratio);
+
+  W = displayWidth;
+  H = displayHeight;
+  scaleX = W / Probenanzahl;
+  scaleY = (H / 2) / maxDeviation;
+}
 
 const linien = {
     z: getInitArr(Probenanzahl),
@@ -776,9 +796,9 @@ const linien = {
     x: getInitArr(Probenanzahl),
 };
 
-const scaleX = W / Probenanzahl;
 const maxDeviation = 20; 
-const scaleY = (H / 2) / maxDeviation; // Fixed scaleY
+resizeCanvas();
+window.addEventListener("resize", resizeCanvas);
 
 // Function to sample device motion data
 function doSample(event) {
@@ -804,24 +824,38 @@ function shiftAndCrunch(arr, datum) {
 
 function tick() {
   requestAnimationFrame(tick);
-  ctx.fillStyle = "#1c1c1c"; // Background color
-  ctx.fillRect(0, 0, W, H);
+  drawBackground();
 
  
   drawGrid();
-  drawLine(H / 2, "brown"); 
-  drawLine(H / 2 + 9.81 * scaleY, "blue"); // kein Schwerkraft null linie die +9.81 aus ctx.translate werden ausgeglichen
+  drawLine(H / 2, "rgba(217, 217, 217, 0.28)"); 
+  drawLine(H / 2 + 9.81 * scaleY, "rgba(79, 255, 231, 0.30)"); // kein Schwerkraft null linie die +9.81 aus ctx.translate werden ausgeglichen
 
   // Get the latest value from the appropriate array
   let currentValue;
-  if      (modus === 1) {currentValue = linien.z[linien.z.length - 1]; drawGraph(linien.z, scaleX, scaleY, "red");} 
-  else if (modus === 2) {currentValue = linien.y[linien.y.length - 1]; drawGraph(linien.y, scaleX, scaleY, "green"); } 
-  else if (modus === 3) {currentValue = linien.x[linien.x.length - 1]; drawGraph(linien.x, scaleX, scaleY, "blue"); }
+  if      (modus === 1) {currentValue = linien.z[linien.z.length - 1]; drawGraph(linien.z, "#ff6f9f", "rgba(255, 111, 159, 0.55)");} 
+  else if (modus === 2) {currentValue = linien.y[linien.y.length - 1]; drawGraph(linien.y, "#6effd9", "rgba(110, 255, 217, 0.45)"); } 
+  else if (modus === 3) {currentValue = linien.x[linien.x.length - 1]; drawGraph(linien.x, "#6ab6ff", "rgba(106, 182, 255, 0.45)"); }
 
   // Display the current value on the canvas
-  ctx.fillStyle = "#2f2f2f"; // Text color
-  ctx.font = "20px Arial"; // Font size and style
+  ctx.fillStyle = "rgba(255,255,255,0.85)"; // Text color
+  ctx.font = "600 20px Arial"; // Font size and style
   ctx.fillText(currentValue.toFixed(2), 10, 30); // Position at (10, 30)
+}
+
+function drawBackground() {
+  const gradient = ctx.createLinearGradient(0, 0, 0, H);
+  gradient.addColorStop(0, "#090f1e");
+  gradient.addColorStop(0.45, "#121b2f");
+  gradient.addColorStop(1, "#04070f");
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, W, H);
+
+  const glow = ctx.createRadialGradient(W * 0.75, H * 0.2, 20, W * 0.75, H * 0.2, W * 0.8);
+  glow.addColorStop(0, "rgba(0, 255, 255, 0.12)");
+  glow.addColorStop(1, "rgba(0, 0, 0, 0)");
+  ctx.fillStyle = glow;
+  ctx.fillRect(0, 0, W, H);
 }
 
 
@@ -838,7 +872,7 @@ function drawLine(yPosition, color) {
 
 // Function to draw a grid on the canvas
 function drawGrid() {
-    ctx.strokeStyle = "#2f2f2f"; // Subtle grid color
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.08)"; // Subtle grid color
     ctx.lineWidth = 0.5;
     for (let x = 0; x < W; x += 30) {
         ctx.beginPath();
@@ -855,19 +889,45 @@ function drawGrid() {
 }
 
 // Function to draw the graph
-function drawGraph(dataArray, scaleX, scaleY, color) {
+function drawGraph(dataArray, color, glowColor) {
     ctx.save();
   
     ctx.translate(0, H / 2 + 9.81 * scaleY); // zentriere y achse auf 9.81
-    ctx.lineWidth = 5;
+
+    const latestValue = dataArray[dataArray.length - 1] || 0;
+    const pulse = Math.min(Math.abs(latestValue) / maxDeviation, 1);
+
+    ctx.lineWidth = 3.2;
     ctx.strokeStyle = color;
+    ctx.shadowColor = glowColor;
+    ctx.shadowBlur = 16 + pulse * 16;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
     ctx.beginPath();
-   
-    ctx.moveTo(0, (dataArray[0] - (0)) * -scaleY);
-    for (let i = 1; i < dataArray.length; i++) {
-        ctx.lineTo(i * scaleX, (dataArray[i] - (0)) * -scaleY);
+
+    const startY = dataArray[0] * -scaleY;
+    ctx.moveTo(0, startY);
+
+    for (let i = 1; i < dataArray.length - 1; i++) {
+      const x = i * scaleX;
+      const y = dataArray[i] * -scaleY;
+      const nextX = (i + 1) * scaleX;
+      const nextY = dataArray[i + 1] * -scaleY;
+      const controlX = (x + nextX) / 2;
+      const controlY = (y + nextY) / 2;
+      ctx.quadraticCurveTo(x, y, controlX, controlY);
     }
+
     ctx.stroke();
+
+    const endX = (dataArray.length - 1) * scaleX;
+    const endY = latestValue * -scaleY;
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.arc(endX, endY, 3.8 + pulse * 3, 0, 2 * Math.PI);
+    ctx.fill();
+
     ctx.restore();
 }
 
