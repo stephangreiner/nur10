@@ -45,8 +45,10 @@
         <option value="synth">Standard-Ton</option>
         <option value="file">Eigene Audio-Datei</option>
       </select>
-      <input id="audioFileInput" type="file" accept="audio/*">
-      <small id="audioInfo">Datei bleibt lokal im Browser.</small>
+      <div id="audioUploadControls">
+        <input id="audioFileInput" type="file" accept="audio/*">
+        <small id="audioInfo">Datei bleibt lokal im Browser.</small>
+      </div>
   </div>
   
   
@@ -91,10 +93,6 @@
   <div class="stats-shell">
     <div class="stats-header">
       <a id="datum"></a>
-      <div class="stats-header-copy">
-        <h1>Statistik</h1>
-        <p>Aktueller Tagesstand und Monatsverlauf je Übung.</p>
-      </div>
     </div>
 
     <div id="table1div" class="table-wrapper summary-card">
