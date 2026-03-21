@@ -471,6 +471,7 @@ modusV.addEventListener("change", function () {
 const audioModeSelect = document.getElementById("audioMode");
 const audioFileInput = document.getElementById("audioFileInput");
 const audioInfo = document.getElementById("audioInfo");
+const audioUploadControls = document.getElementById("audioUploadControls");
 
 if (audioModeSelect) {
   audioModeSelect.value = audioMode;
@@ -478,6 +479,7 @@ if (audioModeSelect) {
     audioMode = audioModeSelect.value;
     localStorage.setItem(STORAGE_KEYS.AudioMode, audioMode);
     handleCustomAudioPauseNow();
+    updateAudioUploadVisibility();
 
     if (audioMode === "file" && !customAudio && audioInfo) {
       audioInfo.innerHTML = "Bitte zuerst eine Audio-Datei wählen.";
@@ -504,7 +506,17 @@ if (audioFileInput) {
     if (audioInfo) {
       audioInfo.innerHTML = `Gespeichert im Browser: ${file.name}`;
     }
+
+    updateAudioUploadVisibility();
   });
+}
+
+function updateAudioUploadVisibility() {
+  if (!audioUploadControls) {
+    return;
+  }
+
+  audioUploadControls.classList.toggle("is-hidden", audioMode !== "file");
 }
 
 // Event handler for device motion
@@ -677,6 +689,8 @@ function restoreAudioModePreference() {
   if (audioModeSelect) {
     audioModeSelect.value = audioMode;
   }
+
+  updateAudioUploadVisibility();
 }
 
 async function initCustomAudioFromStorage() {
@@ -692,6 +706,7 @@ async function initCustomAudioFromStorage() {
       if (audioInfo) {
         audioInfo.innerHTML = "Keine gespeicherte Audio-Datei im Browser.";
       }
+      updateAudioUploadVisibility();
       return;
     }
 
@@ -704,6 +719,8 @@ async function initCustomAudioFromStorage() {
       audioInfo.innerHTML = "Audio-Datei konnte nicht aus dem Browser geladen werden.";
     }
   }
+
+  updateAudioUploadVisibility();
 }
 
 function setCustomAudioFromFile(file) {
