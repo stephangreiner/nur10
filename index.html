@@ -95,36 +95,6 @@
       <a id="datum"></a>
     </div>
 
-    <div id="table1div" class="table-wrapper summary-card">
-      <table id="tabel" class="stats-table summary-table">
-        <thead>
-          <tr>
-            <th></th>
-            <th><img src="media/flach.png" alt="Kniebeugen" class="symbol_KB"></th>
-            <th><img src="media/hoch.png" alt="Klimmzüge" class="symbol_KZ"></th>
-            <th><img src="media/quer.png" alt="Rueckenheber" class="symbol_RH"></th>
-            <th><img src="media/LiegeS.png" alt="Liegestützen" class="symbol_L"></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <th scope="row">Heute</th>
-            <td><a id="heute"></a></td>
-            <td><a id="heuteKZ"></a></td>
-            <td><a id="heuteRH"></a></td>
-            <td><a id="heuteL"></a></td>
-          </tr>
-          <tr>
-            <th scope="row"><a id="monatname"></a> (Ø)</th>
-            <td><a id="monat"></a> <span class="avg-pill"><a id="mittelwert"></a></span></td>
-            <td><a id="monatKZ"></a> <span class="avg-pill"><a id="mittelwertKZ"></a></span></td>
-            <td><a id="monatRH"></a> <span class="avg-pill"><a id="mittelwertRH"></a></span></td>
-            <td><a id="monatL"></a> <span class="avg-pill"><a id="mittelwertL"></a></span></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
     <div id="sta_div2" class="table-wrapper details-card">
       <table id="table2" class="stats-table details-table">
         <thead>
@@ -137,10 +107,25 @@
           </tr>
         </thead>
         <tbody id="statsTableBody"></tbody>
+        <tfoot>
+          <tr class="stats-summary-row">
+            <th scope="row"><a id="monatname"></a> gesamt</th>
+            <td class="cell-kb"><a id="monat"></a></td>
+            <td class="cell-kz"><a id="monatKZ"></a></td>
+            <td class="cell-rh"><a id="monatRH"></a></td>
+            <td class="cell-l"><a id="monatL"></a></td>
+          </tr>
+          <tr class="stats-summary-row stats-average-row">
+            <th scope="row">Ø bis heute</th>
+            <td class="cell-kb"><span class="avg-pill"><a id="mittelwert"></a></span></td>
+            <td class="cell-kz"><span class="avg-pill"><a id="mittelwertKZ"></a></span></td>
+            <td class="cell-rh"><span class="avg-pill"><a id="mittelwertRH"></a></span></td>
+            <td class="cell-l"><span class="avg-pill"><a id="mittelwertL"></a></span></td>
+          </tr>
+        </tfoot>
       </table>
 
-      <div class="stats-actions">
-        <button id="toggleDetailsButton" onclick="tage_zeigen()"><a id="details"></a></button>
+      <div class="stats-actions stats-actions-single">
         <button class="zurueck" onclick="neu()">x</button>
       </div>
     </div>
