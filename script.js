@@ -703,6 +703,7 @@ function setCustomAudioFromFile(file) {
   customAudio.src = customAudioObjectUrl;
   customAudio.preload = "auto";
   customAudio.loop = true;
+  customAudio.load();
 }
 
 function releaseCustomAudioObjectUrl() {
@@ -764,26 +765,37 @@ function ensureCustomAudioInactivityWatcher() {
   }, 500);
 }
 
-function maybeAdvanceCustomAudio() {
+function startCustomAudioPlayback(restartTrack = false) {
   if (audioMode !== "file" || !customAudio) {
     return;
   }
 
+  const shouldRestartTrack = restartTrack || customAudioLastActivityAt === 0;
   customAudioLastActivityAt = Date.now();
   ensureCustomAudioInactivityWatcher();
+
+  if (customAudio.readyState === 0) {
+    customAudio.load();
+  }
+
+  if (shouldRestartTrack) {
+    customAudio.currentTime = 0;
+  }
 
   if (!customAudio.paused) {
     return;
   }
 
-  if (customAudio.paused) {
-    const playPromise = customAudio.play();
-    if (playPromise && typeof playPromise.catch === "function") {
-      playPromise.catch(() => {
-        // ignored: browsers may block autoplay until user interaction
-      });
-    }
+  const playPromise = customAudio.play();
+  if (playPromise && typeof playPromise.catch === "function") {
+    playPromise.catch(() => {
+      // ignored: browsers may block autoplay until user interaction
+    });
   }
+}
+
+function maybeAdvanceCustomAudio(restartTrack = false) {
+  startCustomAudioPlayback(restartTrack);
 }
 
 function handleCustomAudioPauseNow() {
@@ -1014,9 +1026,9 @@ let L = 0;
 function nasedrauf() {
   L += 1;
   document.getElementById("LieA").innerHTML = L;
+  maybeAdvanceCustomAudio(true);
   updatePushUpCounts();
 
-  maybeAdvanceCustomAudio();
   if (AV === 2) {
     bildwechsel();
   }

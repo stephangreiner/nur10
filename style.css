@@ -208,6 +208,11 @@ datalist {
   z-index: 1;
 }
 
+.stats-table tbody td,
+.stats-table tbody th {
+  position: relative;
+}
+
 #table2 td.cell-kb {
   background: rgb(239, 100, 100);
   color: #140000;
@@ -235,8 +240,30 @@ datalist {
 
 #table2 tbody tr.is-today th,
 #table2 tbody tr.is-today td {
-  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.38);
-  filter: brightness(1.06);
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.52), inset 0 0 26px rgba(255, 255, 255, 0.18);
+  filter: brightness(1.14) saturate(1.1);
+  font-weight: 700;
+}
+
+#table2 tbody tr.is-today th {
+  background: linear-gradient(90deg, rgba(255, 214, 102, 0.95), rgba(255, 168, 76, 0.92));
+  color: #241100;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+#table2 tbody tr.is-today td {
+  position: relative;
+  z-index: 0;
+}
+
+#table2 tbody tr.is-today td::after,
+#table2 tbody tr.is-today th::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  box-shadow: inset 0 0 0 2px rgba(255, 247, 204, 0.75), 0 0 18px rgba(255, 209, 102, 0.25);
 }
 
 #table2 tfoot th,
