@@ -144,7 +144,6 @@ datalist {
 }
 
 .stats-header,
-.summary-card,
 .details-card {
   background: var(--surface);
   border: 1px solid var(--border-soft);
@@ -174,7 +173,6 @@ datalist {
   margin: 0;
 }
 
-.summary-card,
 .details-card {
   padding: 0.45rem;
 }
@@ -210,36 +208,22 @@ datalist {
   z-index: 1;
 }
 
-.summary-table tbody tr:first-child td {
-  font-size: 1rem;
-  font-weight: 700;
-}
-
-.summary-table tbody tr:last-child td {
-  font-size: 0.92rem;
-  font-weight: 600;
-}
-
-#tabel td:nth-child(2),
-#table2 td:nth-child(2) {
+#table2 td.cell-kb {
   background: rgb(239, 100, 100);
   color: #140000;
 }
 
-#tabel td:nth-child(3),
-#table2 td:nth-child(3) {
+#table2 td.cell-kz {
   background: rgb(198, 255, 181);
   color: #041106;
 }
 
-#tabel td:nth-child(4),
-#table2 td:nth-child(4) {
+#table2 td.cell-rh {
   background: rgb(203, 255, 251);
   color: #021013;
 }
 
-#tabel td:nth-child(5),
-#table2 td:nth-child(5) {
+#table2 td.cell-l {
   background: rgb(245, 255, 146);
   color: #141100;
 }
@@ -251,7 +235,46 @@ datalist {
 
 #table2 tbody tr.is-today th,
 #table2 tbody tr.is-today td {
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.38);
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.38);
+  filter: brightness(1.06);
+}
+
+#table2 tfoot th,
+#table2 tfoot td {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  background: rgba(22, 22, 22, 0.96);
+  font-weight: 700;
+}
+
+#table2 tfoot th {
+  z-index: 2;
+}
+
+#table2 tfoot .stats-average-row th,
+#table2 tfoot .stats-average-row td {
+  background: rgba(28, 28, 28, 0.98);
+}
+
+#table2 tfoot td.cell-kb {
+  background: rgb(239, 100, 100);
+  color: #140000;
+}
+
+#table2 tfoot td.cell-kz {
+  background: rgb(198, 255, 181);
+  color: #041106;
+}
+
+#table2 tfoot td.cell-rh {
+  background: rgb(203, 255, 251);
+  color: #021013;
+}
+
+#table2 tfoot td.cell-l {
+  background: rgb(245, 255, 146);
+  color: #141100;
 }
 
 .avg-pill {
@@ -273,6 +296,10 @@ datalist {
   padding-top: 0.5rem;
 }
 
+.stats-actions-single {
+  justify-content: flex-end;
+}
+
 button,
 select,
 input[type="file"] {
@@ -280,7 +307,6 @@ input[type="file"] {
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-#toggleDetailsButton,
 .zurueck {
   min-height: 2.2rem;
   padding: 0.45rem 0.85rem;
@@ -288,12 +314,6 @@ input[type="file"] {
   color: var(--text-main);
 }
 
-#toggleDetailsButton {
-  flex: 1;
-}
-
-#toggleDetailsButton a,
-#details,
 .avg-pill a {
   color: inherit;
   text-decoration: none;
@@ -457,9 +477,6 @@ input[type="file"] {
     min-width: 3.6rem;
   }
 
-  .summary-table tbody tr:first-child td {
-    font-size: 0.92rem;
-  }
 
   .stats-actions {
     flex-direction: column;

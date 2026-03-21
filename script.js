@@ -126,14 +126,11 @@ function hideElementsOnLoad() {
   document.getElementById("Ldiv").style.display = "none";
   document.getElementById("aktivdiv").style.display = "none";
   document.getElementById("sta_div").style.display = "none";
-  document.getElementById("table2").style.display = "none";
-  document.getElementById("details").innerHTML = "Tage anzeigen";
 }
 
 // Function to update statistics on the page
 function updateStatistics() {
   updateMonthlyStatistics();
-  updateDailyStatistics();
 }
 
 // Function to update monthly statistics
@@ -146,18 +143,6 @@ function updateMonthlyStatistics() {
     localStorage.getItem(STORAGE_KEYS.RHSPEICHmonat) || "0";
   document.getElementById("monatL").innerHTML =
     localStorage.getItem(STORAGE_KEYS.LSPEICHmonat) || "0";
-}
-
-// Function to update daily statistics
-function updateDailyStatistics() {
-  document.getElementById("heute").innerHTML =
-    localStorage.getItem(STORAGE_KEYS.KBSPEICH) || "0";
-  document.getElementById("heuteL").innerHTML =
-    localStorage.getItem(STORAGE_KEYS.LSPEICH) || "0";
-  document.getElementById("heuteKZ").innerHTML =
-    localStorage.getItem(STORAGE_KEYS.KZSPEICH) || "0";
-  document.getElementById("heuteRH").innerHTML =
-    localStorage.getItem(STORAGE_KEYS.RHSPEICH) || "0";
 }
 
 // Function to display statistics
@@ -179,7 +164,7 @@ function sta_zeigen() {
   ];
 
   document.getElementById("datum").innerHTML = formatFullDate(currentDate);
-  document.getElementById("monatname").innerHTML = monthNames[currentDate.getMonth()];
+  document.getElementById("monatname").textContent = monthNames[currentDate.getMonth()];
 
   updateAverageValues(currentDate.getDate());
   updateExerciseTables(currentDate);
@@ -216,9 +201,10 @@ function createStatsRow(label, values, accentClass = "") {
   labelCell.textContent = label;
   row.appendChild(labelCell);
 
-  values.forEach((value) => {
+  values.forEach((value, index) => {
     const cell = document.createElement("td");
     cell.textContent = value;
+    cell.classList.add(EXERCISE_STATS[index].accentClass);
     row.appendChild(cell);
   });
 
@@ -250,23 +236,6 @@ function updateExerciseTables(referenceDate = new Date()) {
     const rowLabel = `${dayNumber}. ${monthShort}`;
     const rowAccent = dayNumber === referenceDate.getDate() ? "is-today" : "";
     tableBody.appendChild(createStatsRow(rowLabel, values, rowAccent));
-  }
-}
-
-// Function to toggle between daily and monthly view
-function tage_zeigen() {
-  const table2 = document.getElementById("table2");
-  const table1div = document.getElementById("table1div");
-  const details = document.getElementById("details");
-
-  if (table2.style.display === "none") {
-    table1div.style.display = "none";
-    table2.style.display = "block";
-    details.innerHTML = "Monatsansicht";
-  } else {
-    table1div.style.display = "block";
-    table2.style.display = "none";
-    details.innerHTML = "Tagesansicht";
   }
 }
 
