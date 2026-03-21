@@ -40,6 +40,45 @@ const STORAGE_KEYS = {
   AudioMode: "AudioMode",
 };
 
+const EXERCISE_STATS = [
+  {
+    dayKeyPrefix: "Ktag",
+    liveStorageKey: STORAGE_KEYS.KBSPEICH,
+    monthlyStorageKey: STORAGE_KEYS.KBSPEICHmonat,
+    todayElementId: "heute",
+    monthElementId: "monat",
+    averageElementId: "mittelwert",
+    accentClass: "cell-kb",
+  },
+  {
+    dayKeyPrefix: "KZtag",
+    liveStorageKey: STORAGE_KEYS.KZSPEICH,
+    monthlyStorageKey: STORAGE_KEYS.KZSPEICHmonat,
+    todayElementId: "heuteKZ",
+    monthElementId: "monatKZ",
+    averageElementId: "mittelwertKZ",
+    accentClass: "cell-kz",
+  },
+  {
+    dayKeyPrefix: "RHtag",
+    liveStorageKey: STORAGE_KEYS.RHSPEICH,
+    monthlyStorageKey: STORAGE_KEYS.RHSPEICHmonat,
+    todayElementId: "heuteRH",
+    monthElementId: "monatRH",
+    averageElementId: "mittelwertRH",
+    accentClass: "cell-rh",
+  },
+  {
+    dayKeyPrefix: "tag",
+    liveStorageKey: STORAGE_KEYS.LSPEICH,
+    monthlyStorageKey: STORAGE_KEYS.LSPEICHmonat,
+    todayElementId: "heuteL",
+    monthElementId: "monatL",
+    averageElementId: "mittelwertL",
+    accentClass: "cell-l",
+  },
+];
+
 
 // Initialize the application on window load
 window.onload = function () {
@@ -87,8 +126,7 @@ function hideElementsOnLoad() {
   document.getElementById("Ldiv").style.display = "none";
   document.getElementById("aktivdiv").style.display = "none";
   document.getElementById("sta_div").style.display = "none";
-  document.getElementById("table2").style.display = "none";
-  document.getElementById("details").innerHTML = "Tage anzeigen";
+  document.getElementById("table2").style.display = "table";
 }
 
 // Function to update statistics on the page
@@ -123,10 +161,7 @@ function updateDailyStatistics() {
 
 // Function to display statistics
 function sta_zeigen() {
-  const d = new Date();
-  document.getElementById("datum").innerHTML =
-    d.getDate() + "." + (d.getMonth() + 1) + "." + d.getFullYear();
-
+  const currentDate = new Date();
   const monthNames = [
     "Jan",
     "Feb",
@@ -141,108 +176,84 @@ function sta_zeigen() {
     "Nov",
     "Dez",
   ];
-  let monthName = monthNames[d.getMonth()];
-  const monate = document.getElementsByClassName("monats");
-  for (let i = 0; i < d.getDate(); i++) {
-    monate[i].innerHTML = i + 1 + "." + monthName;
-  }
 
-  const daysInMonth = d.getDate();
-  updateAverageValues(daysInMonth);
+  document.getElementById("datum").innerHTML = formatFullDate(currentDate);
+  document.getElementById("monatname").innerHTML = monthNames[currentDate.getMonth()];
+
+  updateAverageValues(currentDate.getDate());
+  updateExerciseTables(currentDate);
   document.getElementById("sta_div").style.display = "";
   document.getElementById("aktivcanvasdiv").style.display = "none";
   document.getElementById("aktivdiv").style.display = "none";
   document.getElementById("startdiv").style.display = "none";
-  document.getElementById("monatname").innerHTML = monthName;
-
-  // Update exercise tables
-  updateExerciseTables();
 }
 
 // Function to update average values
 function updateAverageValues(daysInMonth) {
-  document.getElementById("mittelwert").innerHTML = Math.round(
-    (parseInt(localStorage.getItem(STORAGE_KEYS.KBSPEICHmonat)) || 0) /
-      daysInMonth
-  );
-  document.getElementById("mittelwertKZ").innerHTML = Math.round(
-    (parseInt(localStorage.getItem(STORAGE_KEYS.KZSPEICHmonat)) || 0) /
-      daysInMonth
-  );
-  document.getElementById("mittelwertRH").innerHTML = Math.round(
-    (parseInt(localStorage.getItem(STORAGE_KEYS.RHSPEICHmonat)) || 0) /
-      daysInMonth
-  );
-  document.getElementById("mittelwertL").innerHTML = Math.round(
-    (parseInt(localStorage.getItem(STORAGE_KEYS.LSPEICHmonat)) || 0) /
-      daysInMonth
-  );
+  const safeDaysInMonth = Math.max(daysInMonth, 1);
+
+  EXERCISE_STATS.forEach(({ monthlyStorageKey, averageElementId }) => {
+    const monthlyValue = parseInt(localStorage.getItem(monthlyStorageKey), 10) || 0;
+    document.getElementById(averageElementId).innerHTML = Math.round(
+      monthlyValue / safeDaysInMonth
+    );
+  });
+}
+
+function formatFullDate(date) {
+  return `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`;
+}
+
+function createStatsRow(label, values, accentClass = "") {
+  const row = document.createElement("tr");
+  if (accentClass) {
+    row.classList.add(accentClass);
+  }
+
+  const labelCell = document.createElement("th");
+  labelCell.scope = "row";
+  labelCell.textContent = label;
+  row.appendChild(labelCell);
+
+  values.forEach((value) => {
+    const cell = document.createElement("td");
+    cell.textContent = value;
+    row.appendChild(cell);
+  });
+
+  return row;
+}
+
+function getDayValue(statConfig, dayNumber, currentDate) {
+  if (dayNumber === currentDate.getDate()) {
+    return localStorage.getItem(statConfig.liveStorageKey) || "0";
+  }
+
+  return localStorage.getItem(`${statConfig.dayKeyPrefix}${dayNumber}`) || "0";
 }
 
 // Function to update exercise tables
-function updateExerciseTables() {
-  const daysInMonth = 31; // Maximum days in a month
-  // Kniebeugen table
-  for (let i = 1; i <= daysInMonth; i++) {
-    const tableRowId = "t" + i;
-    const dayKey = "Ktag" + i;
-    const value = localStorage.getItem(dayKey) || "0";
-    const tableCell = document.getElementById(tableRowId);
-    if (tableCell) {
-      tableCell.innerHTML = value;
-    }
+function updateExerciseTables(referenceDate = new Date()) {
+  const tableBody = document.getElementById("statsTableBody");
+  if (!tableBody) {
+    return;
   }
 
-  // Klimmzüge table
-  for (let i = 1; i <= daysInMonth; i++) {
-    const dayKey = "KZtag" + i;
-    const tableCellId = "t" + i + "KZ";
-    const value = localStorage.getItem(dayKey) || "0";
-    const tableCell = document.getElementById(tableCellId);
-    if (tableCell) {
-      tableCell.innerHTML = value;
-    }
-  }
+  tableBody.innerHTML = "";
+  const monthShort = new Intl.DateTimeFormat("de-DE", { month: "short" }).format(referenceDate);
 
-  // Rückenheber table
-  for (let i = 1; i <= daysInMonth; i++) {
-    const dayKey = "RHtag" + i;
-    const tableCellId = "t" + i + "RH";
-    const value = localStorage.getItem(dayKey) || "0";
-    const tableCell = document.getElementById(tableCellId);
-    if (tableCell) {
-      tableCell.innerHTML = value;
-    }
-  }
-
-  // Liegestützen table
-  for (let i = 1; i <= daysInMonth; i++) {
-    const dayKey = "tag" + i;
-    const tableCellId = "t" + i + "L";
-    const value = localStorage.getItem(dayKey) || "0";
-    const tableCell = document.getElementById(tableCellId);
-    if (tableCell) {
-      tableCell.innerHTML = value;
-    }
+  for (let dayNumber = 1; dayNumber <= referenceDate.getDate(); dayNumber += 1) {
+    const values = EXERCISE_STATS.map((statConfig) =>
+      getDayValue(statConfig, dayNumber, referenceDate)
+    );
+    const rowLabel = `${dayNumber}. ${monthShort}`;
+    const rowAccent = dayNumber === referenceDate.getDate() ? "is-today" : "";
+    tableBody.appendChild(createStatsRow(rowLabel, values, rowAccent));
   }
 }
 
 // Function to toggle between daily and monthly view
-function tage_zeigen() {
-  const table2 = document.getElementById("table2");
-  const table1div = document.getElementById("table1div");
-  const details = document.getElementById("details");
-
-  if (table2.style.display === "none") {
-    table1div.style.display = "none";
-    table2.style.display = "block";
-    details.innerHTML = "Monatsansicht";
-  } else {
-    table1div.style.display = "block";
-    table2.style.display = "none";
-    details.innerHTML = "Tagesansicht";
-  }
-}
+// Statistics detail view stays visible permanently in the compact layout.
 
 // Function to check if a new day has started
 function neuerTagTest() {
@@ -308,12 +319,31 @@ function isSameCalendarDay(a, b) {
 
 // Function to reset monthly statistics
 function monatneu() {
-  localStorage.removeItem(STORAGE_KEYS.KBSPEICHmonat);
-  localStorage.removeItem(STORAGE_KEYS.LSPEICHmonat);
-  localStorage.removeItem(STORAGE_KEYS.KZSPEICHmonat);
-  localStorage.removeItem(STORAGE_KEYS.RHSPEICHmonat);
-  // Optionally, clear other monthly data
-  document.getElementById("monat").innerHTML = "0";
+  EXERCISE_STATS.forEach(({ monthlyStorageKey }) => {
+    localStorage.removeItem(monthlyStorageKey);
+  });
+
+  clearMonthlyHistory();
+  refreshStatisticsView();
+}
+
+function clearMonthlyHistory() {
+  for (let dayNumber = 1; dayNumber <= 31; dayNumber += 1) {
+    EXERCISE_STATS.forEach(({ dayKeyPrefix }) => {
+      localStorage.removeItem(`${dayKeyPrefix}${dayNumber}`);
+    });
+  }
+}
+
+function refreshStatisticsView() {
+  updateStatistics();
+
+  if (document.getElementById("sta_div").style.display !== "none") {
+    const currentDate = new Date();
+    document.getElementById("datum").innerHTML = formatFullDate(currentDate);
+    updateAverageValues(currentDate.getDate());
+    updateExerciseTables(currentDate);
+  }
 }
 
 // Event listener for 'ansichtw' dropdown
@@ -426,6 +456,7 @@ modusV.addEventListener("change", function () {
 const audioModeSelect = document.getElementById("audioMode");
 const audioFileInput = document.getElementById("audioFileInput");
 const audioInfo = document.getElementById("audioInfo");
+const audioFileControls = document.getElementById("audioFileControls");
 
 if (audioModeSelect) {
   audioModeSelect.value = audioMode;
@@ -433,6 +464,7 @@ if (audioModeSelect) {
     audioMode = audioModeSelect.value;
     localStorage.setItem(STORAGE_KEYS.AudioMode, audioMode);
     handleCustomAudioPauseNow();
+    updateAudioFileControlsVisibility();
 
     if (audioMode === "file" && !customAudio && audioInfo) {
       audioInfo.innerHTML = "Bitte zuerst eine Audio-Datei wählen.";
@@ -589,6 +621,7 @@ function updateLocalStorageCounts() {
   incrementLocalStorageKey(storageKeyMonat);
   document.getElementById(heuteElementId).innerHTML =
     localStorage.getItem(storageKey) || "0";
+  refreshStatisticsView();
 }
 
 // Helper function to increment a local storage key
@@ -631,6 +664,16 @@ function restoreAudioModePreference() {
   if (audioModeSelect) {
     audioModeSelect.value = audioMode;
   }
+
+  updateAudioFileControlsVisibility();
+}
+
+function updateAudioFileControlsVisibility() {
+  if (!audioFileControls) {
+    return;
+  }
+
+  audioFileControls.style.display = audioMode === "file" ? "flex" : "none";
 }
 
 async function initCustomAudioFromStorage() {
@@ -646,6 +689,7 @@ async function initCustomAudioFromStorage() {
       if (audioInfo) {
         audioInfo.innerHTML = "Keine gespeicherte Audio-Datei im Browser.";
       }
+      updateAudioFileControlsVisibility();
       return;
     }
 
@@ -653,10 +697,12 @@ async function initCustomAudioFromStorage() {
     if (audioInfo) {
       audioInfo.innerHTML = `Aus Browser geladen: ${storedFile.name}`;
     }
+    updateAudioFileControlsVisibility();
   } catch {
     if (audioInfo) {
       audioInfo.innerHTML = "Audio-Datei konnte nicht aus dem Browser geladen werden.";
     }
+    updateAudioFileControlsVisibility();
   }
 }
 
@@ -1000,6 +1046,7 @@ function updatePushUpCounts() {
   incrementLocalStorageKey(STORAGE_KEYS.LSPEICHmonat);
   document.getElementById("heuteL").innerHTML =
     localStorage.getItem(STORAGE_KEYS.LSPEICH) || "0";
+  refreshStatisticsView();
 }
 
 // Function to change image every 10 push-ups
