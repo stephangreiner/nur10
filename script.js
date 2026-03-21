@@ -769,8 +769,10 @@ function maybeAdvanceCustomAudio() {
     return;
   }
 
-  customAudioLastActivityAt = Date.now();
-  ensureCustomAudioInactivityWatcher();
+  if (customAudioPauseTimeout) {
+    clearTimeout(customAudioPauseTimeout);
+    customAudioPauseTimeout = null;
+  }
 
   if (!customAudio.paused) {
     return;
@@ -784,6 +786,10 @@ function maybeAdvanceCustomAudio() {
       });
     }
   }
+
+  customAudioPauseTimeout = setTimeout(() => {
+    handleCustomAudioPauseNow();
+  }, 5000);
 }
 
 function handleCustomAudioPauseNow() {
