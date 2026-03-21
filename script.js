@@ -40,45 +40,6 @@ const STORAGE_KEYS = {
   AudioMode: "AudioMode",
 };
 
-const EXERCISE_STATS = [
-  {
-    dayKeyPrefix: "Ktag",
-    liveStorageKey: STORAGE_KEYS.KBSPEICH,
-    monthlyStorageKey: STORAGE_KEYS.KBSPEICHmonat,
-    todayElementId: "heute",
-    monthElementId: "monat",
-    averageElementId: "mittelwert",
-    accentClass: "cell-kb",
-  },
-  {
-    dayKeyPrefix: "KZtag",
-    liveStorageKey: STORAGE_KEYS.KZSPEICH,
-    monthlyStorageKey: STORAGE_KEYS.KZSPEICHmonat,
-    todayElementId: "heuteKZ",
-    monthElementId: "monatKZ",
-    averageElementId: "mittelwertKZ",
-    accentClass: "cell-kz",
-  },
-  {
-    dayKeyPrefix: "RHtag",
-    liveStorageKey: STORAGE_KEYS.RHSPEICH,
-    monthlyStorageKey: STORAGE_KEYS.RHSPEICHmonat,
-    todayElementId: "heuteRH",
-    monthElementId: "monatRH",
-    averageElementId: "mittelwertRH",
-    accentClass: "cell-rh",
-  },
-  {
-    dayKeyPrefix: "tag",
-    liveStorageKey: STORAGE_KEYS.LSPEICH,
-    monthlyStorageKey: STORAGE_KEYS.LSPEICHmonat,
-    todayElementId: "heuteL",
-    monthElementId: "monatL",
-    averageElementId: "mittelwertL",
-    accentClass: "cell-l",
-  },
-];
-
 
 // Initialize the application on window load
 window.onload = function () {
@@ -126,7 +87,8 @@ function hideElementsOnLoad() {
   document.getElementById("Ldiv").style.display = "none";
   document.getElementById("aktivdiv").style.display = "none";
   document.getElementById("sta_div").style.display = "none";
-  document.getElementById("table2").style.display = "table";
+  document.getElementById("table2").style.display = "none";
+  document.getElementById("details").innerHTML = "Tage anzeigen";
 }
 
 // Function to update statistics on the page
@@ -161,7 +123,10 @@ function updateDailyStatistics() {
 
 // Function to display statistics
 function sta_zeigen() {
-  const currentDate = new Date();
+  const d = new Date();
+  document.getElementById("datum").innerHTML =
+    d.getDate() + "." + (d.getMonth() + 1) + "." + d.getFullYear();
+
   const monthNames = [
     "Jan",
     "Feb",
@@ -176,84 +141,92 @@ function sta_zeigen() {
     "Nov",
     "Dez",
   ];
+  let monthName = monthNames[d.getMonth()];
+  const monate = document.getElementsByClassName("monats");
+  for (let i = 0; i < d.getDate(); i++) {
+    monate[i].innerHTML = i + 1 + "." + monthName;
+  }
 
-  document.getElementById("datum").innerHTML = formatFullDate(currentDate);
-  document.getElementById("monatname").innerHTML = monthNames[currentDate.getMonth()];
-
-  updateAverageValues(currentDate.getDate());
-  updateExerciseTables(currentDate);
+  const daysInMonth = d.getDate();
+  updateAverageValues(daysInMonth);
   document.getElementById("sta_div").style.display = "";
   document.getElementById("aktivcanvasdiv").style.display = "none";
   document.getElementById("aktivdiv").style.display = "none";
   document.getElementById("startdiv").style.display = "none";
+  document.getElementById("monatname").innerHTML = monthName;
+
+  // Update exercise tables
+  updateExerciseTables();
 }
 
 // Function to update average values
 function updateAverageValues(daysInMonth) {
-  const safeDaysInMonth = Math.max(daysInMonth, 1);
-
-  EXERCISE_STATS.forEach(({ monthlyStorageKey, averageElementId }) => {
-    const monthlyValue = parseInt(localStorage.getItem(monthlyStorageKey), 10) || 0;
-    document.getElementById(averageElementId).innerHTML = Math.round(
-      monthlyValue / safeDaysInMonth
-    );
-  });
-}
-
-function formatFullDate(date) {
-  return `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`;
-}
-
-function createStatsRow(label, values, accentClass = "") {
-  const row = document.createElement("tr");
-  if (accentClass) {
-    row.classList.add(accentClass);
-  }
-
-  const labelCell = document.createElement("th");
-  labelCell.scope = "row";
-  labelCell.textContent = label;
-  row.appendChild(labelCell);
-
-  values.forEach((value) => {
-    const cell = document.createElement("td");
-    cell.textContent = value;
-    row.appendChild(cell);
-  });
-
-  return row;
-}
-
-function getDayValue(statConfig, dayNumber, currentDate) {
-  if (dayNumber === currentDate.getDate()) {
-    return localStorage.getItem(statConfig.liveStorageKey) || "0";
-  }
-
-  return localStorage.getItem(`${statConfig.dayKeyPrefix}${dayNumber}`) || "0";
+  document.getElementById("mittelwert").innerHTML = Math.round(
+    (parseInt(localStorage.getItem(STORAGE_KEYS.KBSPEICHmonat)) || 0) /
+      daysInMonth
+  );
+  document.getElementById("mittelwertKZ").innerHTML = Math.round(
+    (parseInt(localStorage.getItem(STORAGE_KEYS.KZSPEICHmonat)) || 0) /
+      daysInMonth
+  );
+  document.getElementById("mittelwertRH").innerHTML = Math.round(
+    (parseInt(localStorage.getItem(STORAGE_KEYS.RHSPEICHmonat)) || 0) /
+      daysInMonth
+  );
+  document.getElementById("mittelwertL").innerHTML = Math.round(
+    (parseInt(localStorage.getItem(STORAGE_KEYS.LSPEICHmonat)) || 0) /
+      daysInMonth
+  );
 }
 
 // Function to update exercise tables
-function updateExerciseTables(referenceDate = new Date()) {
-  const tableBody = document.getElementById("statsTableBody");
-  if (!tableBody) {
-    return;
+function updateExerciseTables() {
+  const daysInMonth = 31; // Maximum days in a month
+  const currentDate = new Date();
+
+  for (let i = 1; i <= daysInMonth; i++) {
+    setTableCellValue("t" + i, getStatValueForDay(i, "Ktag" + i, STORAGE_KEYS.KBSPEICH, currentDate));
+    setTableCellValue("t" + i + "KZ", getStatValueForDay(i, "KZtag" + i, STORAGE_KEYS.KZSPEICH, currentDate));
+    setTableCellValue("t" + i + "RH", getStatValueForDay(i, "RHtag" + i, STORAGE_KEYS.RHSPEICH, currentDate));
+    setTableCellValue("t" + i + "L", getStatValueForDay(i, "tag" + i, STORAGE_KEYS.LSPEICH, currentDate));
+  }
+}
+
+function getStatValueForDay(dayNumber, storedDayKey, liveStorageKey, currentDate) {
+  if (dayNumber > currentDate.getDate()) {
+    return "";
   }
 
-  tableBody.innerHTML = "";
-  const monthShort = new Intl.DateTimeFormat("de-DE", { month: "short" }).format(referenceDate);
+  if (dayNumber === currentDate.getDate()) {
+    return localStorage.getItem(liveStorageKey) || "0";
+  }
 
-  for (let dayNumber = 1; dayNumber <= referenceDate.getDate(); dayNumber += 1) {
-    const values = EXERCISE_STATS.map((statConfig) =>
-      getDayValue(statConfig, dayNumber, referenceDate)
-    );
-    const rowLabel = `${dayNumber}. ${monthShort}`;
-    const rowAccent = dayNumber === referenceDate.getDate() ? "is-today" : "";
-    tableBody.appendChild(createStatsRow(rowLabel, values, rowAccent));
+  return localStorage.getItem(storedDayKey) || "0";
+}
+
+function setTableCellValue(elementId, value) {
+  const tableCell = document.getElementById(elementId);
+  if (tableCell) {
+    tableCell.innerHTML = value;
   }
 }
 
 // Function to toggle between daily and monthly view
-// Statistics detail view stays visible permanently in the compact layout.
+function tage_zeigen() {
+  const table2 = document.getElementById("table2");
+  const table1div = document.getElementById("table1div");
+  const details = document.getElementById("details");
+
+  if (table2.style.display === "none") {
+    table1div.style.display = "none";
+    table2.style.display = "block";
+    details.innerHTML = "Monatsansicht";
+  } else {
+    table1div.style.display = "block";
+    table2.style.display = "none";
+    details.innerHTML = "Tagesansicht";
+  }
+}
 
 // Function to check if a new day has started
 function neuerTagTest() {
@@ -319,19 +292,20 @@ function isSameCalendarDay(a, b) {
 
 // Function to reset monthly statistics
 function monatneu() {
-  EXERCISE_STATS.forEach(({ monthlyStorageKey }) => {
-    localStorage.removeItem(monthlyStorageKey);
-  });
-
+  localStorage.removeItem(STORAGE_KEYS.KBSPEICHmonat);
+  localStorage.removeItem(STORAGE_KEYS.LSPEICHmonat);
+  localStorage.removeItem(STORAGE_KEYS.KZSPEICHmonat);
+  localStorage.removeItem(STORAGE_KEYS.RHSPEICHmonat);
   clearMonthlyHistory();
   refreshStatisticsView();
 }
 
 function clearMonthlyHistory() {
   for (let dayNumber = 1; dayNumber <= 31; dayNumber += 1) {
-    EXERCISE_STATS.forEach(({ dayKeyPrefix }) => {
-      localStorage.removeItem(`${dayKeyPrefix}${dayNumber}`);
-    });
+    localStorage.removeItem("Ktag" + dayNumber);
+    localStorage.removeItem("KZtag" + dayNumber);
+    localStorage.removeItem("RHtag" + dayNumber);
+    localStorage.removeItem("tag" + dayNumber);
   }
 }
 
@@ -340,9 +314,10 @@ function refreshStatisticsView() {
 
   if (document.getElementById("sta_div").style.display !== "none") {
     const currentDate = new Date();
-    document.getElementById("datum").innerHTML = formatFullDate(currentDate);
+    document.getElementById("datum").innerHTML =
+      currentDate.getDate() + "." + (currentDate.getMonth() + 1) + "." + currentDate.getFullYear();
     updateAverageValues(currentDate.getDate());
-    updateExerciseTables(currentDate);
+    updateExerciseTables();
   }
 }
 

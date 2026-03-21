@@ -3,49 +3,44 @@
   --kfarbe: rgb(224, 30, 30);
   --kzfarbe: rgb(166, 255, 142);
   --rhfarbe: rgb(179, 255, 250);
-  --surface: rgba(15, 18, 28, 0.92);
-  --surface-strong: rgba(24, 29, 42, 0.98);
-  --surface-soft: rgba(255, 255, 255, 0.06);
-  --border-soft: rgba(255, 255, 255, 0.12);
-  --text-main: rgba(255, 255, 255, 0.95);
-  --text-dim: rgba(223, 228, 242, 0.72);
 }
 
-* {
-  box-sizing: border-box;
-}
 
+/* Global Styles */
 body {
-  background:
-    radial-gradient(circle at top, rgba(43, 51, 86, 0.45), transparent 35%),
-    linear-gradient(180deg, #07080d 0%, #000000 100%);
+  background-color: rgb(0, 0, 0);
+  border-radius: 50%;
   position: fixed;
-  inset: 0;
+  height: 100%;
+  width: 100%;
   margin: 0;
   padding: 0;
-  color: var(--text-main);
-  font-family: Arial, Helvetica, sans-serif;
 }
 
+/* Start Division */
 #startdiv {
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
+  border-radius: 50%;
   position: fixed;
-  inset: 0;
-  padding: 1.25rem;
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
   align-items: center;
 }
 
+/* Input Range Styles */
 input[type="range"] {
   -webkit-appearance: none;
   appearance: none;
   background: transparent;
   cursor: pointer;
   width: 25rem;
-  max-width: 100%;
 }
 
+/* Chrome, Safari, Opera, and Edge Chromium styles */
 input[type="range"]::-webkit-slider-runnable-track {
   background-color: rgb(115, 115, 115);
   height: 0.2rem;
@@ -61,10 +56,12 @@ input[type="range"]::-webkit-slider-thumb {
   width: 1rem;
 }
 
+/* Range Division */
 #rangediv {
-  width: min(50%, 28rem);
+  width: 50%;
 }
 
+/* Modifier Division */
 #mod {
   width: 100%;
   display: flex;
@@ -72,6 +69,7 @@ input[type="range"]::-webkit-slider-thumb {
   justify-content: space-between;
 }
 
+/* Datalist */
 datalist {
   margin-top: -1rem;
   width: 100%;
@@ -80,248 +78,165 @@ datalist {
   justify-content: space-between;
 }
 
+
+/* Option Colors */
 #o1 { color: var(--kfarbe); }
 #o2 { color: var(--kzfarbe); }
-#o3 { color: var(--rhfarbe); }
+#o3 { color: var(--rhfarbe);}
 #o4 { color: var(--lfarbe); }
 
+/* Start Button */
 #startb {
-  background-color: var(--kfarbe);
+  background-color: var(--kfarbe);;
   text-align: center;
   border-radius: 50%;
   border: none;
   padding: 3%;
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.38);
 }
 
+/* Wrapper Division */
 #wdiv {
-  width: min(100%, 60rem);
+  width: 100%;
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  justify-content: center;
+  flex-direction: row;
+  justify-content: space-around;
   align-items: center;
 }
 
-#audioFileControls {
-  display: none;
-  flex-direction: column;
-  gap: 0.2rem;
-  width: min(32%, 14rem);
-}
-
+/* State Button */
 #sta_b {
-  background-color: rgba(255, 255, 255, 0.18);
-  opacity: 0.88;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 999px;
-  padding: 0.65rem 0.8rem;
+  background-color: #a99c9c7c;
+  opacity: 0.5;
 }
-
+/* State Division */
+/* State Division */
 #sta_div {
   display: flex;
-  justify-content: center;
-  align-items: stretch;
-  background: linear-gradient(180deg, #030408 0%, #090d17 100%);
-  min-height: 100%;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+  background-color: #000000;
+  border-radius: 50%;
+  height: 100%;
   width: 100%;
   color: white;
-  overflow-y: auto;
-  padding: 0.35rem;
 }
 
-.stats-shell {
-  width: min(100%, 52rem);
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-  padding-bottom: 0.35rem;
-}
-
-.stats-meta-row,
-.summary-card,
-.details-card {
-  background: var(--surface);
-  border: 1px solid var(--border-soft);
-  border-radius: 1.25rem;
-  box-shadow: 0 16px 50px rgba(0, 0, 0, 0.35);
-}
-
-.stats-meta-row {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  padding: 0.35rem 0.55rem;
-}
-
+/* Date Input */
 #datum {
   border: none;
   text-align: center;
-  font-size: 0.78rem;
-  padding: 0.2rem 0.55rem;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.08);
+  font-size: 1.5rem;
+  padding: 0.5rem;
 }
 
+/* Table Wrapper for Scrolling */
 .table-wrapper {
   overflow-x: auto;
   width: 100%;
-  margin: 0;
+  margin: 5%;
 }
 
-.summary-card,
-.details-card {
-  padding: 0.28rem;
-}
-
-.stats-table {
+/* Tables */
+#tabel{
   text-align: center;
-  font-size: 0.72rem;
+  font-size: medium;
   width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
-  overflow: hidden;
+  max-width: 100%;
+  border-collapse: collapse;
+}
+#table2 {
+  text-align: center;
+  font-size: medium;
+  width: 100%;
+  max-width: 100%;
+  border-collapse: collapse;
 }
 
-.stats-table thead th {
-  background: rgba(255, 255, 255, 0.08);
-  color: var(--text-main);
-  font-weight: 700;
+tbody {
+  width: 100%;
 }
 
-.stats-table th,
-.stats-table td {
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 0.28rem 0.32rem;
-  min-width: 2.8rem;
-  line-height: 1.05;
+td, th {
+
+  border: 1px solid #333;
 }
 
-.stats-table tbody th {
-  background: rgba(255, 255, 255, 0.04);
-  color: var(--text-main);
-  position: sticky;
-  left: 0;
-  z-index: 1;
+td:nth-child(1) {
+  width: 15%;
 }
 
-.summary-table tbody tr:first-child td {
-  font-size: 0.95rem;
-  font-weight: 700;
+td:nth-child(2) {
+  background-color: var(--kfarbe);
+  color: #000000;
 }
 
-.summary-table tbody tr:last-child td {
-  font-size: 0.82rem;
-  font-weight: 600;
+td:nth-child(3) {
+  background-color: var(--kzfarbe);
+  color: #000000;
 }
 
-#tabel td:nth-child(2),
-#table2 td:nth-child(2) {
-  background: rgb(239, 100, 100);
-  color: #140000;
+td:nth-child(4) {
+  background-color: var(--rhfarbe);
+  color: #000000;
 }
 
-#tabel td:nth-child(3),
-#table2 td:nth-child(3) {
-  background: rgb(198, 255, 181);
-  color: #041106;
+td:nth-child(5) {
+  background-color: var(--lfarbe);
+  color: #000000;
 }
 
-#tabel td:nth-child(4),
-#table2 td:nth-child(4) {
-  background: rgb(203, 255, 251);
-  color: #021013;
+#tabel tr:nth-child(2) {
+  font-size: xx-large;
+  padding: 2%;
 }
 
-#tabel td:nth-child(5),
-#table2 td:nth-child(5) {
-  background: rgb(245, 255, 146);
-  color: #141100;
+#tabel tr:nth-child(1) img {
+  width: 30px;
+  height: 30px;
 }
 
-#table2 tbody tr:nth-child(even) td,
-#table2 tbody tr:nth-child(even) th {
-  filter: brightness(0.98);
-}
 
-#table2 tbody tr.is-today th,
-#table2 tbody tr.is-today td {
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.38);
-}
-
-.avg-pill {
-  display: inline-flex;
-  min-width: 1.65rem;
-  justify-content: center;
-  align-items: center;
-  margin-left: 0.15rem;
-  padding: 0.08rem 0.34rem;
-  border-radius: 999px;
-  background: rgba(0, 0, 0, 0.22);
-  font-size: 0.7rem;
-}
-
-.stats-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.35rem;
-  padding-top: 0.3rem;
-}
-
-.stats-actions-single {
-  justify-content: flex-end;
-}
-
-button,
-select,
-input[type="file"] {
-  border-radius: 0.9rem;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.zurueck {
-  min-height: 2rem;
-  padding: 0.35rem 0.65rem;
-  background: var(--surface-strong);
-  color: var(--text-main);
-}
-
-.avg-pill a {
-  color: inherit;
-  text-decoration: none;
-}
-
-#ansichtw,
-#audioMode,
-#audioFileInput {
+/* View Button */
+#ansichtw {
   background-color: rgb(115, 115, 115);
   color: #000000;
   cursor: pointer;
   text-align: center;
-  min-height: 2.25rem;
-  margin: 0;
-  padding: 0.25rem 0.45rem;
+  border: none;
+  width: 18%;
+  height: 90%;
+  border-radius: 5%;
+  margin: 3%;
 }
 
-#ansichtw {
-  width: min(18%, 7rem);
-}
-
-#audioMode {
-  width: min(28%, 12rem);
+/* Audio Mode Controls */
+#audioMode,
+#audioFileInput {
+  background-color: rgb(115, 115, 115);
+  width: 28%;
+  height: 90%;
+  color: #000000;
+  cursor: pointer;
+  text-align: center;
+  border: none;
+  border-radius: 5%;
+  margin: 3%;
 }
 
 #audioFileInput {
-  width: 100%;
+  width: 32%;
+  padding: 0.3rem;
 }
 
 #audioInfo {
   color: rgb(170, 170, 170);
   font-size: 0.75rem;
-  width: 100%;
+  width: 90%;
   text-align: center;
 }
 
+/* Active Canvas Division */
 #aktivcanvasdiv {
   width: 100%;
   height: 70%;
@@ -332,14 +247,14 @@ input[type="file"] {
   align-items: center;
 }
 
-#canvasuhr {
+#canvasuhr{
   display: inline;
 }
 
-#canvasdiv {
+#canvasdiv{
   width: 100%;
   height: 70%;
-  max-width: 900px;
+  max-width: 900px; 
   max-height: 700px;
   min-height: 300px;
   border: 1px solid rgba(111, 200, 255, 0.3);
@@ -349,14 +264,15 @@ input[type="file"] {
   background: radial-gradient(circle at 75% 20%, rgba(98, 248, 255, 0.09), rgba(6, 9, 18, 0.8) 55%, rgba(2, 3, 6, 0.98));
 }
 
-#canvas {
-  width: 100%;
+#canvas{ width: 100%;
   height: 100%;
   display: block;
+
 }
 
-#aktivdiv,
-#Ldiv {
+
+/* Active Division */
+#aktivdiv,#Ldiv  {
   display: flex;
   width: 100%;
   height: 100%;
@@ -364,6 +280,7 @@ input[type="file"] {
   justify-content: space-between;
 }
 
+/* Button der nicht gedrückt werden kann sondern 3 übungen mit gyrosensor zählt*/
 #oneb {
   width: 100%;
   height: 100%;
@@ -374,21 +291,27 @@ input[type="file"] {
   position: absolute;
 }
 
+/* Number Display */
 #Anzahl {
   color: rgb(255, 255, 255);
   font-size: 400%;
 }
 
-.zurueck {
-  width: auto;
+/* Fixed Back Button */
+.zurueck  {
+  height: 2rem;
+  width: 2rem;
+  background-color: #3f3f3f;
 }
 
 #notew {
-  height: 2.5rem;
-  width: 3.2rem;
+  height: 2rem;
+  width: 2rem;
   background-color: #6d6d6d;
 }
 
+
+/* Push-up Button */
 #LieB {
   background-color: var(--lfarbe);
   width: 100%;
@@ -397,62 +320,122 @@ input[type="file"] {
   border: none;
   border-radius: 50%;
   position: absolute;
+  
 }
 
+/* Push-up Text */
 #LieA {
   color: black;
   font-size: 300%;
+}
+
+.symbol_KB {
+width:20px;
+height:20px; 
+background-color: var(--kfarbe);
+border-radius: 50%;}
+
+.symbol_KZ {
+  width:20px;
+  height:20px; 
+  background-color: var(--kzfarbe);
+  border-radius: 50%;}
+
+.symbol_RH {
+    width:20px;
+    height:20px; 
+    background-color: var(--rhfarbe);
+    border-radius: 50%;}
+    
+.symbol_L {
+      width:20px;
+      height:20px; 
+      background-color: var(--lfarbe);
+      border-radius: 50%;}
+
+
+#audioFileControls {
+  display: none;
+  flex-direction: column;
+  width: 32%;
+  align-items: center;
+}
+
+#audioFileControls #audioFileInput {
+  width: 100%;
+  margin: 0;
+}
+
+#audioFileControls #audioInfo {
+  width: 100%;
+}
+
+#datum {
+  font-size: 0.95rem;
+  padding: 0.2rem;
+}
+
+.table-wrapper {
+  margin: 1%;
+}
+
+#tabel,
+#table2 {
+  font-size: 0.72rem;
+}
+
+#tabel td,
+#tabel th,
+#table2 td,
+#table2 th {
+  padding: 0.18rem 0.22rem;
+}
+
+#tabel tr:nth-child(2) {
+  font-size: 1rem;
+}
+
+#tabel tr:nth-child(1) img,
+#table2 tr:nth-child(1) img {
+  width: 16px;
+  height: 16px;
 }
 
 .symbol_KB,
 .symbol_KZ,
 .symbol_RH,
 .symbol_L {
-  width: 15px;
-  height: 15px;
-  border-radius: 50%;
+  width: 16px;
+  height: 16px;
 }
 
-.symbol_KB { background-color: var(--kfarbe); }
-.symbol_KZ { background-color: var(--kzfarbe); }
-.symbol_RH { background-color: var(--rhfarbe); }
-.symbol_L { background-color: var(--lfarbe); }
+.zurueck {
+  border: none;
+  color: white;
+}
 
 @media (max-width: 720px) {
-  #startdiv {
-    padding: 0.85rem;
-  }
-
-  #rangediv {
-    width: 90%;
-  }
-
   #wdiv {
-    flex-direction: column;
-    align-items: stretch;
+    flex-wrap: wrap;
+    gap: 0.35rem;
   }
 
   #ansichtw,
   #audioMode,
   #audioFileControls {
-    width: 100%;
+    width: 46%;
+    margin: 1%;
   }
 
-  #sta_div {
-    padding: 0.2rem;
+  #tabel,
+  #table2 {
+    font-size: 0.62rem;
   }
 
-  .stats-table {
-    font-size: 0.64rem;
-  }
-
-  .stats-table th,
-  .stats-table td {
-    padding: 0.2rem 0.22rem;
-    min-width: 2.25rem;
-  }
-
-  .summary-table tbody tr:first-child td {
-    font-size: 0.82rem;
+  #tabel td,
+  #tabel th,
+  #table2 td,
+  #table2 th {
+    padding: 0.12rem 0.15rem;
   }
 }
