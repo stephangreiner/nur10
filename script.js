@@ -38,6 +38,7 @@ const STORAGE_KEYS = {
   LSPEICHmonat: "LSPEICHmonat",
   KBzeitspeicher: "KBzeitspeicher",
   AudioMode: "AudioMode",
+  AudioPosition: "AudioPosition",
 };
 
 const EXERCISE_STATS = [
@@ -94,6 +95,7 @@ window.onload = function () {
 
 window.addEventListener("beforeunload", () => {
   updateLastActiveTimestamp();
+  persistCustomAudioPosition();
   releaseCustomAudioObjectUrl();
 });
 document.addEventListener("visibilitychange", () => {
@@ -464,6 +466,7 @@ if (audioFileInput) {
     }
 
     setCustomAudioFromFile(file);
+    resetCustomAudioPosition();
     await saveCustomAudioFile(file);
 
     if (audioModeSelect) {
@@ -698,6 +701,7 @@ function setCustomAudioFromFile(file) {
 
   if (!customAudio) {
     customAudio = new Audio();
+    customAudio.addEventListener("loadedmetadata", restoreCustomAudioPosition);
   }
 
   customAudio.src = customAudioObjectUrl;
@@ -710,6 +714,45 @@ function releaseCustomAudioObjectUrl() {
   if (customAudioObjectUrl) {
     URL.revokeObjectURL(customAudioObjectUrl);
     customAudioObjectUrl = "";
+  }
+}
+
+function getSavedCustomAudioPosition() {
+  const savedPosition = parseFloat(localStorage.getItem(STORAGE_KEYS.AudioPosition));
+  return Number.isFinite(savedPosition) && savedPosition > 0 ? savedPosition : 0;
+}
+
+function persistCustomAudioPosition() {
+  if (audioMode !== "file" || !customAudio) {
+    return;
+  }
+
+  localStorage.setItem(STORAGE_KEYS.AudioPosition, String(customAudio.currentTime || 0));
+}
+
+function restoreCustomAudioPosition() {
+  if (!customAudio) {
+    return;
+  }
+
+  const savedPosition = getSavedCustomAudioPosition();
+  if (savedPosition <= 0) {
+    return;
+  }
+
+  if (Number.isFinite(customAudio.duration) && customAudio.duration > 0) {
+    customAudio.currentTime = Math.min(savedPosition, Math.max(0, customAudio.duration - 0.25));
+    return;
+  }
+
+  customAudio.currentTime = savedPosition;
+}
+
+function resetCustomAudioPosition() {
+  localStorage.setItem(STORAGE_KEYS.AudioPosition, "0");
+
+  if (customAudio) {
+    customAudio.currentTime = 0;
   }
 }
 
@@ -770,7 +813,6 @@ function startCustomAudioPlayback(restartTrack = false) {
     return;
   }
 
-  const shouldRestartTrack = restartTrack || customAudioLastActivityAt === 0;
   customAudioLastActivityAt = Date.now();
   ensureCustomAudioInactivityWatcher();
 
@@ -778,8 +820,10 @@ function startCustomAudioPlayback(restartTrack = false) {
     customAudio.load();
   }
 
-  if (shouldRestartTrack) {
-    customAudio.currentTime = 0;
+  if (restartTrack) {
+    resetCustomAudioPosition();
+  } else if (customAudio.paused) {
+    restoreCustomAudioPosition();
   }
 
   if (!customAudio.paused) {
@@ -800,6 +844,7 @@ function maybeAdvanceCustomAudio(restartTrack = false) {
 
 function handleCustomAudioPauseNow() {
   customAudioLastActivityAt = 0;
+  persistCustomAudioPosition();
 
   if (customAudio && !customAudio.paused) {
     customAudio.pause();
@@ -1026,7 +1071,7 @@ let L = 0;
 function nasedrauf() {
   L += 1;
   document.getElementById("LieA").innerHTML = L;
-  maybeAdvanceCustomAudio(true);
+  maybeAdvanceCustomAudio();
   updatePushUpCounts();
 
   if (AV === 2) {
