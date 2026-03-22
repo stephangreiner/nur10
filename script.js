@@ -17,6 +17,8 @@ let ss = 0;
 let GL = 8;
 let GS = 12;
 let AV = 1;
+let motionZone = "mid";
+let needsMidCrossing = false;
 
 
 
@@ -343,6 +345,7 @@ ansichtw.addEventListener("change", function () {
 
 // Function to start the exercise tracking
 function start() {
+  resetMotionState();
   document.getElementById("startdiv").style.display = "none";
   const aktivDiv = document.getElementById("aktivdiv");
   const aktivCanvasDiv = document.getElementById("aktivcanvasdiv");
@@ -515,35 +518,60 @@ function handleMotionEvent(event) {
 
 // Functions to process accelerometer data
 function processZVar(z) {
-  if (z < GL) {
-    niedrigg();
-  }
-  if (z > GS) {
-    hochg();
-  }
+  processMotionValue(z);
 }
 
 function processYVar(y) {
-  if (y < GL) {
-    niedrigg();
-  }
-  if (y > GS) {
-    hochg();
-  }
+  processMotionValue(y);
 }
 
 function processXVar(x) {
-  if (x < GL) {
+  processMotionValue(x);
+}
+
+function processMotionValue(value) {
+  let nextZone = "mid";
+
+  if (value < GL) {
+    nextZone = "low";
+  } else if (value > GS) {
+    nextZone = "high";
+  }
+
+  if (nextZone === motionZone) {
+    return;
+  }
+
+  motionZone = nextZone;
+
+  if (nextZone === "mid") {
+    needsMidCrossing = false;
+    return;
+  }
+
+  if (needsMidCrossing) {
+    return;
+  }
+
+  if (nextZone === "high") {
+    hochg();
+  } else if (nextZone === "low") {
     niedrigg();
   }
-  if (x > GS) {
-    hochg();
-  }
+
+  needsMidCrossing = true;
 }
 
 // Variables for timing
 let firstExecution = 0; // Store the first execution time
-const interval = 100; // milliseconds
+const interval = 250; // milliseconds
+
+function resetMotionState() {
+  ss = 0;
+  motionZone = "mid";
+  needsMidCrossing = false;
+  firstExecution = 0;
+}
 
 // Function called when the device moves upwards
 function hochg() {
@@ -551,9 +579,7 @@ function hochg() {
   if (milliseconds - firstExecution > interval) {
     firstExecution = milliseconds;
     untenzahl += 1;
-    if (ss === 0) {
-      ss += 1; // Activate counting
-    }
+    ss = 1; // Activate counting after a clear upper threshold crossing
   }
 }
 
@@ -573,7 +599,7 @@ function niedrigg() {
     // Update local storage counts
     updateLocalStorageCounts();
 
-    ss -= 1; // Reset activation
+    ss = 0; // Reset activation until the motion returns through the middle and rises again
   }
 }
 
