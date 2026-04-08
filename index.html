@@ -56,12 +56,12 @@
 </div>
 
 <div id="aktivdiv">
-  <button id= "oneb"><a id="Anzahl">0</a></button>
+  <button id= "oneb"><span id="Anzahl">0</span></button>
   <button class="zurueck" onclick="neu()">x</button> 
 </div>
 
 <div id="Ldiv">
-<button id= "LieB" onclick= "nasedrauf()"><a id="LieA">0</a></button>
+<button id= "LieB" onclick= "nasedrauf()"><span id="LieA">0</span></button>
 <select id="notew">
   <option value="eins">C</option>
   <option value="zwei">D</option>
@@ -84,7 +84,7 @@
          <div id ="canvasuhr">
         <span id="minAn"></span>:<span id="sekAn"></span> </div>
         <div id =KniebA> 
-       Anzahl: <a id="KB">0</a><br>
+       Anzahl: <span id="KB">0</span><br>
            </div>
            <button class="zurueck" onclick="neu()">x</button>       
 </div>       
@@ -92,7 +92,9 @@
  <div id="sta_div">
   <div class="stats-shell">
     <div class="stats-header">
-      <a id="datum"></a>
+      <button id="prevMonthBtn" class="nav-month-btn" onclick="navigateMonth(-1)">&#8249;</button>
+      <span id="datum"></span>
+      <button id="nextMonthBtn" class="nav-month-btn" onclick="navigateMonth(1)" disabled>&#8250;</button>
     </div>
 
     <div id="sta_div2" class="table-wrapper details-card">
@@ -109,18 +111,18 @@
         <tbody id="statsTableBody"></tbody>
         <tfoot>
           <tr class="stats-summary-row">
-            <th scope="row"><a id="monatname"></a> gesamt</th>
-            <td class="cell-kb"><a id="monat"></a></td>
-            <td class="cell-kz"><a id="monatKZ"></a></td>
-            <td class="cell-rh"><a id="monatRH"></a></td>
-            <td class="cell-l"><a id="monatL"></a></td>
+            <th scope="row"><span id="monatname"></span> gesamt</th>
+            <td class="cell-kb"><span id="monat"></span></td>
+            <td class="cell-kz"><span id="monatKZ"></span></td>
+            <td class="cell-rh"><span id="monatRH"></span></td>
+            <td class="cell-l"><span id="monatL"></span></td>
           </tr>
           <tr class="stats-summary-row stats-average-row">
-            <th scope="row">Ø bis heute</th>
-            <td class="cell-kb"><span class="avg-pill"><a id="mittelwert"></a></span></td>
-            <td class="cell-kz"><span class="avg-pill"><a id="mittelwertKZ"></a></span></td>
-            <td class="cell-rh"><span class="avg-pill"><a id="mittelwertRH"></a></span></td>
-            <td class="cell-l"><span class="avg-pill"><a id="mittelwertL"></a></span></td>
+            <th scope="row">Ø</th>
+            <td class="cell-kb"><span class="avg-pill"><span id="mittelwert"></span></span></td>
+            <td class="cell-kz"><span class="avg-pill"><span id="mittelwertKZ"></span></span></td>
+            <td class="cell-rh"><span class="avg-pill"><span id="mittelwertRH"></span></span></td>
+            <td class="cell-l"><span class="avg-pill"><span id="mittelwertL"></span></span></td>
           </tr>
         </tfoot>
       </table>
