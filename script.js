@@ -20,6 +20,9 @@ let AV = 1;
 let motionZone = "mid";
 let needsMidCrossing = false;
 
+let viewYear = new Date().getFullYear();
+let viewMonth = new Date().getMonth();
+
 
 
 
@@ -139,43 +142,25 @@ function updateStatistics() {
 
 // Function to update monthly statistics
 function updateMonthlyStatistics() {
-  document.getElementById("monat").innerHTML =
-    localStorage.getItem(STORAGE_KEYS.KBSPEICHmonat) || "0";
-  document.getElementById("monatKZ").innerHTML =
-    localStorage.getItem(STORAGE_KEYS.KZSPEICHmonat) || "0";
-  document.getElementById("monatRH").innerHTML =
-    localStorage.getItem(STORAGE_KEYS.RHSPEICHmonat) || "0";
-  document.getElementById("monatL").innerHTML =
-    localStorage.getItem(STORAGE_KEYS.LSPEICHmonat) || "0";
+  EXERCISE_STATS.forEach(({ monthlyStorageKey, monthElementId }) => {
+    const val = parseInt(localStorage.getItem(monthlyStorageKey), 10) || 0;
+    document.getElementById(monthElementId).innerHTML = val === 0 ? "–" : val;
+  });
 }
 
 // Function to display statistics
 function sta_zeigen() {
-  const currentDate = new Date();
-  const monthNames = [
-    "Jan",
-    "Feb",
-    "Mär",
-    "Apr",
-    "Mai",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Okt",
-    "Nov",
-    "Dez",
-  ];
+  const now = new Date();
+  viewYear = now.getFullYear();
+  viewMonth = now.getMonth();
 
-  document.getElementById("datum").innerHTML = formatFullDate(currentDate);
-  document.getElementById("monatname").textContent = monthNames[currentDate.getMonth()];
-
-  updateAverageValues(currentDate.getDate());
-  updateExerciseTables(currentDate);
   document.getElementById("sta_div").style.display = "";
   document.getElementById("aktivcanvasdiv").style.display = "none";
   document.getElementById("aktivdiv").style.display = "none";
   document.getElementById("startdiv").style.display = "none";
+  document.getElementById("nextMonthBtn").disabled = true;
+
+  renderStatsForMonth(viewYear, viewMonth);
 }
 
 // Function to update average values
@@ -184,9 +169,8 @@ function updateAverageValues(daysInMonth) {
 
   EXERCISE_STATS.forEach(({ monthlyStorageKey, averageElementId }) => {
     const monthlyValue = parseInt(localStorage.getItem(monthlyStorageKey), 10) || 0;
-    document.getElementById(averageElementId).innerHTML = Math.round(
-      monthlyValue / safeDaysInMonth
-    );
+    const avg = Math.round(monthlyValue / safeDaysInMonth);
+    document.getElementById(averageElementId).innerHTML = avg === 0 ? "–" : avg;
   });
 }
 
@@ -207,7 +191,7 @@ function createStatsRow(label, values, accentClass = "") {
 
   values.forEach((value, index) => {
     const cell = document.createElement("td");
-    cell.textContent = value;
+    cell.textContent = (!value || value === "0" || value === 0) ? "–" : value;
     cell.classList.add(EXERCISE_STATS[index].accentClass);
     row.appendChild(cell);
   });
@@ -305,8 +289,30 @@ function isSameCalendarDay(a, b) {
   );
 }
 
+// Archive current month's data before resetting
+function archiveCurrentMonth() {
+  const lastDate = getLastActiveDate();
+  const year = lastDate.getFullYear();
+  const month = lastDate.getMonth();
+  const key = `nur10_hist_${year}_${month}`;
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+  const hist = { days: daysInMonth, totals: {}, data: {} };
+  EXERCISE_STATS.forEach(({ dayKeyPrefix, monthlyStorageKey }) => {
+    hist.totals[dayKeyPrefix] = parseInt(localStorage.getItem(monthlyStorageKey), 10) || 0;
+    hist.data[dayKeyPrefix] = [];
+    for (let d = 1; d <= daysInMonth; d++) {
+      hist.data[dayKeyPrefix].push(parseInt(localStorage.getItem(`${dayKeyPrefix}${d}`), 10) || 0);
+    }
+  });
+
+  localStorage.setItem(key, JSON.stringify(hist));
+}
+
 // Function to reset monthly statistics
 function monatneu() {
+  archiveCurrentMonth();
+
   EXERCISE_STATS.forEach(({ monthlyStorageKey }) => {
     localStorage.removeItem(monthlyStorageKey);
   });
@@ -327,10 +333,83 @@ function refreshStatisticsView() {
   updateStatistics();
 
   if (document.getElementById("sta_div").style.display !== "none") {
-    const currentDate = new Date();
-    document.getElementById("datum").innerHTML = formatFullDate(currentDate);
-    updateAverageValues(currentDate.getDate());
-    updateExerciseTables(currentDate);
+    const now = new Date();
+    if (viewYear === now.getFullYear() && viewMonth === now.getMonth()) {
+      document.getElementById("datum").innerHTML = formatFullDate(now);
+      updateAverageValues(now.getDate());
+      updateExerciseTables(now);
+    }
+  }
+}
+
+// Navigate to previous or next month in statistics view
+function navigateMonth(delta) {
+  viewMonth += delta;
+  if (viewMonth < 0) { viewMonth = 11; viewYear -= 1; }
+  if (viewMonth > 11) { viewMonth = 0; viewYear += 1; }
+
+  const now = new Date();
+  document.getElementById("nextMonthBtn").disabled =
+    viewYear === now.getFullYear() && viewMonth === now.getMonth();
+
+  renderStatsForMonth(viewYear, viewMonth);
+}
+
+const MONTH_NAMES = ["Jan","Feb","Mär","Apr","Mai","Jun","Jul","Aug","Sep","Okt","Nov","Dez"];
+
+// Render statistics for a given year/month
+function renderStatsForMonth(year, month) {
+  const now = new Date();
+  const isCurrentMonth = year === now.getFullYear() && month === now.getMonth();
+
+  document.getElementById("monatname").textContent = MONTH_NAMES[month];
+
+  if (isCurrentMonth) {
+    document.getElementById("datum").innerHTML = formatFullDate(now);
+    updateMonthlyStatistics();
+    updateAverageValues(now.getDate());
+    updateExerciseTables(now);
+  } else {
+    document.getElementById("datum").textContent = `${MONTH_NAMES[month]} ${year}`;
+    renderArchivedMonth(year, month);
+  }
+}
+
+// Render a past month from the archive
+function renderArchivedMonth(year, month) {
+  const key = `nur10_hist_${year}_${month}`;
+  const raw = localStorage.getItem(key);
+  const monthShort = new Intl.DateTimeFormat("de-DE", { month: "short" }).format(
+    new Date(year, month, 1)
+  );
+
+  if (!raw) {
+    document.getElementById("statsTableBody").innerHTML = `
+      <tr><td colspan="4" style="text-align:center;opacity:0.5;padding:1rem">Keine Daten</td></tr>`;
+    EXERCISE_STATS.forEach(({ monthElementId, averageElementId }) => {
+      document.getElementById(monthElementId).textContent = "–";
+      document.getElementById(averageElementId).textContent = "–";
+    });
+    return;
+  }
+
+  const hist = JSON.parse(raw);
+  const daysInMonth = hist.days;
+
+  EXERCISE_STATS.forEach(({ dayKeyPrefix, monthElementId, averageElementId }) => {
+    const total = hist.totals[dayKeyPrefix] || 0;
+    document.getElementById(monthElementId).textContent = total === 0 ? "–" : total;
+    document.getElementById(averageElementId).textContent =
+      total === 0 ? "–" : Math.round(total / daysInMonth);
+  });
+
+  const tableBody = document.getElementById("statsTableBody");
+  tableBody.innerHTML = "";
+  for (let d = 0; d < daysInMonth; d++) {
+    const values = EXERCISE_STATS.map(({ dayKeyPrefix }) =>
+      (hist.data[dayKeyPrefix] && hist.data[dayKeyPrefix][d]) || 0
+    );
+    tableBody.appendChild(createStatsRow(`${d + 1}. ${monthShort}`, values, ""));
   }
 }
 
