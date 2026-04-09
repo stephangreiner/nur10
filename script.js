@@ -425,6 +425,9 @@ ansichtw.addEventListener("change", function () {
 // Function to start the exercise tracking
 function start() {
   resetMotionState();
+  if (audioMode === "synth") {
+    initSynthWebAudio();
+  }
   document.getElementById("startdiv").style.display = "none";
   const aktivDiv = document.getElementById("aktivdiv");
   const aktivCanvasDiv = document.getElementById("aktivcanvasdiv");
@@ -652,33 +655,50 @@ function resetMotionState() {
   firstExecution = 0;
 }
 
-// Function called when the device moves upwards
+// Shared rep-counting logic used by both hochg and niedrigg
+function countMotionRep() {
+  KB += 1;
+  playSound();
+  maybeAdvanceCustomAudio();
+  if (AV === 2) {
+    bildwechselKB();
+  }
+  updateCountDisplay();
+  updateLocalStorageCounts();
+}
+
+// Called when the sensor value crosses the HIGH threshold
 function hochg() {
   const milliseconds = Date.now();
   if (milliseconds - firstExecution > interval) {
     firstExecution = milliseconds;
     untenzahl += 1;
-    ss = 1; // Activate counting after a clear upper threshold crossing
+    if (modus === 1) {
+      // Squats: standing back up is the completed rep — count + sound here
+      if (ss === 1) {
+        countMotionRep();
+        ss = 0;
+      }
+    } else {
+      // Pull-ups / back extensions: high position arms ready, activate next count
+      ss = 1;
+    }
   }
 }
 
-// Function called when the device moves downwards
+// Called when the sensor value crosses the LOW threshold
 function niedrigg() {
   const milliseconds = Date.now();
-  if (milliseconds - firstExecution > interval && ss === 1) {
+  if (milliseconds - firstExecution > interval) {
     firstExecution = milliseconds;
-    KB += 1;
-    playSound();
-    maybeAdvanceCustomAudio();
-    if (AV === 2) {
-      bildwechselKB();
+    if (modus === 1) {
+      // Squats: reached squat depth — arm the counter for the next stand-up
+      ss = 1;
+    } else if (ss === 1) {
+      // Pull-ups / back extensions: low position = completed rep
+      countMotionRep();
+      ss = 0;
     }
-    updateCountDisplay();
-
-    // Update local storage counts
-    updateLocalStorageCounts();
-
-    ss = 0; // Reset activation until the motion returns through the middle and rises again
   }
 }
 
@@ -739,14 +759,46 @@ function bildwechselKB() {
   }
 }
 
+// Web Audio API pre-buffered playback for low-latency synth sound
+let _synthCtx = null;
+const _synthBuffers = {};
+
+async function initSynthWebAudio() {
+  if (_synthCtx) return;
+  try {
+    _synthCtx = new (window.AudioContext || window.webkitAudioContext)();
+    await Promise.all(
+      [["E", 4, 0.5], ["C", 4, 0.5]].map(async ([note, octave, dur]) => {
+        const dataUri = Synth.generate("piano", note, octave, dur);
+        const resp = await fetch(dataUri);
+        const arrayBuf = await resp.arrayBuffer();
+        _synthBuffers[note] = await _synthCtx.decodeAudioData(arrayBuf);
+      })
+    );
+  } catch (_e) {
+    _synthCtx = null; // fall back to HTML Audio on error
+  }
+}
+
+function playSynthBufferNote(note) {
+  if (_synthCtx && _synthBuffers[note]) {
+    if (_synthCtx.state === "suspended") {
+      _synthCtx.resume();
+    }
+    const src = _synthCtx.createBufferSource();
+    src.buffer = _synthBuffers[note];
+    src.connect(_synthCtx.destination);
+    src.start(0);
+    return;
+  }
+  // Fallback: original HTML Audio approach
+  const p = Synth.createInstrument("piano");
+  p.play(note, 4, 0.5);
+}
+
 // Function to play sound
 function synthleicht() {
-  const p = Synth.createInstrument("piano");
-  if (KB % 10 === 0) {
-    p.play("C", 4, 0.5);
-  } else {
-    p.play("E", 4, 0.5);
-  }
+  playSynthBufferNote(KB % 10 === 0 ? "C" : "E");
 }
 
 // Function to change background image
