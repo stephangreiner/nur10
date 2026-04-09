@@ -91,7 +91,7 @@ const EXERCISE_STATS = [
 // The badge disappears when the user completes ≥ 10 reps (any exercise).
 // It reappears the next day at 16:00.
 
-const BADGE_TRIGGER_HOUR = 16;
+const BADGE_TRIGGER_HOUR = 0; // Midnight — badge is there from the start of each day
 const BADGE_MIN_REPS = 10;
 
 function getTotalDailyReps() {
