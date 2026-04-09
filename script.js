@@ -86,6 +86,41 @@ const EXERCISE_STATS = [
 ];
 
 
+// ─── Daily Exercise Badge ────────────────────────────────────────────────────
+// Shows a badge on the app icon each day at 16:00 (4 PM).
+// The badge disappears when the user completes ≥ 10 reps (any exercise).
+// It reappears the next day at 16:00.
+
+const BADGE_TRIGGER_HOUR = 16;
+const BADGE_MIN_REPS = 10;
+
+function getTotalDailyReps() {
+  return (
+    (parseInt(localStorage.getItem(STORAGE_KEYS.KBSPEICH), 10) || 0) +
+    (parseInt(localStorage.getItem(STORAGE_KEYS.LSPEICH), 10) || 0) +
+    (parseInt(localStorage.getItem(STORAGE_KEYS.KZSPEICH), 10) || 0) +
+    (parseInt(localStorage.getItem(STORAGE_KEYS.RHSPEICH), 10) || 0)
+  );
+}
+
+function updateDailyBadge() {
+  if (!("setAppBadge" in navigator)) return;
+  const now = new Date();
+  const shouldShow = now.getHours() >= BADGE_TRIGGER_HOUR && getTotalDailyReps() < BADGE_MIN_REPS;
+  if (shouldShow) {
+    navigator.setAppBadge(1).catch(() => {});
+  } else {
+    navigator.clearAppBadge().catch(() => {});
+  }
+}
+
+function initDailyBadge() {
+  updateDailyBadge();
+  // Re-check every minute so the badge appears at exactly 4:00 PM while the app is open
+  setInterval(updateDailyBadge, 60_000);
+}
+// ─────────────────────────────────────────────────────────────────────────────
+
 // Initialize the application on window load
 window.onload = function () {
   neuerTagTest();
@@ -96,6 +131,7 @@ window.onload = function () {
   updateStatistics();
   restoreAudioModePreference();
   initCustomAudioFromStorage();
+  initDailyBadge();
 };
 
 window.addEventListener("beforeunload", () => {
@@ -744,6 +780,7 @@ function updateLocalStorageCounts() {
   document.getElementById(heuteElementId).innerHTML =
     localStorage.getItem(storageKey) || "0";
   refreshStatisticsView();
+  updateDailyBadge();
 }
 
 // Helper function to increment a local storage key
@@ -1247,6 +1284,7 @@ function updatePushUpCounts() {
   document.getElementById("heuteL").innerHTML =
     localStorage.getItem(STORAGE_KEYS.LSPEICH) || "0";
   refreshStatisticsView();
+  updateDailyBadge();
 }
 
 // Function to change image every 10 push-ups
