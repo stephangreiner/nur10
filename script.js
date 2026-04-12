@@ -112,12 +112,39 @@ function updateDailyBadge() {
   } else {
     navigator.clearAppBadge().catch(() => {});
   }
+  saveBadgeStatusToIDB(!shouldShow);
+}
+
+// Writes today's completion status to IndexedDB so the service worker can
+// decide whether to show the badge during Periodic Background Sync.
+function saveBadgeStatusToIDB(done) {
+  const req = indexedDB.open('nur10BadgeDB', 1);
+  req.onupgradeneeded = () => req.result.createObjectStore('status');
+  req.onsuccess = () => {
+    const tx = req.result.transaction('status', 'readwrite');
+    tx.objectStore('status').put({ date: new Date().toDateString(), done }, 'badge_status');
+  };
+}
+
+// Registers a Periodic Background Sync task so the service worker can set the
+// badge overnight without the app being open.
+async function registerPeriodicSync() {
+  if (!("serviceWorker" in navigator)) return;
+  try {
+    const reg = await navigator.serviceWorker.ready;
+    if (!("periodicSync" in reg)) return;
+    await reg.periodicSync.register("daily-badge", {
+      minInterval: 12 * 60 * 60 * 1000, // at most twice a day
+    });
+  } catch (_) {
+    // Periodic sync not available or permission denied — badge still works when app is open.
+  }
 }
 
 function initDailyBadge() {
   updateDailyBadge();
-  // Re-check every minute so the badge appears at exactly 4:00 PM while the app is open
   setInterval(updateDailyBadge, 60_000);
+  registerPeriodicSync();
 }
 // ─────────────────────────────────────────────────────────────────────────────
 

@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v1';
+const CACHE_VERSION = 'v2';
 const CACHE_NAME = `Knieb-${CACHE_VERSION}`;
 const CACHE_ASSETS = [
     '/',                    // Root URL
@@ -44,6 +44,42 @@ self.addEventListener('activate', async (event) => {
         })().catch(error => console.error('Activate failed:', error))
     );
 });
+
+// ─── Periodic Background Sync: Morning Badge ─────────────────────────────────
+// Reads badge status from IndexedDB (written by the main thread) and sets or
+// clears the app-icon badge so it is visible before the user opens the app.
+
+function openBadgeDB() {
+    return new Promise((resolve, reject) => {
+        const req = indexedDB.open('nur10BadgeDB', 1);
+        req.onupgradeneeded = () => req.result.createObjectStore('status');
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error);
+    });
+}
+
+function readBadgeStatus() {
+    return openBadgeDB().then(db => new Promise(resolve => {
+        const req = db.transaction('status', 'readonly').objectStore('status').get('badge_status');
+        req.onsuccess = () => resolve(req.result || null);
+        req.onerror = () => resolve(null);
+    }));
+}
+
+self.addEventListener('periodicsync', (event) => {
+    if (event.tag !== 'daily-badge') return;
+    event.waitUntil(
+        readBadgeStatus().then(status => {
+            const today = new Date().toDateString();
+            const doneToday = status && status.date === today && status.done;
+            if (doneToday) {
+                return navigator.clearAppBadge().catch(() => {});
+            }
+            return navigator.setAppBadge(1).catch(() => {});
+        })
+    );
+});
+// ─────────────────────────────────────────────────────────────────────────────
 
 // Fetch Event: Serves from cache first, then network if unavailable
 self.addEventListener('fetch', async (event) => {
