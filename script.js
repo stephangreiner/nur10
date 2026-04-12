@@ -20,6 +20,29 @@ let AV = 1;
 let motionZone = "mid";
 let needsMidCrossing = false;
 
+// Game state
+let gameActive = false;
+let gameScore = 0;
+let gameCursorX = 0;
+let gameCursorY = 0;
+let gameAccelX = 0;
+let gameAccelY = 0;
+let gameOrbs = [];
+let gameParticles = [];
+let gameOrbSpawnTimer = 0;
+let gameLastTime = 0;
+const GAME_MAX_ORBS = 5;
+const GAME_ORB_RADIUS = 18;
+const GAME_CURSOR_RADIUS = 14;
+const GAME_COLLECT_DIST = 32;
+const GAME_SMOOTHING = 0.12;
+const GAME_ORB_COLORS = [
+  { fill: "#ff6f9f", glow: "rgba(255, 111, 159, 0.55)" },
+  { fill: "#6effd9", glow: "rgba(110, 255, 217, 0.45)" },
+  { fill: "#6ab6ff", glow: "rgba(106, 182, 255, 0.45)" },
+  { fill: "#f0ff69", glow: "rgba(240, 255, 105, 0.45)" },
+];
+
 let viewYear = new Date().getFullYear();
 let viewMonth = new Date().getMonth();
 
@@ -480,7 +503,7 @@ function renderArchivedMonth(year, month) {
 const ansichtw = document.getElementById("ansichtw");
 ansichtw.addEventListener("change", function () {
   const value = parseInt(ansichtw.value);
-  if ([1, 2, 3].includes(value)) {
+  if ([1, 2, 3, 4].includes(value)) {
     AV = value;
   }
 });
@@ -501,17 +524,26 @@ function start() {
     aktivCanvasDiv.style.display = "none";
   } else if (AV === 2) {
     aktivDiv.style.display = "";
-  }else if (AV === 3) {
+  } else if (AV === 3) {
     aktivDiv.style.display = "none";
-    aktivCanvasDiv.style.display = "" ;
+    aktivCanvasDiv.style.display = "";
+  } else if (AV === 4) {
+    aktivDiv.style.display = "none";
+    aktivCanvasDiv.style.display = "";
   }
 
   if ([1, 2, 3].includes(modus)) {
     lDiv.style.display = "none";
     startTimer();
     addEventListener("devicemotion", handleMotionEvent);
-    addEventListener("devicemotion", doSample);
-    tick();
+    if (AV === 4) {
+      initGame();
+      addEventListener("devicemotion", handleGameMotion);
+      gameTick();
+    } else {
+      addEventListener("devicemotion", doSample);
+      tick();
+    }
   } else if (modus === 4) {
     aktivDiv.style.display = "none";
     lDiv.style.display = "";
@@ -1246,7 +1278,250 @@ function getInitArr(length) {
     return new Float32Array(length);
 }
 
+// ── Gyro Point-Collection Game ──────────────────────────────────
 
+function initGame() {
+  gameActive = true;
+  gameScore = 0;
+  gameOrbs = [];
+  gameParticles = [];
+  gameLastTime = performance.now();
+  gameCursorX = W / 2;
+  gameCursorY = H / 2;
+  gameAccelX = 0;
+  gameAccelY = 0;
+  gameOrbSpawnTimer = 0;
+  for (let i = 0; i < 3; i++) {
+    spawnOrb();
+  }
+}
+
+function handleGameMotion(event) {
+  if (!event.accelerationIncludingGravity) return;
+  const rawX = event.accelerationIncludingGravity.x || 0;
+  const rawY = event.accelerationIncludingGravity.y || 0;
+  gameAccelX += (rawX - gameAccelX) * GAME_SMOOTHING;
+  gameAccelY += (rawY - gameAccelY) * GAME_SMOOTHING;
+}
+
+function gameTick() {
+  if (!gameActive) return;
+  requestAnimationFrame(gameTick);
+
+  const now = performance.now();
+  const dt = Math.min((now - gameLastTime) / 1000, 0.1);
+  gameLastTime = now;
+
+  updateGameCursor(dt);
+  updateOrbs(dt);
+  checkCollisions();
+  updateParticles(dt);
+
+  // Draw
+  drawBackground();
+  drawGameGrid();
+  drawOrbs();
+  drawParticles();
+  drawGameCursor();
+  drawGameScore();
+}
+
+function updateGameCursor(dt) {
+  const sensitivity = W * 0.08;
+  gameCursorX += gameAccelX * sensitivity * dt;
+  gameCursorY -= gameAccelY * sensitivity * dt;
+
+  const pad = GAME_CURSOR_RADIUS;
+  if (gameCursorX < pad) gameCursorX = pad;
+  if (gameCursorX > W - pad) gameCursorX = W - pad;
+  if (gameCursorY < pad) gameCursorY = pad;
+  if (gameCursorY > H - pad) gameCursorY = H - pad;
+}
+
+function updateOrbs(dt) {
+  gameOrbSpawnTimer += dt;
+  if (gameOrbs.length < GAME_MAX_ORBS && gameOrbSpawnTimer > 2.0) {
+    spawnOrb();
+    gameOrbSpawnTimer = 0;
+  }
+  for (let i = 0; i < gameOrbs.length; i++) {
+    gameOrbs[i].pulse += dt * 2.5;
+  }
+}
+
+function spawnOrb() {
+  const pad = GAME_ORB_RADIUS + 20;
+  const colorObj = GAME_ORB_COLORS[Math.floor(Math.random() * GAME_ORB_COLORS.length)];
+  gameOrbs.push({
+    x: pad + Math.random() * (W - pad * 2),
+    y: pad + Math.random() * (H - pad * 2),
+    radius: GAME_ORB_RADIUS,
+    pulse: Math.random() * Math.PI * 2,
+    fill: colorObj.fill,
+    glow: colorObj.glow,
+  });
+}
+
+function checkCollisions() {
+  for (let i = gameOrbs.length - 1; i >= 0; i--) {
+    const orb = gameOrbs[i];
+    const dx = gameCursorX - orb.x;
+    const dy = gameCursorY - orb.y;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    if (dist < GAME_COLLECT_DIST) {
+      gameScore += 1;
+      spawnParticles(orb.x, orb.y, orb.fill);
+      gameOrbs.splice(i, 1);
+      playSound();
+    }
+  }
+}
+
+function spawnParticles(x, y, color) {
+  const count = 8 + Math.floor(Math.random() * 5);
+  for (let i = 0; i < count; i++) {
+    const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.5;
+    const speed = 60 + Math.random() * 80;
+    gameParticles.push({
+      x: x,
+      y: y,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed,
+      life: 1.0,
+      color: color,
+      radius: 2 + Math.random() * 3,
+    });
+  }
+}
+
+function updateParticles(dt) {
+  for (let i = gameParticles.length - 1; i >= 0; i--) {
+    const p = gameParticles[i];
+    p.x += p.vx * dt;
+    p.y += p.vy * dt;
+    p.life -= dt * 2.0;
+    if (p.life <= 0) {
+      gameParticles.splice(i, 1);
+    }
+  }
+}
+
+function drawGameGrid() {
+  ctx.strokeStyle = "rgba(255, 255, 255, 0.05)";
+  ctx.lineWidth = 0.5;
+  for (let x = 0; x < W; x += 40) {
+    ctx.beginPath();
+    ctx.moveTo(x, 0);
+    ctx.lineTo(x, H);
+    ctx.stroke();
+  }
+  for (let y = 0; y < H; y += 40) {
+    ctx.beginPath();
+    ctx.moveTo(0, y);
+    ctx.lineTo(W, y);
+    ctx.stroke();
+  }
+}
+
+function drawGameCursor() {
+  const pulse = Math.sin(performance.now() / 300) * 0.3 + 0.7;
+  const cursorColor = getCursorColor();
+
+  ctx.save();
+  ctx.shadowColor = cursorColor.glow;
+  ctx.shadowBlur = 20 + pulse * 12;
+
+  // Outer glow ring
+  ctx.beginPath();
+  ctx.arc(gameCursorX, gameCursorY, GAME_CURSOR_RADIUS + pulse * 3, 0, Math.PI * 2);
+  ctx.fillStyle = cursorColor.glow;
+  ctx.fill();
+
+  // Inner solid circle
+  ctx.shadowBlur = 0;
+  ctx.beginPath();
+  ctx.arc(gameCursorX, gameCursorY, GAME_CURSOR_RADIUS - 2, 0, Math.PI * 2);
+  ctx.fillStyle = cursorColor.fill;
+  ctx.fill();
+
+  // Bright center
+  ctx.beginPath();
+  ctx.arc(gameCursorX, gameCursorY, 4, 0, Math.PI * 2);
+  ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
+  ctx.fill();
+
+  ctx.restore();
+}
+
+function getCursorColor() {
+  if (modus === 1) return { fill: "#ff6f9f", glow: "rgba(255, 111, 159, 0.55)" };
+  if (modus === 2) return { fill: "#6effd9", glow: "rgba(110, 255, 217, 0.45)" };
+  if (modus === 3) return { fill: "#6ab6ff", glow: "rgba(106, 182, 255, 0.45)" };
+  return { fill: "#f0ff69", glow: "rgba(240, 255, 105, 0.45)" };
+}
+
+function drawOrbs() {
+  for (let i = 0; i < gameOrbs.length; i++) {
+    const orb = gameOrbs[i];
+    const p = Math.sin(orb.pulse) * 0.4 + 0.6;
+
+    ctx.save();
+    ctx.shadowColor = orb.glow;
+    ctx.shadowBlur = 14 + p * 14;
+
+    // Outer pulsing glow
+    ctx.beginPath();
+    ctx.arc(orb.x, orb.y, orb.radius + p * 5, 0, Math.PI * 2);
+    ctx.fillStyle = orb.glow;
+    ctx.fill();
+
+    // Inner solid orb
+    ctx.shadowBlur = 0;
+    ctx.beginPath();
+    ctx.arc(orb.x, orb.y, orb.radius - 3, 0, Math.PI * 2);
+    ctx.fillStyle = orb.fill;
+    ctx.fill();
+
+    // Bright center highlight
+    ctx.beginPath();
+    ctx.arc(orb.x, orb.y, 5, 0, Math.PI * 2);
+    ctx.fillStyle = "rgba(255, 255, 255, 0.85)";
+    ctx.fill();
+
+    ctx.restore();
+  }
+}
+
+function drawParticles() {
+  for (let i = 0; i < gameParticles.length; i++) {
+    const p = gameParticles[i];
+    ctx.save();
+    ctx.globalAlpha = Math.max(0, p.life);
+    ctx.shadowColor = p.color;
+    ctx.shadowBlur = 8;
+    ctx.fillStyle = p.color;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.radius * p.life, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+}
+
+function drawGameScore() {
+  ctx.save();
+  ctx.shadowColor = "rgba(255, 255, 255, 0.5)";
+  ctx.shadowBlur = 10;
+  ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
+  ctx.font = "bold 28px Arial";
+  ctx.fillText(gameScore, W / 2 - ctx.measureText(gameScore).width / 2, 38);
+
+  ctx.shadowBlur = 0;
+  ctx.fillStyle = "rgba(255, 255, 255, 0.4)";
+  ctx.font = "14px Arial";
+  const label = "PUNKTE";
+  ctx.fillText(label, W / 2 - ctx.measureText(label).width / 2, 56);
+  ctx.restore();
+}
 
 // Variables for the stopwatch
 let sec = 0;
@@ -1280,6 +1555,7 @@ function startTimer() {
 
 // Function to reset the application
 function neu() {
+  gameActive = false;
   handleCustomAudioPauseNow();
   releaseCustomAudioObjectUrl();
   location.reload();
