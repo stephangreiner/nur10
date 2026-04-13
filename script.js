@@ -20,27 +20,19 @@ let AV = 1;
 let motionZone = "mid";
 let needsMidCrossing = false;
 
-// Game state
-let gameActive = false;
-let gameScore = 0;
-let gameCursorX = 0;
-let gameCursorY = 0;
-let gameAccelX = 0;
-let gameAccelY = 0;
+// Canvas game state (point collection on the graph line)
 let gameOrbs = [];
 let gameParticles = [];
-let gameOrbSpawnTimer = 0;
-let gameLastTime = 0;
-const GAME_MAX_ORBS = 5;
-const GAME_ORB_RADIUS = 18;
-const GAME_CURSOR_RADIUS = 14;
-const GAME_COLLECT_DIST = 32;
-const GAME_SMOOTHING = 0.12;
+let gameScore = 0;
+let gameLastSpawn = 0;
+const GAME_MAX_ORBS = 4;
+const GAME_ORB_RADIUS = 14;
+const GAME_COLLECT_DIST = 28;
 const GAME_ORB_COLORS = [
-  { fill: "#ff6f9f", glow: "rgba(255, 111, 159, 0.55)" },
-  { fill: "#6effd9", glow: "rgba(110, 255, 217, 0.45)" },
-  { fill: "#6ab6ff", glow: "rgba(106, 182, 255, 0.45)" },
-  { fill: "#f0ff69", glow: "rgba(240, 255, 105, 0.45)" },
+  { fill: "#ff6f9f", glow: "rgba(255, 111, 159, 0.6)" },
+  { fill: "#6effd9", glow: "rgba(110, 255, 217, 0.5)" },
+  { fill: "#6ab6ff", glow: "rgba(106, 182, 255, 0.5)" },
+  { fill: "#f0ff69", glow: "rgba(240, 255, 105, 0.5)" },
 ];
 
 let viewYear = new Date().getFullYear();
@@ -503,7 +495,7 @@ function renderArchivedMonth(year, month) {
 const ansichtw = document.getElementById("ansichtw");
 ansichtw.addEventListener("change", function () {
   const value = parseInt(ansichtw.value);
-  if ([1, 2, 3, 4].includes(value)) {
+  if ([1, 2, 3].includes(value)) {
     AV = value;
   }
 });
@@ -527,23 +519,14 @@ function start() {
   } else if (AV === 3) {
     aktivDiv.style.display = "none";
     aktivCanvasDiv.style.display = "";
-  } else if (AV === 4) {
-    aktivDiv.style.display = "none";
-    aktivCanvasDiv.style.display = "";
   }
 
   if ([1, 2, 3].includes(modus)) {
     lDiv.style.display = "none";
     startTimer();
     addEventListener("devicemotion", handleMotionEvent);
-    if (AV === 4) {
-      initGame();
-      addEventListener("devicemotion", handleGameMotion);
-      gameTick();
-    } else {
-      addEventListener("devicemotion", doSample);
-      tick();
-    }
+    addEventListener("devicemotion", doSample);
+    tick();
   } else if (modus === 4) {
     aktivDiv.style.display = "none";
     lDiv.style.display = "";
@@ -1166,23 +1149,38 @@ function shiftAndCrunch(arr, datum) {
 
 function tick() {
   requestAnimationFrame(tick);
-  drawBackground();
 
- 
+  const now = performance.now();
+  const dt = Math.min((now - (tick._lastTime || now)) / 1000, 0.1);
+  tick._lastTime = now;
+
+  drawBackground();
   drawGrid();
-  drawLine(H / 2, "rgba(217, 217, 217, 0.28)"); 
-  drawLine(H / 2 + 9.81 * scaleY, "rgba(79, 255, 231, 0.30)"); // kein Schwerkraft null linie die +9.81 aus ctx.translate werden ausgeglichen
+  drawLine(H / 2, "rgba(217, 217, 217, 0.28)");
+  drawLine(H / 2 + 9.81 * scaleY, "rgba(79, 255, 231, 0.30)");
 
   // Get the latest value from the appropriate array
   let currentValue;
-  if      (modus === 1) {currentValue = linien.z[linien.z.length - 1]; drawGraph(linien.z, "#ff6f9f", "rgba(255, 111, 159, 0.55)");} 
-  else if (modus === 2) {currentValue = linien.y[linien.y.length - 1]; drawGraph(linien.y, "#6effd9", "rgba(110, 255, 217, 0.45)"); } 
+  if      (modus === 1) {currentValue = linien.z[linien.z.length - 1]; drawGraph(linien.z, "#ff6f9f", "rgba(255, 111, 159, 0.55)");}
+  else if (modus === 2) {currentValue = linien.y[linien.y.length - 1]; drawGraph(linien.y, "#6effd9", "rgba(110, 255, 217, 0.45)"); }
   else if (modus === 3) {currentValue = linien.x[linien.x.length - 1]; drawGraph(linien.x, "#6ab6ff", "rgba(106, 182, 255, 0.45)"); }
 
   // Display the current value on the canvas
-  ctx.fillStyle = "rgba(255,255,255,0.85)"; // Text color
-  ctx.font = "600 20px Arial"; // Font size and style
-  ctx.fillText(currentValue.toFixed(2), 10, 30); // Position at (10, 30)
+  ctx.fillStyle = "rgba(255,255,255,0.85)";
+  ctx.font = "600 20px Arial";
+  ctx.fillText(currentValue.toFixed(2), 10, 30);
+
+  // Point-collection game (runs on top of the graph in AV=3)
+  if (AV === 3) {
+    const endpointY = H / 2 + 9.81 * scaleY + (currentValue || 0) * -scaleY;
+    const endpointX = (Probenanzahl - 1) * scaleX;
+    gameUpdateOrbs(dt);
+    gameCheckCollisions(endpointX, endpointY);
+    gameUpdateParticles(dt);
+    gameDrawOrbs();
+    gameDrawParticles();
+    gameDrawScore();
+  }
 }
 
 function drawBackground() {
@@ -1278,113 +1276,72 @@ function getInitArr(length) {
     return new Float32Array(length);
 }
 
-// ── Gyro Point-Collection Game ──────────────────────────────────
+// ── Point-collection game (integrated into AV=3 canvas) ────────
 
-function initGame() {
-  gameActive = true;
-  gameScore = 0;
-  gameOrbs = [];
-  gameParticles = [];
-  gameLastTime = performance.now();
-  gameCursorX = W / 2;
-  gameCursorY = H / 2;
-  gameAccelX = 0;
-  gameAccelY = 0;
-  gameOrbSpawnTimer = 0;
-  for (let i = 0; i < 3; i++) {
-    spawnOrb();
-  }
-}
-
-function handleGameMotion(event) {
-  if (!event.accelerationIncludingGravity) return;
-  const rawX = event.accelerationIncludingGravity.x || 0;
-  const rawY = event.accelerationIncludingGravity.y || 0;
-  gameAccelX += (rawX - gameAccelX) * GAME_SMOOTHING;
-  gameAccelY += (rawY - gameAccelY) * GAME_SMOOTHING;
-}
-
-function gameTick() {
-  if (!gameActive) return;
-  requestAnimationFrame(gameTick);
-
-  const now = performance.now();
-  const dt = Math.min((now - gameLastTime) / 1000, 0.1);
-  gameLastTime = now;
-
-  updateGameCursor(dt);
-  updateOrbs(dt);
-  checkCollisions();
-  updateParticles(dt);
-
-  // Draw
-  drawBackground();
-  drawGameGrid();
-  drawOrbs();
-  drawParticles();
-  drawGameCursor();
-  drawGameScore();
-}
-
-function updateGameCursor(dt) {
-  const sensitivity = W * 0.08;
-  gameCursorX += gameAccelX * sensitivity * dt;
-  gameCursorY -= gameAccelY * sensitivity * dt;
-
-  const pad = GAME_CURSOR_RADIUS;
-  if (gameCursorX < pad) gameCursorX = pad;
-  if (gameCursorX > W - pad) gameCursorX = W - pad;
-  if (gameCursorY < pad) gameCursorY = pad;
-  if (gameCursorY > H - pad) gameCursorY = H - pad;
-}
-
-function updateOrbs(dt) {
-  gameOrbSpawnTimer += dt;
-  if (gameOrbs.length < GAME_MAX_ORBS && gameOrbSpawnTimer > 2.0) {
-    spawnOrb();
-    gameOrbSpawnTimer = 0;
-  }
-  for (let i = 0; i < gameOrbs.length; i++) {
-    gameOrbs[i].pulse += dt * 2.5;
-  }
-}
-
-function spawnOrb() {
-  const pad = GAME_ORB_RADIUS + 20;
+function gameSpawnOrb() {
   const colorObj = GAME_ORB_COLORS[Math.floor(Math.random() * GAME_ORB_COLORS.length)];
+  // Spawn at the right side, random Y within the graph range
+  // Y range: gravity center ± maxDeviation
+  const centerY = H / 2 + 9.81 * scaleY;
+  const range = maxDeviation * scaleY * 0.8;
+  const orbY = centerY + (Math.random() * 2 - 1) * range;
+  // X: spawn in the right half of the canvas so it's near the line endpoint
+  const orbX = W * 0.5 + Math.random() * (W * 0.4);
   gameOrbs.push({
-    x: pad + Math.random() * (W - pad * 2),
-    y: pad + Math.random() * (H - pad * 2),
-    radius: GAME_ORB_RADIUS,
+    x: orbX,
+    y: Math.max(GAME_ORB_RADIUS + 5, Math.min(H - GAME_ORB_RADIUS - 5, orbY)),
     pulse: Math.random() * Math.PI * 2,
+    age: 0,
     fill: colorObj.fill,
     glow: colorObj.glow,
   });
 }
 
-function checkCollisions() {
+function gameUpdateOrbs(dt) {
+  gameLastSpawn += dt;
+  // Spawn new orbs periodically
+  if (gameOrbs.length < GAME_MAX_ORBS && gameLastSpawn > 2.5) {
+    gameSpawnOrb();
+    gameLastSpawn = 0;
+  }
+  // Spawn initial orbs on first frame
+  if (gameOrbs.length === 0 && gameScore === 0) {
+    gameSpawnOrb();
+    gameSpawnOrb();
+    gameLastSpawn = 0;
+  }
+  for (let i = gameOrbs.length - 1; i >= 0; i--) {
+    gameOrbs[i].pulse += dt * 2.5;
+    gameOrbs[i].age += dt;
+    // Remove orbs that have been around too long (8 seconds)
+    if (gameOrbs[i].age > 8) {
+      gameOrbs.splice(i, 1);
+    }
+  }
+}
+
+function gameCheckCollisions(endpointX, endpointY) {
   for (let i = gameOrbs.length - 1; i >= 0; i--) {
     const orb = gameOrbs[i];
-    const dx = gameCursorX - orb.x;
-    const dy = gameCursorY - orb.y;
+    const dx = endpointX - orb.x;
+    const dy = endpointY - orb.y;
     const dist = Math.sqrt(dx * dx + dy * dy);
     if (dist < GAME_COLLECT_DIST) {
       gameScore += 1;
-      spawnParticles(orb.x, orb.y, orb.fill);
+      gameSpawnParticles(orb.x, orb.y, orb.fill);
       gameOrbs.splice(i, 1);
       playSound();
     }
   }
 }
 
-function spawnParticles(x, y, color) {
+function gameSpawnParticles(x, y, color) {
   const count = 8 + Math.floor(Math.random() * 5);
   for (let i = 0; i < count; i++) {
     const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.5;
-    const speed = 60 + Math.random() * 80;
+    const speed = 50 + Math.random() * 70;
     gameParticles.push({
-      x: x,
-      y: y,
+      x: x, y: y,
       vx: Math.cos(angle) * speed,
       vy: Math.sin(angle) * speed,
       life: 1.0,
@@ -1394,7 +1351,7 @@ function spawnParticles(x, y, color) {
   }
 }
 
-function updateParticles(dt) {
+function gameUpdateParticles(dt) {
   for (let i = gameParticles.length - 1; i >= 0; i--) {
     const p = gameParticles[i];
     p.x += p.vx * dt;
@@ -1406,85 +1363,36 @@ function updateParticles(dt) {
   }
 }
 
-function drawGameGrid() {
-  ctx.strokeStyle = "rgba(255, 255, 255, 0.05)";
-  ctx.lineWidth = 0.5;
-  for (let x = 0; x < W; x += 40) {
-    ctx.beginPath();
-    ctx.moveTo(x, 0);
-    ctx.lineTo(x, H);
-    ctx.stroke();
-  }
-  for (let y = 0; y < H; y += 40) {
-    ctx.beginPath();
-    ctx.moveTo(0, y);
-    ctx.lineTo(W, y);
-    ctx.stroke();
-  }
-}
-
-function drawGameCursor() {
-  const pulse = Math.sin(performance.now() / 300) * 0.3 + 0.7;
-  const cursorColor = getCursorColor();
-
-  ctx.save();
-  ctx.shadowColor = cursorColor.glow;
-  ctx.shadowBlur = 20 + pulse * 12;
-
-  // Outer glow ring
-  ctx.beginPath();
-  ctx.arc(gameCursorX, gameCursorY, GAME_CURSOR_RADIUS + pulse * 3, 0, Math.PI * 2);
-  ctx.fillStyle = cursorColor.glow;
-  ctx.fill();
-
-  // Inner solid circle
-  ctx.shadowBlur = 0;
-  ctx.beginPath();
-  ctx.arc(gameCursorX, gameCursorY, GAME_CURSOR_RADIUS - 2, 0, Math.PI * 2);
-  ctx.fillStyle = cursorColor.fill;
-  ctx.fill();
-
-  // Bright center
-  ctx.beginPath();
-  ctx.arc(gameCursorX, gameCursorY, 4, 0, Math.PI * 2);
-  ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
-  ctx.fill();
-
-  ctx.restore();
-}
-
-function getCursorColor() {
-  if (modus === 1) return { fill: "#ff6f9f", glow: "rgba(255, 111, 159, 0.55)" };
-  if (modus === 2) return { fill: "#6effd9", glow: "rgba(110, 255, 217, 0.45)" };
-  if (modus === 3) return { fill: "#6ab6ff", glow: "rgba(106, 182, 255, 0.45)" };
-  return { fill: "#f0ff69", glow: "rgba(240, 255, 105, 0.45)" };
-}
-
-function drawOrbs() {
+function gameDrawOrbs() {
   for (let i = 0; i < gameOrbs.length; i++) {
     const orb = gameOrbs[i];
     const p = Math.sin(orb.pulse) * 0.4 + 0.6;
+    // Fade in during first 0.5s, fade out in last 2s
+    let alpha = 1;
+    if (orb.age < 0.5) alpha = orb.age / 0.5;
+    if (orb.age > 6) alpha = Math.max(0, (8 - orb.age) / 2);
 
     ctx.save();
+    ctx.globalAlpha = alpha;
     ctx.shadowColor = orb.glow;
-    ctx.shadowBlur = 14 + p * 14;
+    ctx.shadowBlur = 12 + p * 12;
 
     // Outer pulsing glow
     ctx.beginPath();
-    ctx.arc(orb.x, orb.y, orb.radius + p * 5, 0, Math.PI * 2);
+    ctx.arc(orb.x, orb.y, GAME_ORB_RADIUS + p * 4, 0, Math.PI * 2);
     ctx.fillStyle = orb.glow;
     ctx.fill();
 
     // Inner solid orb
     ctx.shadowBlur = 0;
     ctx.beginPath();
-    ctx.arc(orb.x, orb.y, orb.radius - 3, 0, Math.PI * 2);
+    ctx.arc(orb.x, orb.y, GAME_ORB_RADIUS - 3, 0, Math.PI * 2);
     ctx.fillStyle = orb.fill;
     ctx.fill();
 
-    // Bright center highlight
+    // Bright center
     ctx.beginPath();
-    ctx.arc(orb.x, orb.y, 5, 0, Math.PI * 2);
+    ctx.arc(orb.x, orb.y, 4, 0, Math.PI * 2);
     ctx.fillStyle = "rgba(255, 255, 255, 0.85)";
     ctx.fill();
 
@@ -1492,7 +1400,7 @@ function drawOrbs() {
   }
 }
 
-function drawParticles() {
+function gameDrawParticles() {
   for (let i = 0; i < gameParticles.length; i++) {
     const p = gameParticles[i];
     ctx.save();
@@ -1507,19 +1415,21 @@ function drawParticles() {
   }
 }
 
-function drawGameScore() {
+function gameDrawScore() {
+  if (gameScore === 0) return;
   ctx.save();
-  ctx.shadowColor = "rgba(255, 255, 255, 0.5)";
-  ctx.shadowBlur = 10;
-  ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
-  ctx.font = "bold 28px Arial";
-  ctx.fillText(gameScore, W / 2 - ctx.measureText(gameScore).width / 2, 38);
+  ctx.shadowColor = "rgba(255, 255, 255, 0.4)";
+  ctx.shadowBlur = 8;
+  ctx.fillStyle = "rgba(255, 255, 255, 0.85)";
+  ctx.font = "bold 26px Arial";
+  const text = String(gameScore);
+  ctx.fillText(text, W / 2 - ctx.measureText(text).width / 2, 38);
 
   ctx.shadowBlur = 0;
-  ctx.fillStyle = "rgba(255, 255, 255, 0.4)";
-  ctx.font = "14px Arial";
+  ctx.fillStyle = "rgba(255, 255, 255, 0.35)";
+  ctx.font = "12px Arial";
   const label = "PUNKTE";
-  ctx.fillText(label, W / 2 - ctx.measureText(label).width / 2, 56);
+  ctx.fillText(label, W / 2 - ctx.measureText(label).width / 2, 54);
   ctx.restore();
 }
 
@@ -1555,7 +1465,6 @@ function startTimer() {
 
 // Function to reset the application
 function neu() {
-  gameActive = false;
   handleCustomAudioPauseNow();
   releaseCustomAudioObjectUrl();
   location.reload();
