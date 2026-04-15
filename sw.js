@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v2';
+const CACHE_VERSION = 'v3';
 const CACHE_NAME = `Knieb-${CACHE_VERSION}`;
 const CACHE_ASSETS = [
     '/',                    // Root URL

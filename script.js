@@ -519,6 +519,9 @@ function start() {
   } else if (AV === 3) {
     aktivDiv.style.display = "none";
     aktivCanvasDiv.style.display = "";
+    // Force layout so canvas gets real dimensions, then resize
+    void aktivCanvasDiv.offsetHeight;
+    resizeCanvas();
   }
 
   if ([1, 2, 3].includes(modus)) {
