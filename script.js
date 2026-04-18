@@ -1280,13 +1280,14 @@ function getInitArr(length) {
 
 function gameSpawnOrb() {
   const colorObj = GAME_ORB_COLORS[Math.floor(Math.random() * GAME_ORB_COLORS.length)];
-  // Spawn at the right side, random Y within the graph range
   // Y range: gravity center ± maxDeviation
   const centerY = H / 2 + 9.81 * scaleY;
   const range = maxDeviation * scaleY * 0.8;
   const orbY = centerY + (Math.random() * 2 - 1) * range;
-  // X: spawn in the right half of the canvas so it's near the line endpoint
-  const orbX = W * 0.5 + Math.random() * (W * 0.4);
+  // X: spawn at the graph line endpoint (the player) so orbs are within reach.
+  // Small leftward jitter keeps orbs inside the collection radius.
+  const endpointX = (Probenanzahl - 1) * scaleX;
+  const orbX = endpointX - Math.random() * (GAME_COLLECT_DIST * 0.6);
   gameOrbs.push({
     x: orbX,
     y: Math.max(GAME_ORB_RADIUS + 5, Math.min(H - GAME_ORB_RADIUS - 5, orbY)),
