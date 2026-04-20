@@ -28,6 +28,8 @@ let gameLastSpawn = 0;
 const GAME_MAX_ORBS = 4;
 const GAME_ORB_RADIUS = 14;
 const GAME_COLLECT_DIST = 28;
+// Fraction of canvas width an orb travels per second (right → left toward the player)
+const GAME_ORB_SPEED_FACTOR = 0.14;
 const GAME_ORB_COLORS = [
   { fill: "#ff6f9f", glow: "rgba(255, 111, 159, 0.6)" },
   { fill: "#6effd9", glow: "rgba(110, 255, 217, 0.5)" },
@@ -1173,8 +1175,8 @@ function tick() {
   // Point-collection game (runs on top of the graph in AV=3)
   if (AV === 3) {
     const endpointY = H / 2 + 9.81 * scaleY + (currentValue || 0) * -scaleY;
-    const endpointX = (Probenanzahl - 1) * scaleX;
-    gameUpdateOrbs(dt);
+    const endpointX = (Probenanzahl - 1) * scaleX * 0.5;
+    gameUpdateOrbs(dt, endpointX);
     gameCheckCollisions(endpointX, endpointY);
     gameUpdateParticles(dt);
     gameDrawOrbs();
@@ -1231,11 +1233,15 @@ function drawGrid() {
 // Function to draw the graph
 function drawGraph(dataArray, color, glowColor) {
     ctx.save();
-  
+
     ctx.translate(0, H / 2 + 9.81 * scaleY); // zentriere y achse auf 9.81
 
     const latestValue = dataArray[dataArray.length - 1] || 0;
     const pulse = Math.min(Math.abs(latestValue) / maxDeviation, 1);
+
+    // In game mode (AV=3), compress the graph so the line endpoint (player)
+    // sits in the middle of the canvas and orbs can approach from the right.
+    const graphScaleX = scaleX * (AV === 3 ? 0.5 : 1);
 
     ctx.lineWidth = 3.2;
     ctx.strokeStyle = color;
@@ -1249,9 +1255,9 @@ function drawGraph(dataArray, color, glowColor) {
     ctx.moveTo(0, startY);
 
     for (let i = 1; i < dataArray.length - 1; i++) {
-      const x = i * scaleX;
+      const x = i * graphScaleX;
       const y = dataArray[i] * -scaleY;
-      const nextX = (i + 1) * scaleX;
+      const nextX = (i + 1) * graphScaleX;
       const nextY = dataArray[i + 1] * -scaleY;
       const controlX = (x + nextX) / 2;
       const controlY = (y + nextY) / 2;
@@ -1260,7 +1266,7 @@ function drawGraph(dataArray, color, glowColor) {
 
     ctx.stroke();
 
-    const endX = (dataArray.length - 1) * scaleX;
+    const endX = (dataArray.length - 1) * graphScaleX;
     const endY = latestValue * -scaleY;
     ctx.shadowBlur = 0;
     ctx.fillStyle = color;
@@ -1280,17 +1286,17 @@ function getInitArr(length) {
 
 function gameSpawnOrb() {
   const colorObj = GAME_ORB_COLORS[Math.floor(Math.random() * GAME_ORB_COLORS.length)];
-  // Y range: gravity center ± maxDeviation
+  // Y range: gravity center ± maxDeviation (random target height)
   const centerY = H / 2 + 9.81 * scaleY;
   const range = maxDeviation * scaleY * 0.8;
   const orbY = centerY + (Math.random() * 2 - 1) * range;
-  // X: spawn at the graph line endpoint (the player) so orbs are within reach.
-  // Small leftward jitter keeps orbs inside the collection radius.
-  const endpointX = (Probenanzahl - 1) * scaleX;
-  const orbX = endpointX - Math.random() * (GAME_COLLECT_DIST * 0.6);
+  // Spawn at the right edge; travel left toward the player sitting at W/2.
+  // Speed scales with canvas width so crossing time stays roughly constant.
+  const speed = W * GAME_ORB_SPEED_FACTOR;
   gameOrbs.push({
-    x: orbX,
+    x: W + GAME_ORB_RADIUS,
     y: Math.max(GAME_ORB_RADIUS + 5, Math.min(H - GAME_ORB_RADIUS - 5, orbY)),
+    vx: -speed,
     pulse: Math.random() * Math.PI * 2,
     age: 0,
     fill: colorObj.fill,
@@ -1298,24 +1304,25 @@ function gameSpawnOrb() {
   });
 }
 
-function gameUpdateOrbs(dt) {
+function gameUpdateOrbs(dt, endpointX) {
   gameLastSpawn += dt;
   // Spawn new orbs periodically
-  if (gameOrbs.length < GAME_MAX_ORBS && gameLastSpawn > 2.5) {
+  if (gameOrbs.length < GAME_MAX_ORBS && gameLastSpawn > 2.0) {
     gameSpawnOrb();
     gameLastSpawn = 0;
   }
-  // Spawn initial orbs on first frame
+  // Spawn initial orb on first frame
   if (gameOrbs.length === 0 && gameScore === 0) {
-    gameSpawnOrb();
     gameSpawnOrb();
     gameLastSpawn = 0;
   }
   for (let i = gameOrbs.length - 1; i >= 0; i--) {
-    gameOrbs[i].pulse += dt * 2.5;
-    gameOrbs[i].age += dt;
-    // Remove orbs that have been around too long (8 seconds)
-    if (gameOrbs[i].age > 8) {
+    const orb = gameOrbs[i];
+    orb.pulse += dt * 2.5;
+    orb.age += dt;
+    orb.x += orb.vx * dt;
+    // Remove orbs that have passed the player without being collected
+    if (orb.x < endpointX - GAME_COLLECT_DIST) {
       gameOrbs.splice(i, 1);
     }
   }
@@ -1368,10 +1375,8 @@ function gameDrawOrbs() {
   for (let i = 0; i < gameOrbs.length; i++) {
     const orb = gameOrbs[i];
     const p = Math.sin(orb.pulse) * 0.4 + 0.6;
-    // Fade in during first 0.5s, fade out in last 2s
-    let alpha = 1;
-    if (orb.age < 0.5) alpha = orb.age / 0.5;
-    if (orb.age > 6) alpha = Math.max(0, (8 - orb.age) / 2);
+    // Fade in during the first 0.4s as the orb emerges from the right edge
+    const alpha = Math.min(1, orb.age / 0.4);
 
     ctx.save();
     ctx.globalAlpha = alpha;
