@@ -571,6 +571,11 @@ function start() {
   } else if (AV === 3) {
     aktivDiv.style.display = "none";
     aktivCanvasDiv.style.display = "";
+    // The canvas was hidden on load, so its size may still be 0 here.
+    // Measure it now that it's visible, then again on the next frame once
+    // layout has definitely settled.
+    resizeCanvas();
+    requestAnimationFrame(resizeCanvas);
   }
 
   if ([1, 2, 3].includes(modus)) {
@@ -1161,6 +1166,13 @@ let scaleX = 1;
 let scaleY = 1;
 
 function resizeCanvas() {
+  // When the canvas is hidden (display:none) its client size is 0. Skipping
+  // here avoids locking W/H to a 1×1 box, which otherwise leaves the game
+  // blank when the view is shown later.
+  if (canvas.clientWidth === 0 || canvas.clientHeight === 0) {
+    return;
+  }
+
   const ratio = window.devicePixelRatio || 1;
   const displayWidth = Math.max(1, canvas.clientWidth);
   const displayHeight = Math.max(1, canvas.clientHeight);
@@ -1185,9 +1197,17 @@ const linien = {
     x: getInitArr(Probenanzahl),
 };
 
-const maxDeviation = 20; 
+const maxDeviation = 20;
 resizeCanvas();
 window.addEventListener("resize", resizeCanvas);
+
+// Re-measure whenever the canvas actually gets real pixels (e.g. after the
+// game view is unhidden in start()). ResizeObserver fires on the first layout
+// pass when the element goes from 0×0 to a real size.
+if (typeof ResizeObserver !== "undefined") {
+  const canvasObserver = new ResizeObserver(() => resizeCanvas());
+  canvasObserver.observe(canvas);
+}
 
 // Function to sample device motion data
 function doSample(event) {
@@ -1254,7 +1274,32 @@ function tick() {
     gameDrawOrbs();
     gameDrawParticles();
     gameDrawScore();
+    drawOrbModeOverlay();
   }
+}
+
+// Small HUD so you can see at a glance which control mode is active and the
+// key internal signal driving the orb. Useful for sanity-checking that modes
+// actually behave differently.
+function drawOrbModeOverlay() {
+  let detail = "";
+  if (modus !== 1) {
+    detail = "(only active for squats)";
+  } else if (orbControlMode === "phase") {
+    detail = `ss=${ss} norm=${orbPhaseNorm.toFixed(2)}`;
+  } else if (orbControlMode === "analog") {
+    detail = `norm=${orbAnalogNorm.toFixed(2)} samples=${zHistory.length}`;
+  } else if (orbControlMode === "momentum") {
+    detail = `vel=${orbMomentumVel.toFixed(0)} y=${orbMomentumY.toFixed(0)}`;
+  } else if (orbControlMode === "amplitude") {
+    detail = `env=${orbAmpEnv.toFixed(2)} phase=${orbAmpPhase.toFixed(2)}`;
+  }
+
+  ctx.save();
+  ctx.fillStyle = "rgba(255,255,255,0.75)";
+  ctx.font = "500 12px Arial";
+  ctx.fillText(`mode: ${orbControlMode}  ${detail}`, 10, H - 12);
+  ctx.restore();
 }
 
 // Maps the current sensor state to the orb's Y pixel position. The "phase" and
