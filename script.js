@@ -34,36 +34,48 @@ const ORB_GOOD = { fill: "#6effd9", glow: "rgba(110,255,217,0.6)",  type: "good"
 const ORB_BAD  = { fill: "#ff4f4f", glow: "rgba(255,79,79,0.65)",   type: "bad"  };
 
 // Orb control mode for the AV=3 game.
-//   "sensor"    – original behaviour: raw accel value maps 1:1 to orb Y.
-//   "phase"     – discrete squat state (ss) drives a target Y, smoothed.
-//   "analog"    – current Z mapped into the rolling min/max range of the last window.
-//   "momentum"  – Z deviation from gravity accelerates an orb velocity (spring + damping).
-//   "amplitude" – phase target, but the reach and lerp speed scale with recent peak amplitude.
+//   "sensor"   – raw accel value maps 1:1 to orb Y (positional).
+//   "phase"    – discrete squat state (ss) drives a target Y, smoothed (positional).
+//   "kinetic"  – Z deviation from g maps to orb *speed*; direction = sign of deviation.
+//   "throttle" – amplitude envelope sets speed magnitude, squat posture (ss) sets direction.
+//   "pulse"    – each completed rep gives the orb a discrete impulse; drifts between reps.
+//   "tempo"    – rep cadence (reps/s, rolling window) scales speed; ss sets direction.
 let orbControlMode = "sensor";
 let orbPhaseNorm = 0;                 // 0 = top (standing), 1 = bottom (squat)
-let orbAnalogNorm = 0;                // 0 = top, 1 = bottom
 const ORB_PHASE_TAU = 0.15;           // seconds – how fast the orb chases its target
-const ORB_ANALOG_TAU = 0.08;
-const ORB_ANALOG_WINDOW_MS = 2000;
-const ORB_ANALOG_MIN_RANGE = 1.5;     // m/s² – floor for min/max spread so mapping isn't jumpy
-let zHistory = [];                    // rolling [{t, v}] of recent Z samples for analog mode
 
-// Momentum mode: signed pixel offset from canvas centre, driven by a spring/damped integrator.
-let orbMomentumY = 0;
-let orbMomentumVel = 0;
-const ORB_MOMENTUM_GAIN = 70;         // px/s² of orb accel per m/s² of Z deviation
-const ORB_MOMENTUM_DAMP = 2.5;        // s⁻¹ velocity damping
-const ORB_MOMENTUM_SPRING = 3.5;      // s⁻¹ restoring force toward centre
+// Kinetic mode: Z deviation from gravity drives orb velocity (speed-controlled, not position).
+let orbKineticY = 0;                  // signed px offset from centre
+const ORB_KINETIC_DEADZONE = 0.4;     // m/s² – below this the orb freezes
+const ORB_KINETIC_SCALE = 40;         // px/s per m/s² of deviation above the deadzone
+const ORB_KINETIC_DAMP = 0.9;         // s⁻¹ gentle exponential pull toward centre when still
 
-// Amplitude mode: envelope of |Z - g| scales reach + lerp speed around the phase target.
-let orbAmpEnv = 0;                    // 0..1 smoothed amplitude envelope
-let orbAmpPhase = 0;                  // 0 = top (stand), 1 = bottom (squat)
-const ORB_AMP_REF = 4.0;              // m/s² deviation that yields full reach
-const ORB_AMP_ATTACK = 6.0;           // s⁻¹ rise rate
-const ORB_AMP_RELEASE = 0.8;          // s⁻¹ decay rate
-const ORB_AMP_MIN_REACH = 0.1;        // fraction of half-canvas reachable when still
-const ORB_AMP_TAU_FAST = 0.05;        // fast lerp at full amplitude
-const ORB_AMP_TAU_SLOW = 0.30;        // slow lerp when barely moving
+// Throttle mode: amplitude envelope = |Z - g| → speed magnitude, ss → direction.
+let orbThrottleY = 0;
+let orbThrottleEnv = 0;               // 0..1 smoothed amplitude envelope
+const ORB_THROTTLE_REF = 3.0;         // m/s² deviation that yields full throttle
+const ORB_THROTTLE_ATTACK = 5.0;      // s⁻¹ envelope rise rate
+const ORB_THROTTLE_RELEASE = 1.2;     // s⁻¹ envelope decay rate
+const ORB_THROTTLE_MAX_SPEED = 220;   // px/s at full throttle
+
+// Pulse mode: each completed squat rep kicks the orb toward the opposite side.
+let orbPulseY = 0;
+let orbPulseVel = 0;
+let orbPulsePending = 0;              // reps not yet consumed by pulse mode
+let orbPulseToggle = false;
+const ORB_PULSE_IMPULSE = 180;        // px/s velocity added per rep
+const ORB_PULSE_DAMP = 1.2;           // s⁻¹ velocity damping
+const ORB_PULSE_CENTER = 2.0;         // s⁻¹ spring toward centre
+
+// Tempo mode: reps per second over a rolling window sets speed; ss sets direction.
+let orbTempoY = 0;
+let orbTempoEnv = 0;                  // 0..1 smoothed cadence envelope
+let orbRepTimes = [];                 // ms timestamps of recent squat reps
+const ORB_TEMPO_WINDOW_MS = 10000;    // reps within this window count toward cadence
+const ORB_TEMPO_FULL_RATE = 0.8;      // reps/s that saturates tempo speed
+const ORB_TEMPO_ATTACK = 2.5;         // s⁻¹
+const ORB_TEMPO_RELEASE = 0.6;        // s⁻¹
+const ORB_TEMPO_MAX_SPEED = 180;      // px/s at full cadence
 
 let viewYear = new Date().getFullYear();
 let viewMonth = new Date().getMonth();
@@ -537,17 +549,21 @@ if (orbControlSelect) {
   orbControlSelect.addEventListener("change", () => {
     const v = orbControlSelect.value;
     if (
-      v === "sensor" || v === "phase" || v === "analog" ||
-      v === "momentum" || v === "amplitude"
+      v === "sensor" || v === "phase" || v === "kinetic" ||
+      v === "throttle" || v === "pulse" || v === "tempo"
     ) {
       orbControlMode = v;
       orbPhaseNorm = ss === 1 ? 1 : 0;
-      orbAnalogNorm = 0;
-      zHistory = [];
-      orbMomentumY = 0;
-      orbMomentumVel = 0;
-      orbAmpEnv = 0;
-      orbAmpPhase = ss === 1 ? 1 : 0;
+      orbKineticY = 0;
+      orbThrottleY = 0;
+      orbThrottleEnv = 0;
+      orbPulseY = 0;
+      orbPulseVel = 0;
+      orbPulsePending = 0;
+      orbPulseToggle = false;
+      orbTempoY = 0;
+      orbTempoEnv = 0;
+      orbRepTimes = [];
     }
   });
 }
@@ -789,12 +805,16 @@ function resetMotionState() {
   needsMidCrossing = false;
   firstExecution = 0;
   orbPhaseNorm = 0;
-  orbAnalogNorm = 0;
-  zHistory = [];
-  orbMomentumY = 0;
-  orbMomentumVel = 0;
-  orbAmpEnv = 0;
-  orbAmpPhase = 0;
+  orbKineticY = 0;
+  orbThrottleY = 0;
+  orbThrottleEnv = 0;
+  orbPulseY = 0;
+  orbPulseVel = 0;
+  orbPulsePending = 0;
+  orbPulseToggle = false;
+  orbTempoY = 0;
+  orbTempoEnv = 0;
+  orbRepTimes = [];
 }
 
 // Shared rep-counting logic used by both hochg and niedrigg
@@ -807,6 +827,10 @@ function countMotionRep() {
   }
   updateCountDisplay();
   updateLocalStorageCounts();
+  if (modus === 1) {
+    orbRepTimes.push(performance.now());
+    orbPulsePending += 1;
+  }
 }
 
 // Called when the sensor value crosses the HIGH threshold
@@ -1218,16 +1242,6 @@ function doSample(event) {
     if      (modus === 1) {shiftAndCrunch(linien.z, event.accelerationIncludingGravity.z);}
     else if (modus === 2) {shiftAndCrunch(linien.y, event.accelerationIncludingGravity.y);}
     else if (modus === 3) {shiftAndCrunch(linien.x, event.accelerationIncludingGravity.x);}
-
-    // Feed the rolling Z history used by the "analog" orb control mode.
-    if (modus === 1 && AV === 3 && orbControlMode === "analog") {
-      const now = performance.now();
-      zHistory.push({ t: now, v: event.accelerationIncludingGravity.z });
-      const cutoff = now - ORB_ANALOG_WINDOW_MS;
-      while (zHistory.length && zHistory[0].t < cutoff) {
-        zHistory.shift();
-      }
-    }
 }
 
 // Function to shift data and compress older data
@@ -1287,12 +1301,14 @@ function drawOrbModeOverlay() {
     detail = "(only active for squats)";
   } else if (orbControlMode === "phase") {
     detail = `ss=${ss} norm=${orbPhaseNorm.toFixed(2)}`;
-  } else if (orbControlMode === "analog") {
-    detail = `norm=${orbAnalogNorm.toFixed(2)} samples=${zHistory.length}`;
-  } else if (orbControlMode === "momentum") {
-    detail = `vel=${orbMomentumVel.toFixed(0)} y=${orbMomentumY.toFixed(0)}`;
-  } else if (orbControlMode === "amplitude") {
-    detail = `env=${orbAmpEnv.toFixed(2)} phase=${orbAmpPhase.toFixed(2)}`;
+  } else if (orbControlMode === "kinetic") {
+    detail = `y=${orbKineticY.toFixed(0)}`;
+  } else if (orbControlMode === "throttle") {
+    detail = `env=${orbThrottleEnv.toFixed(2)} y=${orbThrottleY.toFixed(0)}`;
+  } else if (orbControlMode === "pulse") {
+    detail = `vel=${orbPulseVel.toFixed(0)} y=${orbPulseY.toFixed(0)} reps=${orbRepTimes.length}`;
+  } else if (orbControlMode === "tempo") {
+    detail = `env=${orbTempoEnv.toFixed(2)} y=${orbTempoY.toFixed(0)} reps=${orbRepTimes.length}`;
   }
 
   ctx.save();
@@ -1302,9 +1318,9 @@ function drawOrbModeOverlay() {
   ctx.restore();
 }
 
-// Maps the current sensor state to the orb's Y pixel position. The "phase" and
-// "analog" modes only activate for squats (modus===1) — other exercises keep
-// the direct sensor mapping so the orb still follows the graph line.
+// Maps the current sensor state to the orb's Y pixel position. The non-"sensor"
+// modes only activate for squats (modus===1) — other exercises keep the direct
+// sensor mapping so the orb still follows the graph line.
 function computeOrbEndpointY(currentValue, dt) {
   const sensorY = H / 2 + 9.81 * scaleY + (currentValue || 0) * -scaleY;
   if (modus !== 1 || orbControlMode === "sensor") {
@@ -1314,6 +1330,8 @@ function computeOrbEndpointY(currentValue, dt) {
   const margin = GAME_ORB_RADIUS + 10;
   const topY = margin;
   const bottomY = H - margin;
+  const centerY = (topY + bottomY) / 2;
+  const halfRange = (bottomY - topY) / 2;
 
   if (orbControlMode === "phase") {
     const target = ss === 1 ? 1 : 0;
@@ -1322,63 +1340,84 @@ function computeOrbEndpointY(currentValue, dt) {
     return topY + (bottomY - topY) * orbPhaseNorm;
   }
 
-  if (orbControlMode === "analog") {
-    let zMin = Infinity;
-    let zMax = -Infinity;
-    for (let i = 0; i < zHistory.length; i++) {
-      const v = zHistory[i].v;
-      if (v < zMin) zMin = v;
-      if (v > zMax) zMax = v;
+  if (orbControlMode === "kinetic") {
+    // Deviation from gravity sets the orb's *velocity* rather than its position.
+    // Stand still → dev ≈ 0 → orb frozen. Moving through a squat produces
+    // signed deviation pulses (positive on the way up, negative at transitions),
+    // which the orb integrates. A soft exponential pull keeps it from drifting.
+    const dev = (currentValue || 0) - 9.81;
+    const absDev = Math.abs(dev);
+    let v = 0;
+    if (absDev > ORB_KINETIC_DEADZONE) {
+      v = -Math.sign(dev) * (absDev - ORB_KINETIC_DEADZONE) * ORB_KINETIC_SCALE;
     }
-    let target = orbAnalogNorm;
-    if (zHistory.length >= 2 && zMax - zMin >= ORB_ANALOG_MIN_RANGE) {
-      // Lower Z (body dropping / near bottom of squat) → orb toward bottom.
-      target = 1 - (currentValue - zMin) / (zMax - zMin);
-      if (target < 0) target = 0;
-      if (target > 1) target = 1;
-    }
-    const alpha = 1 - Math.exp(-dt / ORB_ANALOG_TAU);
-    orbAnalogNorm += (target - orbAnalogNorm) * alpha;
-    return topY + (bottomY - topY) * orbAnalogNorm;
+    orbKineticY += v * dt;
+    orbKineticY *= Math.exp(-ORB_KINETIC_DAMP * dt);
+    if (orbKineticY > halfRange) orbKineticY = halfRange;
+    else if (orbKineticY < -halfRange) orbKineticY = -halfRange;
+    return centerY + orbKineticY;
   }
 
-  const centerY = (topY + bottomY) / 2;
-  const halfRange = (bottomY - topY) / 2;
-
-  if (orbControlMode === "momentum") {
-    // Treat Z deviation from gravity as a downward/upward push on the orb.
-    // Z > 9.81 → user accelerating up → orb accelerates up (negative Y offset).
-    // A spring pulls back to centre and damping bleeds off velocity when still.
-    const force = (9.81 - (currentValue || 0)) * ORB_MOMENTUM_GAIN;
-    orbMomentumVel += force * dt;
-    orbMomentumVel -= orbMomentumY * ORB_MOMENTUM_SPRING * dt;
-    orbMomentumVel *= Math.exp(-ORB_MOMENTUM_DAMP * dt);
-    orbMomentumY += orbMomentumVel * dt;
-    if (orbMomentumY > halfRange) {
-      orbMomentumY = halfRange;
-      if (orbMomentumVel > 0) orbMomentumVel = 0;
-    } else if (orbMomentumY < -halfRange) {
-      orbMomentumY = -halfRange;
-      if (orbMomentumVel < 0) orbMomentumVel = 0;
-    }
-    return centerY + orbMomentumY;
+  if (orbControlMode === "throttle") {
+    // |Z - g| envelope → how fast the orb moves. ss → which way it moves.
+    // Holding still at any posture freezes the orb; the harder you pump, the
+    // faster it travels toward the endpoint matching your current phase.
+    const amp = Math.min(Math.abs((currentValue || 0) - 9.81) / ORB_THROTTLE_REF, 1);
+    const rate = amp > orbThrottleEnv ? ORB_THROTTLE_ATTACK : ORB_THROTTLE_RELEASE;
+    orbThrottleEnv += (amp - orbThrottleEnv) * (1 - Math.exp(-rate * dt));
+    const dir = ss === 1 ? 1 : -1;
+    orbThrottleY += orbThrottleEnv * ORB_THROTTLE_MAX_SPEED * dir * dt;
+    if (orbThrottleY > halfRange) orbThrottleY = halfRange;
+    else if (orbThrottleY < -halfRange) orbThrottleY = -halfRange;
+    return centerY + orbThrottleY;
   }
 
-  if (orbControlMode === "amplitude") {
-    // Envelope follower on |Z - g| gives a 0..1 "how hard are you moving" signal.
-    const amp = Math.abs((currentValue || 0) - 9.81) / ORB_AMP_REF;
-    const ampTarget = amp > 1 ? 1 : amp;
-    const envRate = ampTarget > orbAmpEnv ? ORB_AMP_ATTACK : ORB_AMP_RELEASE;
-    orbAmpEnv += (ampTarget - orbAmpEnv) * (1 - Math.exp(-envRate * dt));
+  if (orbControlMode === "pulse") {
+    // Consume rep events that arrived since the last frame — each one kicks
+    // the orb. Direction points away from its current side so reps counter-
+    // balance; with the orb near centre, the kick direction just alternates.
+    while (orbPulsePending > 0) {
+      let dir;
+      if (Math.abs(orbPulseY) > 2) {
+        dir = -Math.sign(orbPulseY);
+      } else {
+        dir = orbPulseToggle ? 1 : -1;
+        orbPulseToggle = !orbPulseToggle;
+      }
+      orbPulseVel += dir * ORB_PULSE_IMPULSE;
+      orbPulsePending -= 1;
+    }
+    orbPulseVel -= orbPulseY * ORB_PULSE_CENTER * dt;
+    orbPulseVel *= Math.exp(-ORB_PULSE_DAMP * dt);
+    orbPulseY += orbPulseVel * dt;
+    if (orbPulseY > halfRange) {
+      orbPulseY = halfRange;
+      if (orbPulseVel > 0) orbPulseVel = 0;
+    } else if (orbPulseY < -halfRange) {
+      orbPulseY = -halfRange;
+      if (orbPulseVel < 0) orbPulseVel = 0;
+    }
+    return centerY + orbPulseY;
+  }
 
-    // Phase follows the rep state machine; lerp speed scales with envelope.
-    const phaseTarget = ss === 1 ? 1 : 0;
-    const tau = ORB_AMP_TAU_SLOW - (ORB_AMP_TAU_SLOW - ORB_AMP_TAU_FAST) * orbAmpEnv;
-    orbAmpPhase += (phaseTarget - orbAmpPhase) * (1 - Math.exp(-dt / Math.max(tau, 0.04)));
-
-    // Reach grows with envelope: gentle movement stays near centre, powerful squats swing the full canvas.
-    const reach = ORB_AMP_MIN_REACH + (1 - ORB_AMP_MIN_REACH) * orbAmpEnv;
-    return centerY + halfRange * reach * (orbAmpPhase * 2 - 1);
+  if (orbControlMode === "tempo") {
+    // Prune old reps, compute cadence, envelope-follow so speed doesn't jitter
+    // on each new rep, then drive Y at a speed proportional to cadence with
+    // direction from ss (bottom → orb pushes down, top → orb pushes up).
+    const now = performance.now();
+    const cutoff = now - ORB_TEMPO_WINDOW_MS;
+    while (orbRepTimes.length && orbRepTimes[0] < cutoff) {
+      orbRepTimes.shift();
+    }
+    const rate = orbRepTimes.length / (ORB_TEMPO_WINDOW_MS / 1000);
+    const target = Math.min(rate / ORB_TEMPO_FULL_RATE, 1);
+    const r = target > orbTempoEnv ? ORB_TEMPO_ATTACK : ORB_TEMPO_RELEASE;
+    orbTempoEnv += (target - orbTempoEnv) * (1 - Math.exp(-r * dt));
+    const dir = ss === 1 ? 1 : -1;
+    orbTempoY += orbTempoEnv * ORB_TEMPO_MAX_SPEED * dir * dt;
+    if (orbTempoY > halfRange) orbTempoY = halfRange;
+    else if (orbTempoY < -halfRange) orbTempoY = -halfRange;
+    return centerY + orbTempoY;
   }
 
   return sensorY;
