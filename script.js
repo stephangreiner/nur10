@@ -33,6 +33,19 @@ const GAME_ORB_SPEED_FACTOR = 0.14;
 const ORB_GOOD = { fill: "#6effd9", glow: "rgba(110,255,217,0.6)",  type: "good" };
 const ORB_BAD  = { fill: "#ff4f4f", glow: "rgba(255,79,79,0.65)",   type: "bad"  };
 
+// Orb control mode for the AV=3 game.
+//   "sensor" – original behaviour: raw accel value maps 1:1 to orb Y.
+//   "phase"  – discrete squat state (ss) drives a target Y, smoothed.
+//   "analog" – current Z mapped into the rolling min/max range of the last window.
+let orbControlMode = "sensor";
+let orbPhaseNorm = 0;                 // 0 = top (standing), 1 = bottom (squat)
+let orbAnalogNorm = 0;                // 0 = top, 1 = bottom
+const ORB_PHASE_TAU = 0.15;           // seconds – how fast the orb chases its target
+const ORB_ANALOG_TAU = 0.08;
+const ORB_ANALOG_WINDOW_MS = 2000;
+const ORB_ANALOG_MIN_RANGE = 1.5;     // m/s² – floor for min/max spread so mapping isn't jumpy
+let zHistory = [];                    // rolling [{t, v}] of recent Z samples for analog mode
+
 let viewYear = new Date().getFullYear();
 let viewMonth = new Date().getMonth();
 
@@ -498,6 +511,21 @@ ansichtw.addEventListener("change", function () {
   }
 });
 
+// Orb control dropdown (visible only in the AV=3 canvas game)
+const orbControlSelect = document.getElementById("orbControl");
+if (orbControlSelect) {
+  orbControlSelect.value = orbControlMode;
+  orbControlSelect.addEventListener("change", () => {
+    const v = orbControlSelect.value;
+    if (v === "sensor" || v === "phase" || v === "analog") {
+      orbControlMode = v;
+      orbPhaseNorm = ss === 1 ? 1 : 0;
+      orbAnalogNorm = 0;
+      zHistory = [];
+    }
+  });
+}
+
 // Function to start the exercise tracking
 function start() {
   resetMotionState();
@@ -729,6 +757,9 @@ function resetMotionState() {
   motionZone = "mid";
   needsMidCrossing = false;
   firstExecution = 0;
+  orbPhaseNorm = 0;
+  orbAnalogNorm = 0;
+  zHistory = [];
 }
 
 // Shared rep-counting logic used by both hochg and niedrigg
@@ -1134,9 +1165,19 @@ function doSample(event) {
       return;
     }
 
-    if      (modus === 1) {shiftAndCrunch(linien.z, event.accelerationIncludingGravity.z);} 
+    if      (modus === 1) {shiftAndCrunch(linien.z, event.accelerationIncludingGravity.z);}
     else if (modus === 2) {shiftAndCrunch(linien.y, event.accelerationIncludingGravity.y);}
     else if (modus === 3) {shiftAndCrunch(linien.x, event.accelerationIncludingGravity.x);}
+
+    // Feed the rolling Z history used by the "analog" orb control mode.
+    if (modus === 1 && AV === 3 && orbControlMode === "analog") {
+      const now = performance.now();
+      zHistory.push({ t: now, v: event.accelerationIncludingGravity.z });
+      const cutoff = now - ORB_ANALOG_WINDOW_MS;
+      while (zHistory.length && zHistory[0].t < cutoff) {
+        zHistory.shift();
+      }
+    }
 }
 
 // Function to shift data and compress older data
@@ -1175,7 +1216,7 @@ function tick() {
 
   // Point-collection game (runs on top of the graph in AV=3)
   if (AV === 3) {
-    const endpointY = H / 2 + 9.81 * scaleY + (currentValue || 0) * -scaleY;
+    const endpointY = computeOrbEndpointY(currentValue, dt);
     const endpointX = (Probenanzahl - 1) * scaleX * 0.5;
     gameUpdateOrbs(dt, endpointX);
     gameCheckCollisions(endpointX, endpointY);
@@ -1184,6 +1225,49 @@ function tick() {
     gameDrawParticles();
     gameDrawScore();
   }
+}
+
+// Maps the current sensor state to the orb's Y pixel position. The "phase" and
+// "analog" modes only activate for squats (modus===1) — other exercises keep
+// the direct sensor mapping so the orb still follows the graph line.
+function computeOrbEndpointY(currentValue, dt) {
+  const sensorY = H / 2 + 9.81 * scaleY + (currentValue || 0) * -scaleY;
+  if (modus !== 1 || orbControlMode === "sensor") {
+    return sensorY;
+  }
+
+  const margin = GAME_ORB_RADIUS + 10;
+  const topY = margin;
+  const bottomY = H - margin;
+
+  if (orbControlMode === "phase") {
+    const target = ss === 1 ? 1 : 0;
+    const alpha = 1 - Math.exp(-dt / ORB_PHASE_TAU);
+    orbPhaseNorm += (target - orbPhaseNorm) * alpha;
+    return topY + (bottomY - topY) * orbPhaseNorm;
+  }
+
+  if (orbControlMode === "analog") {
+    let zMin = Infinity;
+    let zMax = -Infinity;
+    for (let i = 0; i < zHistory.length; i++) {
+      const v = zHistory[i].v;
+      if (v < zMin) zMin = v;
+      if (v > zMax) zMax = v;
+    }
+    let target = orbAnalogNorm;
+    if (zHistory.length >= 2 && zMax - zMin >= ORB_ANALOG_MIN_RANGE) {
+      // Lower Z (body dropping / near bottom of squat) → orb toward bottom.
+      target = 1 - (currentValue - zMin) / (zMax - zMin);
+      if (target < 0) target = 0;
+      if (target > 1) target = 1;
+    }
+    const alpha = 1 - Math.exp(-dt / ORB_ANALOG_TAU);
+    orbAnalogNorm += (target - orbAnalogNorm) * alpha;
+    return topY + (bottomY - topY) * orbAnalogNorm;
+  }
+
+  return sensorY;
 }
 
 function drawBackground() {
