@@ -1287,6 +1287,11 @@ function tick() {
     gameUpdateParticles(dt);
     gameDrawOrbs();
     gameDrawParticles();
+    let headColor = "#ff6f9f";
+    let headGlow = "rgba(255, 111, 159, 0.55)";
+    if (modus === 2) { headColor = "#6effd9"; headGlow = "rgba(110, 255, 217, 0.45)"; }
+    else if (modus === 3) { headColor = "#6ab6ff"; headGlow = "rgba(106, 182, 255, 0.45)"; }
+    drawPlayerHead(endpointX, endpointY, headColor, headGlow);
     gameDrawScore();
     drawOrbModeOverlay();
   }
@@ -1506,23 +1511,46 @@ function drawGraph(dataArray, color, glowColor) {
 
     const endX = (dataArray.length - 1) * graphScaleX;
     const endY = latestValue * -scaleY;
-    // Distinctive player head — large glowing circle with white ring and highlight
-    ctx.shadowColor = glowColor;
-    ctx.shadowBlur = 32 + pulse * 12;
-    ctx.strokeStyle = "rgba(255,255,255,0.9)";
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.arc(endX, endY, 10 + pulse * 2, 0, Math.PI * 2);
-    ctx.fillStyle = color;
-    ctx.fill();
-    ctx.stroke();
-    ctx.shadowBlur = 0;
-    ctx.fillStyle = "rgba(255,255,255,0.95)";
-    ctx.beginPath();
-    ctx.arc(endX, endY, 3, 0, Math.PI * 2);
-    ctx.fill();
+    // In AV=3 the player head is drawn separately by tick() at endpointY so
+    // the orb-control mode actually affects where the player sits. Here we
+    // only draw the head inline for the non-game graph view.
+    if (AV !== 3) {
+      ctx.shadowColor = glowColor;
+      ctx.shadowBlur = 32 + pulse * 12;
+      ctx.strokeStyle = "rgba(255,255,255,0.9)";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(endX, endY, 10 + pulse * 2, 0, Math.PI * 2);
+      ctx.fillStyle = color;
+      ctx.fill();
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+      ctx.fillStyle = "rgba(255,255,255,0.95)";
+      ctx.beginPath();
+      ctx.arc(endX, endY, 3, 0, Math.PI * 2);
+      ctx.fill();
+    }
 
     ctx.restore();
+}
+
+function drawPlayerHead(x, y, color, glowColor) {
+  ctx.save();
+  ctx.shadowColor = glowColor;
+  ctx.shadowBlur = 32;
+  ctx.strokeStyle = "rgba(255,255,255,0.9)";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.arc(x, y, 11, 0, Math.PI * 2);
+  ctx.fillStyle = color;
+  ctx.fill();
+  ctx.stroke();
+  ctx.shadowBlur = 0;
+  ctx.fillStyle = "rgba(255,255,255,0.95)";
+  ctx.beginPath();
+  ctx.arc(x, y, 3, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
 }
 
 // Function to initialize an array with zeros
