@@ -34,9 +34,11 @@ const ORB_GOOD = { fill: "#6effd9", glow: "rgba(110,255,217,0.6)",  type: "good"
 const ORB_BAD  = { fill: "#ff4f4f", glow: "rgba(255,79,79,0.65)",   type: "bad"  };
 
 // Orb control mode for the AV=3 game.
-//   "sensor" – original behaviour: raw accel value maps 1:1 to orb Y.
-//   "phase"  – discrete squat state (ss) drives a target Y, smoothed.
-//   "analog" – current Z mapped into the rolling min/max range of the last window.
+//   "sensor"    – original behaviour: raw accel value maps 1:1 to orb Y.
+//   "phase"     – discrete squat state (ss) drives a target Y, smoothed.
+//   "analog"    – current Z mapped into the rolling min/max range of the last window.
+//   "momentum"  – Z deviation from gravity accelerates an orb velocity (spring + damping).
+//   "amplitude" – phase target, but the reach and lerp speed scale with recent peak amplitude.
 let orbControlMode = "sensor";
 let orbPhaseNorm = 0;                 // 0 = top (standing), 1 = bottom (squat)
 let orbAnalogNorm = 0;                // 0 = top, 1 = bottom
@@ -45,6 +47,23 @@ const ORB_ANALOG_TAU = 0.08;
 const ORB_ANALOG_WINDOW_MS = 2000;
 const ORB_ANALOG_MIN_RANGE = 1.5;     // m/s² – floor for min/max spread so mapping isn't jumpy
 let zHistory = [];                    // rolling [{t, v}] of recent Z samples for analog mode
+
+// Momentum mode: signed pixel offset from canvas centre, driven by a spring/damped integrator.
+let orbMomentumY = 0;
+let orbMomentumVel = 0;
+const ORB_MOMENTUM_GAIN = 70;         // px/s² of orb accel per m/s² of Z deviation
+const ORB_MOMENTUM_DAMP = 2.5;        // s⁻¹ velocity damping
+const ORB_MOMENTUM_SPRING = 3.5;      // s⁻¹ restoring force toward centre
+
+// Amplitude mode: envelope of |Z - g| scales reach + lerp speed around the phase target.
+let orbAmpEnv = 0;                    // 0..1 smoothed amplitude envelope
+let orbAmpPhase = 0;                  // 0 = top (stand), 1 = bottom (squat)
+const ORB_AMP_REF = 4.0;              // m/s² deviation that yields full reach
+const ORB_AMP_ATTACK = 6.0;           // s⁻¹ rise rate
+const ORB_AMP_RELEASE = 0.8;          // s⁻¹ decay rate
+const ORB_AMP_MIN_REACH = 0.1;        // fraction of half-canvas reachable when still
+const ORB_AMP_TAU_FAST = 0.05;        // fast lerp at full amplitude
+const ORB_AMP_TAU_SLOW = 0.30;        // slow lerp when barely moving
 
 let viewYear = new Date().getFullYear();
 let viewMonth = new Date().getMonth();
@@ -517,11 +536,18 @@ if (orbControlSelect) {
   orbControlSelect.value = orbControlMode;
   orbControlSelect.addEventListener("change", () => {
     const v = orbControlSelect.value;
-    if (v === "sensor" || v === "phase" || v === "analog") {
+    if (
+      v === "sensor" || v === "phase" || v === "analog" ||
+      v === "momentum" || v === "amplitude"
+    ) {
       orbControlMode = v;
       orbPhaseNorm = ss === 1 ? 1 : 0;
       orbAnalogNorm = 0;
       zHistory = [];
+      orbMomentumY = 0;
+      orbMomentumVel = 0;
+      orbAmpEnv = 0;
+      orbAmpPhase = ss === 1 ? 1 : 0;
     }
   });
 }
@@ -760,6 +786,10 @@ function resetMotionState() {
   orbPhaseNorm = 0;
   orbAnalogNorm = 0;
   zHistory = [];
+  orbMomentumY = 0;
+  orbMomentumVel = 0;
+  orbAmpEnv = 0;
+  orbAmpPhase = 0;
 }
 
 // Shared rep-counting logic used by both hochg and niedrigg
@@ -1265,6 +1295,45 @@ function computeOrbEndpointY(currentValue, dt) {
     const alpha = 1 - Math.exp(-dt / ORB_ANALOG_TAU);
     orbAnalogNorm += (target - orbAnalogNorm) * alpha;
     return topY + (bottomY - topY) * orbAnalogNorm;
+  }
+
+  const centerY = (topY + bottomY) / 2;
+  const halfRange = (bottomY - topY) / 2;
+
+  if (orbControlMode === "momentum") {
+    // Treat Z deviation from gravity as a downward/upward push on the orb.
+    // Z > 9.81 → user accelerating up → orb accelerates up (negative Y offset).
+    // A spring pulls back to centre and damping bleeds off velocity when still.
+    const force = (9.81 - (currentValue || 0)) * ORB_MOMENTUM_GAIN;
+    orbMomentumVel += force * dt;
+    orbMomentumVel -= orbMomentumY * ORB_MOMENTUM_SPRING * dt;
+    orbMomentumVel *= Math.exp(-ORB_MOMENTUM_DAMP * dt);
+    orbMomentumY += orbMomentumVel * dt;
+    if (orbMomentumY > halfRange) {
+      orbMomentumY = halfRange;
+      if (orbMomentumVel > 0) orbMomentumVel = 0;
+    } else if (orbMomentumY < -halfRange) {
+      orbMomentumY = -halfRange;
+      if (orbMomentumVel < 0) orbMomentumVel = 0;
+    }
+    return centerY + orbMomentumY;
+  }
+
+  if (orbControlMode === "amplitude") {
+    // Envelope follower on |Z - g| gives a 0..1 "how hard are you moving" signal.
+    const amp = Math.abs((currentValue || 0) - 9.81) / ORB_AMP_REF;
+    const ampTarget = amp > 1 ? 1 : amp;
+    const envRate = ampTarget > orbAmpEnv ? ORB_AMP_ATTACK : ORB_AMP_RELEASE;
+    orbAmpEnv += (ampTarget - orbAmpEnv) * (1 - Math.exp(-envRate * dt));
+
+    // Phase follows the rep state machine; lerp speed scales with envelope.
+    const phaseTarget = ss === 1 ? 1 : 0;
+    const tau = ORB_AMP_TAU_SLOW - (ORB_AMP_TAU_SLOW - ORB_AMP_TAU_FAST) * orbAmpEnv;
+    orbAmpPhase += (phaseTarget - orbAmpPhase) * (1 - Math.exp(-dt / Math.max(tau, 0.04)));
+
+    // Reach grows with envelope: gentle movement stays near centre, powerful squats swing the full canvas.
+    const reach = ORB_AMP_MIN_REACH + (1 - ORB_AMP_MIN_REACH) * orbAmpEnv;
+    return centerY + halfRange * reach * (orbAmpPhase * 2 - 1);
   }
 
   return sensorY;
