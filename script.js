@@ -30,12 +30,8 @@ const GAME_ORB_RADIUS = 14;
 const GAME_COLLECT_DIST = 28;
 // Fraction of canvas width an orb travels per second (right → left toward the player)
 const GAME_ORB_SPEED_FACTOR = 0.14;
-const GAME_ORB_COLORS = [
-  { fill: "#ff6f9f", glow: "rgba(255, 111, 159, 0.6)" },
-  { fill: "#6effd9", glow: "rgba(110, 255, 217, 0.5)" },
-  { fill: "#6ab6ff", glow: "rgba(106, 182, 255, 0.5)" },
-  { fill: "#f0ff69", glow: "rgba(240, 255, 105, 0.5)" },
-];
+const ORB_GOOD = { fill: "#6effd9", glow: "rgba(110,255,217,0.6)",  type: "good" };
+const ORB_BAD  = { fill: "#ff4f4f", glow: "rgba(255,79,79,0.65)",   type: "bad"  };
 
 let viewYear = new Date().getFullYear();
 let viewMonth = new Date().getMonth();
@@ -849,7 +845,7 @@ async function initSynthWebAudio() {
   try {
     _synthCtx = new (window.AudioContext || window.webkitAudioContext)();
     await Promise.all(
-      [["E", 4, 0.5], ["C", 4, 0.5]].map(async ([note, octave, dur]) => {
+      [["E", 4, 0.5], ["C", 4, 0.5], ["A", 3, 0.4]].map(async ([note, octave, dur]) => {
         const dataUri = Synth.generate("piano", note, octave, dur);
         const resp = await fetch(dataUri);
         const arrayBuf = await resp.arrayBuffer();
@@ -880,6 +876,11 @@ function playSynthBufferNote(note) {
 // Function to play sound
 function synthleicht() {
   playSynthBufferNote(KB % 10 === 0 ? "C" : "E");
+}
+
+function playOrbSound(isGood) {
+  if (audioMode !== "synth") return;
+  playSynthBufferNote(isGood ? "E" : "A");
 }
 
 // Function to change background image
@@ -1268,10 +1269,20 @@ function drawGraph(dataArray, color, glowColor) {
 
     const endX = (dataArray.length - 1) * graphScaleX;
     const endY = latestValue * -scaleY;
-    ctx.shadowBlur = 0;
-    ctx.fillStyle = color;
+    // Distinctive player head — large glowing circle with white ring and highlight
+    ctx.shadowColor = glowColor;
+    ctx.shadowBlur = 32 + pulse * 12;
+    ctx.strokeStyle = "rgba(255,255,255,0.9)";
+    ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.arc(endX, endY, 3.8 + pulse * 3, 0, 2 * Math.PI);
+    ctx.arc(endX, endY, 10 + pulse * 2, 0, Math.PI * 2);
+    ctx.fillStyle = color;
+    ctx.fill();
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = "rgba(255,255,255,0.95)";
+    ctx.beginPath();
+    ctx.arc(endX, endY, 3, 0, Math.PI * 2);
     ctx.fill();
 
     ctx.restore();
@@ -1285,7 +1296,7 @@ function getInitArr(length) {
 // ── Point-collection game (integrated into AV=3 canvas) ────────
 
 function gameSpawnOrb() {
-  const colorObj = GAME_ORB_COLORS[Math.floor(Math.random() * GAME_ORB_COLORS.length)];
+  const colorObj = Math.random() < 0.6 ? ORB_GOOD : ORB_BAD;
   // Y range: gravity center ± maxDeviation (random target height)
   const centerY = H / 2 + 9.81 * scaleY;
   const range = maxDeviation * scaleY * 0.8;
@@ -1301,6 +1312,7 @@ function gameSpawnOrb() {
     age: 0,
     fill: colorObj.fill,
     glow: colorObj.glow,
+    type: colorObj.type,
   });
 }
 
@@ -1335,10 +1347,16 @@ function gameCheckCollisions(endpointX, endpointY) {
     const dy = endpointY - orb.y;
     const dist = Math.sqrt(dx * dx + dy * dy);
     if (dist < GAME_COLLECT_DIST) {
-      gameScore += 1;
-      gameSpawnParticles(orb.x, orb.y, orb.fill);
+      if (orb.type === "good") {
+        gameScore += 1;
+        gameSpawnParticles(orb.x, orb.y, ORB_GOOD.fill);
+        playOrbSound(true);
+      } else {
+        gameScore = Math.max(0, gameScore - 1);
+        gameSpawnParticles(orb.x, orb.y, ORB_BAD.fill);
+        playOrbSound(false);
+      }
       gameOrbs.splice(i, 1);
-      playSound();
     }
   }
 }
@@ -1401,6 +1419,18 @@ function gameDrawOrbs() {
     ctx.arc(orb.x, orb.y, 4, 0, Math.PI * 2);
     ctx.fillStyle = "rgba(255, 255, 255, 0.85)";
     ctx.fill();
+
+    // × marker on bad orbs
+    if (orb.type === "bad") {
+      const s = 5;
+      ctx.strokeStyle = "rgba(255,255,255,0.9)";
+      ctx.lineWidth = 2;
+      ctx.lineCap = "round";
+      ctx.beginPath();
+      ctx.moveTo(orb.x - s, orb.y - s); ctx.lineTo(orb.x + s, orb.y + s);
+      ctx.moveTo(orb.x + s, orb.y - s); ctx.lineTo(orb.x - s, orb.y + s);
+      ctx.stroke();
+    }
 
     ctx.restore();
   }
