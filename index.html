@@ -81,13 +81,21 @@
         <div id = "canvasdiv">
               <canvas id="canvas"></canvas>
         </div>
+        <div id="orbControlDiv">
+          <label for="orbControl">Steuerung:</label>
+          <select id="orbControl">
+            <option value="sensor">Sensor (direkt)</option>
+            <option value="phase">Phase (Hocke/Stand)</option>
+            <option value="analog">Analog (Min/Max)</option>
+          </select>
+        </div>
          <div id ="canvasuhr">
         <span id="minAn"></span>:<span id="sekAn"></span> </div>
-        <div id =KniebA> 
+        <div id =KniebA>
        Anzahl: <span id="KB">0</span><br>
            </div>
-           <button class="zurueck" onclick="neu()">x</button>       
-</div>       
+           <button class="zurueck" onclick="neu()">x</button>
+</div>
 
  <div id="sta_div">
   <div class="stats-shell">
