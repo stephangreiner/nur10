@@ -34,48 +34,47 @@ const ORB_GOOD = { fill: "#6effd9", glow: "rgba(110,255,217,0.6)",  type: "good"
 const ORB_BAD  = { fill: "#ff4f4f", glow: "rgba(255,79,79,0.65)",   type: "bad"  };
 
 // Orb control mode for the AV=3 game.
-//   "sensor"   – raw accel value maps 1:1 to orb Y (positional).
-//   "phase"    – discrete squat state (ss) drives a target Y, smoothed (positional).
-//   "kinetic"  – Z deviation from g maps to orb *speed*; direction = sign of deviation.
-//   "throttle" – amplitude envelope sets speed magnitude, squat posture (ss) sets direction.
-//   "pulse"    – each completed rep gives the orb a discrete impulse; drifts between reps.
-//   "tempo"    – rep cadence (reps/s, rolling window) scales speed; ss sets direction.
+//   "sensor"    – raw accel value maps 1:1 to orb Y (positional, unchanged).
+//   "phase"     – discrete squat state (ss) drives a target Y, smoothed.
+//   "speed"     – signed deviation from baseline → orb velocity; stand still → dot frozen.
+//   "amplitude" – |deviation| past a deadzone → speed; sign of deviation → direction. Non-linear gain.
+//   "inertia"   – deviation → acceleration; dot keeps gliding with damping until reverse push.
+//   "pump"      – only positive deviation charges the dot upward; charge decays back to baseline.
 let orbControlMode = "sensor";
 let orbPhaseNorm = 0;                 // 0 = top (standing), 1 = bottom (squat)
 const ORB_PHASE_TAU = 0.15;           // seconds – how fast the orb chases its target
 
-// Kinetic mode: Z deviation from gravity drives orb velocity (speed-controlled, not position).
-let orbKineticY = 0;                  // signed px offset from centre
-const ORB_KINETIC_DEADZONE = 0.4;     // m/s² – below this the orb freezes
-const ORB_KINETIC_SCALE = 40;         // px/s per m/s² of deviation above the deadzone
-const ORB_KINETIC_DAMP = 0.9;         // s⁻¹ gentle exponential pull toward centre when still
+// Calibrated baseline — the Z reading taken as "standing still" (dot frozen).
+// Defaults to Earth gravity but the user can press "Nullen" while standing
+// still to zero out sensor bias or a non-vertical phone orientation.
+let orbBaseline = 9.81;
+const ORB_BASELINE_KEY = "orbBaseline";
 
-// Throttle mode: amplitude envelope = |Z - g| → speed magnitude, ss → direction.
-let orbThrottleY = 0;
-let orbThrottleEnv = 0;               // 0..1 smoothed amplitude envelope
-const ORB_THROTTLE_REF = 3.0;         // m/s² deviation that yields full throttle
-const ORB_THROTTLE_ATTACK = 5.0;      // s⁻¹ envelope rise rate
-const ORB_THROTTLE_RELEASE = 1.2;     // s⁻¹ envelope decay rate
-const ORB_THROTTLE_MAX_SPEED = 220;   // px/s at full throttle
+// Each of the 4 new modes owns one Y offset variable (signed px from centre).
+// Inertia additionally tracks its velocity.
+let orbSpeedY = 0;
+let orbAmplitudeY = 0;
+let orbInertiaY = 0;
+let orbInertiaVel = 0;
+let orbPumpY = 0;
 
-// Pulse mode: each completed squat rep kicks the orb toward the opposite side.
-let orbPulseY = 0;
-let orbPulseVel = 0;
-let orbPulsePending = 0;              // reps not yet consumed by pulse mode
-let orbPulseToggle = false;
-const ORB_PULSE_IMPULSE = 180;        // px/s velocity added per rep
-const ORB_PULSE_DAMP = 1.2;           // s⁻¹ velocity damping
-const ORB_PULSE_CENTER = 2.0;         // s⁻¹ spring toward centre
+// Speed mode: velocity = SPEED_GAIN * deviation. Pure integrator, no damping.
+const ORB_SPEED_GAIN = 60;            // px/s per m/s² of deviation
 
-// Tempo mode: reps per second over a rolling window sets speed; ss sets direction.
-let orbTempoY = 0;
-let orbTempoEnv = 0;                  // 0..1 smoothed cadence envelope
-let orbRepTimes = [];                 // ms timestamps of recent squat reps
-const ORB_TEMPO_WINDOW_MS = 10000;    // reps within this window count toward cadence
-const ORB_TEMPO_FULL_RATE = 0.8;      // reps/s that saturates tempo speed
-const ORB_TEMPO_ATTACK = 2.5;         // s⁻¹
-const ORB_TEMPO_RELEASE = 0.6;        // s⁻¹
-const ORB_TEMPO_MAX_SPEED = 180;      // px/s at full cadence
+// Amplitude mode: dead-zoned, then squared for a snappier feel at higher amplitudes.
+const ORB_AMP_DEADZONE = 0.5;         // m/s² – below this the dot is frozen
+const ORB_AMP_GAIN = 90;              // px/s per (m/s²)² of excess deviation
+const ORB_AMP_MAX = 500;              // px/s speed cap
+
+// Inertia mode: deviation → acceleration with a friction term so the dot
+// eventually glides to a halt if you hold the phone still.
+const ORB_INERTIA_GAIN = 140;         // px/s² per m/s²
+const ORB_INERTIA_FRICTION = 0.45;    // s⁻¹ exponential velocity decay
+
+// Pump mode: rectified (only positive) deviation builds charge; charge decays
+// continuously. Dot sits at centre when idle, rises the faster you "pump".
+const ORB_PUMP_RATE = 60;             // px/s per m/s² of positive deviation
+const ORB_PUMP_DECAY = 1.1;           // s⁻¹ charge decay toward centre
 
 let viewYear = new Date().getFullYear();
 let viewMonth = new Date().getMonth();
@@ -216,6 +215,7 @@ window.onload = function () {
   restoreAudioModePreference();
   initCustomAudioFromStorage();
   initDailyBadge();
+  restoreOrbBaseline();
 };
 
 window.addEventListener("beforeunload", () => {
@@ -549,23 +549,52 @@ if (orbControlSelect) {
   orbControlSelect.addEventListener("change", () => {
     const v = orbControlSelect.value;
     if (
-      v === "sensor" || v === "phase" || v === "kinetic" ||
-      v === "throttle" || v === "pulse" || v === "tempo"
+      v === "sensor" || v === "phase" || v === "speed" ||
+      v === "amplitude" || v === "inertia" || v === "pump"
     ) {
       orbControlMode = v;
       orbPhaseNorm = ss === 1 ? 1 : 0;
-      orbKineticY = 0;
-      orbThrottleY = 0;
-      orbThrottleEnv = 0;
-      orbPulseY = 0;
-      orbPulseVel = 0;
-      orbPulsePending = 0;
-      orbPulseToggle = false;
-      orbTempoY = 0;
-      orbTempoEnv = 0;
-      orbRepTimes = [];
+      orbSpeedY = 0;
+      orbAmplitudeY = 0;
+      orbInertiaY = 0;
+      orbInertiaVel = 0;
+      orbPumpY = 0;
     }
   });
+}
+
+// "Nullen" button — captures the current Z reading as the baseline, so the
+// speed/amplitude/inertia/pump modes treat that posture as "still". The value
+// is persisted across sessions.
+const orbBaselineBtn = document.getElementById("orbBaselineBtn");
+const orbBaselineVal = document.getElementById("orbBaselineVal");
+function updateBaselineLabel() {
+  if (orbBaselineVal) orbBaselineVal.textContent = `b=${orbBaseline.toFixed(2)}`;
+}
+if (orbBaselineBtn) {
+  orbBaselineBtn.addEventListener("click", () => {
+    const z = linien && linien.z ? linien.z[linien.z.length - 1] : null;
+    if (typeof z === "number" && Number.isFinite(z) && z !== 0) {
+      orbBaseline = z;
+    } else {
+      orbBaseline = 9.81;
+    }
+    try { localStorage.setItem(ORB_BASELINE_KEY, String(orbBaseline)); } catch (e) {}
+    orbSpeedY = 0;
+    orbAmplitudeY = 0;
+    orbInertiaY = 0;
+    orbInertiaVel = 0;
+    orbPumpY = 0;
+    updateBaselineLabel();
+  });
+}
+
+function restoreOrbBaseline() {
+  try {
+    const stored = parseFloat(localStorage.getItem(ORB_BASELINE_KEY));
+    if (Number.isFinite(stored)) orbBaseline = stored;
+  } catch (e) {}
+  updateBaselineLabel();
 }
 
 // Function to start the exercise tracking
@@ -805,16 +834,11 @@ function resetMotionState() {
   needsMidCrossing = false;
   firstExecution = 0;
   orbPhaseNorm = 0;
-  orbKineticY = 0;
-  orbThrottleY = 0;
-  orbThrottleEnv = 0;
-  orbPulseY = 0;
-  orbPulseVel = 0;
-  orbPulsePending = 0;
-  orbPulseToggle = false;
-  orbTempoY = 0;
-  orbTempoEnv = 0;
-  orbRepTimes = [];
+  orbSpeedY = 0;
+  orbAmplitudeY = 0;
+  orbInertiaY = 0;
+  orbInertiaVel = 0;
+  orbPumpY = 0;
 }
 
 // Shared rep-counting logic used by both hochg and niedrigg
@@ -827,10 +851,6 @@ function countMotionRep() {
   }
   updateCountDisplay();
   updateLocalStorageCounts();
-  if (modus === 1) {
-    orbRepTimes.push(performance.now());
-    orbPulsePending += 1;
-  }
 }
 
 // Called when the sensor value crosses the HIGH threshold
@@ -1293,39 +1313,44 @@ function tick() {
     else if (modus === 3) { headColor = "#6ab6ff"; headGlow = "rgba(106, 182, 255, 0.45)"; }
     drawPlayerHead(endpointX, endpointY, headColor, headGlow);
     gameDrawScore();
-    drawOrbModeOverlay();
+    drawOrbModeOverlay(currentValue);
   }
 }
 
 // Small HUD so you can see at a glance which control mode is active and the
 // key internal signal driving the orb. Useful for sanity-checking that modes
 // actually behave differently.
-function drawOrbModeOverlay() {
+function drawOrbModeOverlay(currentValue) {
+  const dev = ((currentValue || 0) - orbBaseline);
   let detail = "";
   if (modus !== 1) {
     detail = "(only active for squats)";
   } else if (orbControlMode === "phase") {
     detail = `ss=${ss} norm=${orbPhaseNorm.toFixed(2)}`;
-  } else if (orbControlMode === "kinetic") {
-    detail = `y=${orbKineticY.toFixed(0)}`;
-  } else if (orbControlMode === "throttle") {
-    detail = `env=${orbThrottleEnv.toFixed(2)} y=${orbThrottleY.toFixed(0)}`;
-  } else if (orbControlMode === "pulse") {
-    detail = `vel=${orbPulseVel.toFixed(0)} y=${orbPulseY.toFixed(0)} reps=${orbRepTimes.length}`;
-  } else if (orbControlMode === "tempo") {
-    detail = `env=${orbTempoEnv.toFixed(2)} y=${orbTempoY.toFixed(0)} reps=${orbRepTimes.length}`;
+  } else if (orbControlMode === "speed") {
+    detail = `dev=${dev.toFixed(2)} y=${orbSpeedY.toFixed(0)}`;
+  } else if (orbControlMode === "amplitude") {
+    detail = `|dev|=${Math.abs(dev).toFixed(2)} y=${orbAmplitudeY.toFixed(0)}`;
+  } else if (orbControlMode === "inertia") {
+    detail = `dev=${dev.toFixed(2)} vel=${orbInertiaVel.toFixed(0)} y=${orbInertiaY.toFixed(0)}`;
+  } else if (orbControlMode === "pump") {
+    detail = `dev+=${Math.max(0, dev).toFixed(2)} y=${orbPumpY.toFixed(0)}`;
   }
 
   ctx.save();
   ctx.fillStyle = "rgba(255,255,255,0.75)";
   ctx.font = "500 12px Arial";
-  ctx.fillText(`mode: ${orbControlMode}  ${detail}`, 10, H - 12);
+  ctx.fillText(`mode: ${orbControlMode}  base=${orbBaseline.toFixed(2)}  ${detail}`, 10, H - 12);
   ctx.restore();
 }
 
 // Maps the current sensor state to the orb's Y pixel position. The non-"sensor"
 // modes only activate for squats (modus===1) — other exercises keep the direct
 // sensor mapping so the orb still follows the graph line.
+//
+// All four speed modes share the same "deviation from a calibrated baseline"
+// input signal (dev = Z - orbBaseline), so zeroing the baseline while holding
+// the phone still is the knob that makes the orb stop drifting.
 function computeOrbEndpointY(currentValue, dt) {
   const sensorY = H / 2 + 9.81 * scaleY + (currentValue || 0) * -scaleY;
   if (modus !== 1 || orbControlMode === "sensor") {
@@ -1345,84 +1370,57 @@ function computeOrbEndpointY(currentValue, dt) {
     return topY + (bottomY - topY) * orbPhaseNorm;
   }
 
-  if (orbControlMode === "kinetic") {
-    // Deviation from gravity sets the orb's *velocity* rather than its position.
-    // Stand still → dev ≈ 0 → orb frozen. Moving through a squat produces
-    // signed deviation pulses (positive on the way up, negative at transitions),
-    // which the orb integrates. A soft exponential pull keeps it from drifting.
-    const dev = (currentValue || 0) - 9.81;
-    const absDev = Math.abs(dev);
-    let v = 0;
-    if (absDev > ORB_KINETIC_DEADZONE) {
-      v = -Math.sign(dev) * (absDev - ORB_KINETIC_DEADZONE) * ORB_KINETIC_SCALE;
-    }
-    orbKineticY += v * dt;
-    orbKineticY *= Math.exp(-ORB_KINETIC_DAMP * dt);
-    if (orbKineticY > halfRange) orbKineticY = halfRange;
-    else if (orbKineticY < -halfRange) orbKineticY = -halfRange;
-    return centerY + orbKineticY;
+  const dev = (currentValue || 0) - orbBaseline;
+  const clamp = (v) => (v > halfRange ? halfRange : v < -halfRange ? -halfRange : v);
+
+  if (orbControlMode === "speed") {
+    // Pure integrator. Velocity = GAIN * deviation, position = ∫velocity.
+    // Larger deviation → dot moves faster. Stop moving → dot freezes
+    // instantly (no damping). Sign convention: +dev (Z above baseline,
+    // e.g. accelerating up) → dot moves up (negative Y).
+    orbSpeedY = clamp(orbSpeedY + (-ORB_SPEED_GAIN * dev) * dt);
+    return centerY + orbSpeedY;
   }
 
-  if (orbControlMode === "throttle") {
-    // |Z - g| envelope → how fast the orb moves. ss → which way it moves.
-    // Holding still at any posture freezes the orb; the harder you pump, the
-    // faster it travels toward the endpoint matching your current phase.
-    const amp = Math.min(Math.abs((currentValue || 0) - 9.81) / ORB_THROTTLE_REF, 1);
-    const rate = amp > orbThrottleEnv ? ORB_THROTTLE_ATTACK : ORB_THROTTLE_RELEASE;
-    orbThrottleEnv += (amp - orbThrottleEnv) * (1 - Math.exp(-rate * dt));
-    const dir = ss === 1 ? 1 : -1;
-    orbThrottleY += orbThrottleEnv * ORB_THROTTLE_MAX_SPEED * dir * dt;
-    if (orbThrottleY > halfRange) orbThrottleY = halfRange;
-    else if (orbThrottleY < -halfRange) orbThrottleY = -halfRange;
-    return centerY + orbThrottleY;
+  if (orbControlMode === "amplitude") {
+    // |deviation| above a deadzone, squared for a snappier non-linear feel:
+    // gentle phone motion barely moves the dot, sharp motion flings it fast.
+    // Direction still follows the sign of dev.
+    const mag = Math.abs(dev);
+    const excess = mag > ORB_AMP_DEADZONE ? mag - ORB_AMP_DEADZONE : 0;
+    let speed = excess * excess * ORB_AMP_GAIN;
+    if (speed > ORB_AMP_MAX) speed = ORB_AMP_MAX;
+    const v = -Math.sign(dev) * speed;
+    orbAmplitudeY = clamp(orbAmplitudeY + v * dt);
+    return centerY + orbAmplitudeY;
   }
 
-  if (orbControlMode === "pulse") {
-    // Consume rep events that arrived since the last frame — each one kicks
-    // the orb. Direction points away from its current side so reps counter-
-    // balance; with the orb near centre, the kick direction just alternates.
-    while (orbPulsePending > 0) {
-      let dir;
-      if (Math.abs(orbPulseY) > 2) {
-        dir = -Math.sign(orbPulseY);
-      } else {
-        dir = orbPulseToggle ? 1 : -1;
-        orbPulseToggle = !orbPulseToggle;
-      }
-      orbPulseVel += dir * ORB_PULSE_IMPULSE;
-      orbPulsePending -= 1;
+  if (orbControlMode === "inertia") {
+    // Deviation drives *acceleration*, and velocity leaks away with friction.
+    // Once the dot is moving it keeps going until you apply the opposite dev
+    // to brake — feels like pushing a puck on ice.
+    orbInertiaVel += (-ORB_INERTIA_GAIN * dev) * dt;
+    orbInertiaVel *= Math.exp(-ORB_INERTIA_FRICTION * dt);
+    orbInertiaY = clamp(orbInertiaY + orbInertiaVel * dt);
+    // If clamped to an edge, absorb the velocity so it doesn't "stick".
+    if ((orbInertiaY === halfRange && orbInertiaVel > 0) ||
+        (orbInertiaY === -halfRange && orbInertiaVel < 0)) {
+      orbInertiaVel = 0;
     }
-    orbPulseVel -= orbPulseY * ORB_PULSE_CENTER * dt;
-    orbPulseVel *= Math.exp(-ORB_PULSE_DAMP * dt);
-    orbPulseY += orbPulseVel * dt;
-    if (orbPulseY > halfRange) {
-      orbPulseY = halfRange;
-      if (orbPulseVel > 0) orbPulseVel = 0;
-    } else if (orbPulseY < -halfRange) {
-      orbPulseY = -halfRange;
-      if (orbPulseVel < 0) orbPulseVel = 0;
-    }
-    return centerY + orbPulseY;
+    return centerY + orbInertiaY;
   }
 
-  if (orbControlMode === "tempo") {
-    // Prune old reps, compute cadence, envelope-follow so speed doesn't jitter
-    // on each new rep, then drive Y at a speed proportional to cadence with
-    // direction from ss (bottom → orb pushes down, top → orb pushes up).
-    const now = performance.now();
-    const cutoff = now - ORB_TEMPO_WINDOW_MS;
-    while (orbRepTimes.length && orbRepTimes[0] < cutoff) {
-      orbRepTimes.shift();
-    }
-    const rate = orbRepTimes.length / (ORB_TEMPO_WINDOW_MS / 1000);
-    const target = Math.min(rate / ORB_TEMPO_FULL_RATE, 1);
-    const r = target > orbTempoEnv ? ORB_TEMPO_ATTACK : ORB_TEMPO_RELEASE;
-    orbTempoEnv += (target - orbTempoEnv) * (1 - Math.exp(-r * dt));
-    const dir = ss === 1 ? 1 : -1;
-    orbTempoY += orbTempoEnv * ORB_TEMPO_MAX_SPEED * dir * dt;
-    if (orbTempoY > halfRange) orbTempoY = halfRange;
-    else if (orbTempoY < -halfRange) orbTempoY = -halfRange;
-    return centerY + orbTempoY;
+  if (orbControlMode === "pump") {
+    // Rectified: only positive deviation (Z > baseline, i.e. accelerating
+    // upward, which happens at the bottom of a squat as you brake + push up)
+    // charges the dot upward. Charge leaks back toward centre at a constant
+    // rate, so you have to keep pumping to hold it there.
+    const positive = dev > 0 ? dev : 0;
+    const charge = positive * ORB_PUMP_RATE * dt;
+    orbPumpY -= charge;                                         // upward = negative Y
+    orbPumpY *= Math.exp(-ORB_PUMP_DECAY * dt);                 // leak back to 0
+    orbPumpY = clamp(orbPumpY);
+    return centerY + orbPumpY;
   }
 
   return sensorY;

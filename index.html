@@ -86,11 +86,13 @@
           <select id="orbControl">
             <option value="sensor">Sensor (direkt)</option>
             <option value="phase">Phase (Hocke/Stand)</option>
-            <option value="kinetic">Kinetic (Bewegung → Tempo)</option>
-            <option value="throttle">Throttle (Kraft + Haltung)</option>
-            <option value="pulse">Pulse (Impuls pro Rep)</option>
-            <option value="tempo">Tempo (Kadenz)</option>
+            <option value="speed">Speed (Abweichung × Gain)</option>
+            <option value="amplitude">Amplitude (|Abw.|² + Totzone)</option>
+            <option value="inertia">Inertia (Abw. → Beschleunigung)</option>
+            <option value="pump">Pump (nur positiv, Ladung)</option>
           </select>
+          <button id="orbBaselineBtn" type="button" title="Aktuellen g-Wert als Ruhelage speichern">Nullen</button>
+          <span id="orbBaselineVal"></span>
         </div>
          <div id ="canvasuhr">
         <span id="minAn"></span>:<span id="sekAn"></span> </div>
