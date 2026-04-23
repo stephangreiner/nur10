@@ -441,6 +441,27 @@ input[type="file"] {
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+#orbBaselineBtn {
+  background-color: rgb(90, 90, 90);
+  color: #ffffff;
+  cursor: pointer;
+  padding: 0.35rem 0.6rem;
+  border-radius: 0.6rem;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  font-size: 0.8rem;
+}
+
+#orbBaselineBtn:active {
+  background-color: rgb(140, 140, 140);
+}
+
+#orbBaselineVal {
+  font-family: monospace;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.55);
+  min-width: 3.5rem;
+}
+
 #canvasdiv {
   width: 100%;
   height: 70%;
