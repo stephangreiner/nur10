@@ -35,14 +35,18 @@ const ORB_BAD  = { fill: "#ff4f4f", glow: "rgba(255,79,79,0.65)",   type: "bad" 
 
 // Orb control mode for the AV=3 game.
 //   "sensor"    – raw accel value maps 1:1 to orb Y (positional, unchanged).
-//   "phase"     – discrete squat state (ss) drives a target Y, smoothed.
+//   "phase"     – tracks low/high motion zones; auto-recovers to centre when idle.
 //   "speed"     – signed deviation from baseline → orb velocity; stand still → dot frozen.
 //   "amplitude" – |deviation| past a deadzone → speed; sign of deviation → direction. Non-linear gain.
 //   "inertia"   – deviation → acceleration; dot keeps gliding with damping until reverse push.
 //   "pump"      – only positive deviation charges the dot upward; charge decays back to baseline.
 let orbControlMode = "sensor";
-let orbPhaseNorm = 0;                 // 0 = top (standing), 1 = bottom (squat)
-const ORB_PHASE_TAU = 0.15;           // seconds – how fast the orb chases its target
+let orbPhaseNorm = 0.5;               // 0 = top (standing), 1 = bottom (squat), 0.5 = centre
+let orbPhaseTarget = 0.5;             // where orbPhaseNorm is lerping toward
+let orbPhaseLastZoneAt = 0;           // ms timestamp of the last low/high zone event
+const ORB_PHASE_TAU = 0.18;           // seconds – active lerp toward target
+const ORB_PHASE_IDLE_MS = 2000;       // after this much "mid" zone, target drifts to centre
+const ORB_PHASE_IDLE_TAU = 1.6;       // seconds – slow drift back to centre when idle
 
 // Calibrated baseline — the Z reading taken as "standing still" (dot frozen).
 // Defaults to Earth gravity but the user can press "Nullen" while standing
@@ -553,7 +557,9 @@ if (orbControlSelect) {
       v === "amplitude" || v === "inertia" || v === "pump"
     ) {
       orbControlMode = v;
-      orbPhaseNorm = ss === 1 ? 1 : 0;
+      orbPhaseNorm = 0.5;
+      orbPhaseTarget = 0.5;
+      orbPhaseLastZoneAt = performance.now();
       orbSpeedY = 0;
       orbAmplitudeY = 0;
       orbInertiaY = 0;
@@ -833,7 +839,9 @@ function resetMotionState() {
   motionZone = "mid";
   needsMidCrossing = false;
   firstExecution = 0;
-  orbPhaseNorm = 0;
+  orbPhaseNorm = 0.5;
+  orbPhaseTarget = 0.5;
+  orbPhaseLastZoneAt = performance.now();
   orbSpeedY = 0;
   orbAmplitudeY = 0;
   orbInertiaY = 0;
@@ -1326,7 +1334,7 @@ function drawOrbModeOverlay(currentValue) {
   if (modus !== 1) {
     detail = "(only active for squats)";
   } else if (orbControlMode === "phase") {
-    detail = `ss=${ss} norm=${orbPhaseNorm.toFixed(2)}`;
+    detail = `zone=${motionZone} tgt=${orbPhaseTarget.toFixed(2)} norm=${orbPhaseNorm.toFixed(2)}`;
   } else if (orbControlMode === "speed") {
     detail = `dev=${dev.toFixed(2)} y=${orbSpeedY.toFixed(0)}`;
   } else if (orbControlMode === "amplitude") {
@@ -1364,9 +1372,26 @@ function computeOrbEndpointY(currentValue, dt) {
   const halfRange = (bottomY - topY) / 2;
 
   if (orbControlMode === "phase") {
-    const target = ss === 1 ? 1 : 0;
+    // Track the latest motion-zone event directly instead of going through the
+    // rep state machine (ss) — that way a half-rep that doesn't cross the
+    // GS=12 threshold can no longer pin the ball at the bottom forever.
+    //   low  zone hit → squat detected → target = 1 (bottom)
+    //   high zone hit → stand detected → target = 0 (top)
+    //   sustained mid zone → drift target back toward centre so the ball
+    //   doesn't stay stuck at an extreme during long pauses.
+    const now = performance.now();
+    if (motionZone === "low") {
+      orbPhaseTarget = 1;
+      orbPhaseLastZoneAt = now;
+    } else if (motionZone === "high") {
+      orbPhaseTarget = 0;
+      orbPhaseLastZoneAt = now;
+    } else if (now - orbPhaseLastZoneAt > ORB_PHASE_IDLE_MS) {
+      const k = 1 - Math.exp(-dt / ORB_PHASE_IDLE_TAU);
+      orbPhaseTarget += (0.5 - orbPhaseTarget) * k;
+    }
     const alpha = 1 - Math.exp(-dt / ORB_PHASE_TAU);
-    orbPhaseNorm += (target - orbPhaseNorm) * alpha;
+    orbPhaseNorm += (orbPhaseTarget - orbPhaseNorm) * alpha;
     return topY + (bottomY - topY) * orbPhaseNorm;
   }
 
