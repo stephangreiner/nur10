@@ -44,11 +44,19 @@ let orbControlMode = "sensor";
 let orbPhaseNorm = 0;                 // 0 = top (standing), 1 = bottom (squat)
 const ORB_PHASE_TAU = 0.15;           // seconds – how fast the orb chases its target
 
-// Calibrated baseline — the Z reading taken as "standing still" (dot frozen).
-// Defaults to Earth gravity but the user can press "Nullen" while standing
-// still to zero out sensor bias or a non-vertical phone orientation.
-let orbBaseline = 9.81;
-const ORB_BASELINE_KEY = "orbBaseline";
+// Calibrated baseline per exercise axis — the sensor reading taken as
+// "standing still" (dot frozen). Defaults to Earth gravity (the dominant axis
+// for each exercise reads ~9.81 at rest) but the user can press "Nullen" to
+// capture the current axis value and persist it.
+//   z → squats (phone flat), y → pull-ups (phone upright), x → back ext. (sideways)
+const orbBaselines = { z: 9.81, y: 9.81, x: 9.81 };
+const ORB_BASELINE_KEYS = { z: "orbBaseline", y: "orbBaselineY", x: "orbBaselineX" };
+function currentAxis() {
+  return modus === 2 ? "y" : modus === 3 ? "x" : "z";
+}
+function currentBaseline() {
+  return orbBaselines[currentAxis()];
+}
 
 // Each of the 4 new modes owns one Y offset variable (signed px from centre).
 // Inertia additionally tracks its velocity.
@@ -569,17 +577,19 @@ if (orbControlSelect) {
 const orbBaselineBtn = document.getElementById("orbBaselineBtn");
 const orbBaselineVal = document.getElementById("orbBaselineVal");
 function updateBaselineLabel() {
-  if (orbBaselineVal) orbBaselineVal.textContent = `b=${orbBaseline.toFixed(2)}`;
+  if (orbBaselineVal) orbBaselineVal.textContent = `b=${currentBaseline().toFixed(2)}`;
 }
 if (orbBaselineBtn) {
   orbBaselineBtn.addEventListener("click", () => {
-    const z = linien && linien.z ? linien.z[linien.z.length - 1] : null;
-    if (typeof z === "number" && Number.isFinite(z) && z !== 0) {
-      orbBaseline = z;
+    const axis = currentAxis();
+    const arr = linien && linien[axis] ? linien[axis] : null;
+    const v = arr ? arr[arr.length - 1] : null;
+    if (typeof v === "number" && Number.isFinite(v) && v !== 0) {
+      orbBaselines[axis] = v;
     } else {
-      orbBaseline = 9.81;
+      orbBaselines[axis] = 9.81;
     }
-    try { localStorage.setItem(ORB_BASELINE_KEY, String(orbBaseline)); } catch (e) {}
+    try { localStorage.setItem(ORB_BASELINE_KEYS[axis], String(orbBaselines[axis])); } catch (e) {}
     orbSpeedY = 0;
     orbAmplitudeY = 0;
     orbInertiaY = 0;
@@ -590,10 +600,12 @@ if (orbBaselineBtn) {
 }
 
 function restoreOrbBaseline() {
-  try {
-    const stored = parseFloat(localStorage.getItem(ORB_BASELINE_KEY));
-    if (Number.isFinite(stored)) orbBaseline = stored;
-  } catch (e) {}
+  for (const axis of ["z", "y", "x"]) {
+    try {
+      const stored = parseFloat(localStorage.getItem(ORB_BASELINE_KEYS[axis]));
+      if (Number.isFinite(stored)) orbBaselines[axis] = stored;
+    } catch (e) {}
+  }
   updateBaselineLabel();
 }
 
@@ -1321,11 +1333,9 @@ function tick() {
 // key internal signal driving the orb. Useful for sanity-checking that modes
 // actually behave differently.
 function drawOrbModeOverlay(currentValue) {
-  const dev = ((currentValue || 0) - orbBaseline);
+  const dev = ((currentValue || 0) - currentBaseline());
   let detail = "";
-  if (modus !== 1) {
-    detail = "(only active for squats)";
-  } else if (orbControlMode === "phase") {
+  if (orbControlMode === "phase") {
     detail = `ss=${ss} norm=${orbPhaseNorm.toFixed(2)}`;
   } else if (orbControlMode === "speed") {
     detail = `dev=${dev.toFixed(2)} y=${orbSpeedY.toFixed(0)}`;
@@ -1340,20 +1350,17 @@ function drawOrbModeOverlay(currentValue) {
   ctx.save();
   ctx.fillStyle = "rgba(255,255,255,0.75)";
   ctx.font = "500 12px Arial";
-  ctx.fillText(`mode: ${orbControlMode}  base=${orbBaseline.toFixed(2)}  ${detail}`, 10, H - 12);
+  ctx.fillText(`mode: ${orbControlMode}  base=${currentBaseline().toFixed(2)}  ${detail}`, 10, H - 12);
   ctx.restore();
 }
 
-// Maps the current sensor state to the orb's Y pixel position. The non-"sensor"
-// modes only activate for squats (modus===1) — other exercises keep the direct
-// sensor mapping so the orb still follows the graph line.
-//
-// All four speed modes share the same "deviation from a calibrated baseline"
-// input signal (dev = Z - orbBaseline), so zeroing the baseline while holding
-// the phone still is the knob that makes the orb stop drifting.
+// Maps the current sensor state to the orb's Y pixel position. Works for all
+// three exercise modes — the input signal is "deviation of the active axis
+// from its calibrated baseline" (dev = axisValue - baseline[axis]). Pressing
+// "Nullen" while holding the phone in the resting posture freezes the dot.
 function computeOrbEndpointY(currentValue, dt) {
   const sensorY = H / 2 + 9.81 * scaleY + (currentValue || 0) * -scaleY;
-  if (modus !== 1 || orbControlMode === "sensor") {
+  if (orbControlMode === "sensor") {
     return sensorY;
   }
 
@@ -1370,7 +1377,7 @@ function computeOrbEndpointY(currentValue, dt) {
     return topY + (bottomY - topY) * orbPhaseNorm;
   }
 
-  const dev = (currentValue || 0) - orbBaseline;
+  const dev = (currentValue || 0) - currentBaseline();
   const clamp = (v) => (v > halfRange ? halfRange : v < -halfRange ? -halfRange : v);
 
   if (orbControlMode === "speed") {

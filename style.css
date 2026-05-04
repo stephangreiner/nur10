@@ -553,6 +553,35 @@ input[type="file"] {
 .symbol_RH { background-color: var(--rhfarbe); }
 .symbol_L { background-color: var(--lfarbe); }
 
+/* In landscape on phones the screen is short — the fixed min-heights on
+   #aktivcanvasdiv and #canvasdiv pushed the canvas below the viewport and
+   the surrounding chrome only filled the upper half. Let the canvas fill
+   the actual available height instead. */
+@media (orientation: landscape) and (max-height: 600px) {
+  #aktivcanvasdiv {
+    height: 100%;
+    padding-top: 0.25rem;
+    justify-content: flex-start;
+  }
+  #canvasdiv {
+    flex: 1 1 auto;
+    height: auto;
+    min-height: 0;
+    max-height: none;
+    width: 100%;
+    max-width: none;
+  }
+  #orbControlDiv {
+    margin-top: 0.25rem;
+    font-size: 0.75rem;
+    flex-wrap: wrap;
+  }
+  #canvasuhr,
+  #KniebA {
+    font-size: 0.85rem;
+  }
+}
+
 @media (max-width: 720px) {
   #startdiv {
     padding: 0.85rem;
